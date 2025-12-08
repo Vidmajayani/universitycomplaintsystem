@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Profile — ComplaNet</title>
+  <script type="module" crossorigin src="../assets/adminProfile-CMPdFmjQ.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/supabaseClient-Du47UBJl.js">
+  <link rel="modulepreload" crossorigin href="../assets/darkMode-DMjetaZp.js">
+  <link rel="stylesheet" crossorigin href="../assets/style--SQkpGwP.css">
+</head>
+
+<body
+    class="flex flex-col min-h-screen bg-[var(--color-bg-light)] text-[var(--color-text-light)] dark:bg-[var(--color-bg-dark)] dark:text-[var(--color-text-dark)] transition-all duration-300 font-sans">
+
+    <!-- Header -->
+    <header class="flex items-center justify-between px-3 md:px-6 py-4 bg-pink dark:bg-gray-800 shadow-md">
+        <!-- Logo -->
+        <div class="flex items-center">
+            <img src="../images/BGlessLogoDark.png" alt="ComplaNet Logo" class="h-16 block dark:hidden">
+            <img src="../images/BGlessLogo.png" alt="ComplaNet Logo Dark" class="h-16 hidden dark:block">
+        </div>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex space-x-6 items-center">
+            <a href="AdminDashboard.html" class="nav-content">Dashboard</a>
+            <a href="AllComplaints.html" class="nav-content">All Complaints</a>
+            <a href="Analytics.html" class="nav-content">Analytics</a>
+
+            <!-- Profile Menu -->
+            <div class="relative">
+                <button id="profileButton" class="flex items-center space-x-2 focus:outline-none">
+                    <i class="fas fa-user-shield text-gray-500 text-2xl"></i>
+                </button>
+                <div id="profileMenu"
+                    class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 hidden z-50">
+                    <a href="AdminProfile.html"
+                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">Profile</a>
+                    <button id="headerLogoutBtn" class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-500">Log
+                        Out</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Mobile Hamburger -->
+        <button id="mobileMenuButton" class="md:hidden text-gray-800 dark:text-gray-200 focus:outline-none">
+            &#9776;
+        </button>
+    </header>
+
+    <!-- Mobile Side Menu -->
+    <aside id="mobileMenu"
+        class="fixed top-0 left-0 w-64 h-full bg-white dark:bg-gray-800 shadow-lg transform -translate-x-full transition-transform duration-300 z-50 flex flex-col justify-between">
+        <div>
+            <div class="flex items-center px-6 py-4 border-b dark:border-gray-700">
+                <img src="../images/BGlessLogoDark.png" alt="Logo" class="h-10">
+            </div>
+            <nav class="mt-6 flex flex-col space-y-2 px-6">
+                <a href="AdminDashboard.html" class="nav-content">Dashboard</a>
+                <a href="AllComplaints.html" class="nav-content">All Complaints</a>
+                <a href="Analytics.html" class="nav-content">Analytics</a>
+                <a href="AdminProfile.html" class="font-semibold text-eco hover:text-eco-dark">Admin Profile</a>
+            </nav>
+        </div>
+        <div class="px-6 py-4 border-t dark:border-gray-700 flex flex-col space-y-2">
+            <a href="Login.html" class="block py-2 hover:text-red-500 transition">Log Out</a>
+        </div>
+    </aside>
+
+    <!-- Overlay -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1 px-4 py-6 md:px-10">
+        <div class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold mb-2">Admin Profile</h1>
+                <p class="text-gray-600 dark:text-gray-300 text-sm md:text-base">
+                    Manage your administrative account settings.
+                </p>
+            </div>
+            <!-- Logout Button -->
+            <button id="logoutBtn"
+                class="w-full sm:w-auto bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition-transform transform hover:scale-105 flex items-center justify-center">
+                <i class="fas fa-sign-out-alt mr-2"></i> Log Out
+            </button>
+        </div>
+
+        <!-- Profile Card -->
+        <div
+            class="max-w-4xl mx-auto bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-700">
+
+            <!-- Card Header (Gradient) -->
+            <div
+                class="bg-gradient-to-r from-pink to-orange-400 dark:from-gray-900 dark:to-gray-800 h-28 md:h-32 relative">
+                <!-- Profile Picture (Absolute) -->
+                <div class="absolute -bottom-12 md:-bottom-16 left-6 md:left-8">
+                    <div
+                        class="relative w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white dark:border-gray-800 bg-white dark:bg-gray-700 flex items-center justify-center shadow-lg overflow-hidden">
+
+                        <!-- Default Icon -->
+                        <i id="defaultProfileIcon"
+                            class="fas fa-user-shield text-4xl md:text-5xl text-gray-400 dark:text-gray-300"></i>
+
+                        <!-- Profile Image (Hidden by default) -->
+                        <img id="profileImage" src="" alt="Admin Profile" class="w-full h-full object-cover hidden">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Body -->
+            <div class="pt-16 md:pt-20 px-6 md:px-8 pb-8"> <!-- Name & Role -->
+                <div class="mb-8">
+                    <h2 class="text-xl md:text-3xl font-bold text-gray-800 dark:text-white" id="adminName">Loading
+                        Name...</h2>
+                    <span id="adminRole"
+                        class="inline-block mt-2 px-3 py-1 bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 rounded-full text-sm font-semibold">
+                        Loading Role...
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                    <!-- Left Column: Details -->
+                    <div class="space-y-6">
+                        <div>
+                            <label
+                                class="block text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Email
+                                Address</label>
+                            <div class="text-lg font-medium text-gray-700 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700 pb-2"
+                                id="adminEmail">
+                                loading@example.com
+                            </div>
+                        </div>
+
+                        <div>
+                            <label
+                                class="block text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Admin
+                                ID</label>
+                            <div class="text-lg font-medium text-gray-700 dark:text-gray-200 border-b border-gray-200 dark:border-gray-700 pb-2 font-mono"
+                                id="adminId">
+                                ...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Stats & Settings -->
+                    <div class="space-y-6">
+
+                        <!-- Box: Total Handled -->
+                        <div
+                            class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-5 border border-gray-200 dark:border-gray-600 flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Complaints Handled</p>
+                                <p class="text-3xl font-bold text-eco dark:text-green-400 mt-1" id="totalHandled">0</p>
+                            </div>
+                            <div
+                                class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center text-eco dark:text-green-400 text-xl">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+
+                        <!-- Settings: Dark Mode -->
+                        <div
+                            class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-5 border border-gray-200 dark:border-gray-600 flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div
+                                    class="w-10 h-10 bg-gray-200 dark:bg-gray-600 rounded-full flex items-center justify-center text-gray-600 dark:text-gray-300">
+                                    <i class="fas fa-moon"></i>
+                                </div>
+                                <span class="font-medium text-gray-700 dark:text-gray-200">Dark Mode</span>
+                            </div>
+                            <!-- Toggle Switch -->
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="darkModeToggle" class="sr-only peer">
+                                <div
+                                    class="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                </div>
+                            </label>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full py-10 mt-10 
+           bg-[var(--color-eco-light)] text-[var(--color-text-light)]
+           dark:bg-[#0F1A24] dark:text-gray-200">
+
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 text-center md:text-left px-6">
+
+            <!-- Column 1 -->
+            <div>
+                <h2 class="text-xl font-semibold mb-4 
+                   text-[var(--color-blue-btn)] 
+                   dark:text-[var(--color-eco)]">
+                    ComplaNet Admin
+                </h2>
+                <p class="text-sm leading-6">
+                    Administrative portal for managing university complaints.<br>
+                    Monitor, assign, and resolve complaints efficiently.
+                </p>
+            </div>
+
+            <!-- Column 2 -->
+            <div>
+                <h2 class="text-xl font-semibold mb-4 
+                   text-[var(--color-blue-btn)]
+                   dark:text-[var(--color-eco)]">
+                    Quick Navigation
+                </h2>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="./AdminDashboard.html"
+                            class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Dashboard</a>
+                    </li>
+                    <li><a href="AllComplaints.html"
+                            class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">All
+                            Complaints</a></li>
+                    <li><a href="Analytics.html"
+                            class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Analytics</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Column 3 -->
+            <div>
+                <h2 class="text-xl font-semibold mb-4 
+                   text-[var(--color-blue-btn)]
+                   dark:text-[var(--color-eco)]">
+                    Admin Tools
+                </h2>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#settings"
+                            class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Settings</a>
+                    </li>
+                    <li><a href="#reports"
+                            class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Reports</a>
+                    </li>
+                    <li><a href="#user-management"
+                            class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">User
+                            Management</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="text-center text-sm mt-10 text-gray-700 dark:text-gray-400">
+            © 2025 ComplaNet. All rights reserved.
+        </div>
+
+    </footer>
+
+</body>
+
+</html>

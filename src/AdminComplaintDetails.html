@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaint Details — ComplaNet Admin</title>
+    <!-- Font Awesome -->
+
+  <script type="module" crossorigin src="../assets/adminComplaintDetails-CdawBGDd.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/supabaseClient-Du47UBJl.js">
+  <link rel="modulepreload" crossorigin href="../assets/darkMode-DMjetaZp.js">
+  <link rel="stylesheet" crossorigin href="../assets/style--SQkpGwP.css">
+</head>
+
+<body
+    class="flex flex-col min-h-screen bg-[var(--color-bg-light)] text-[var(--color-text-light)] dark:bg-[var(--color-bg-dark)] dark:text-[var(--color-text-dark)] transition-all duration-300 font-sans">
+
+    <!-- Header -->
+    <header class="flex items-center justify-between px-3 md:px-6 py-4 bg-white dark:bg-gray-800 shadow-md">
+        <!-- Logo -->
+        <div class="flex items-center">
+            <img src="../images/BGlessLogoDark.png" alt="ComplaNet Logo" class="h-16 block dark:hidden">
+            <img src="../images/BGlessLogo.png" alt="ComplaNet Logo Dark" class="h-16 hidden dark:block">
+        </div>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex space-x-6 items-center">
+            <a href="AdminDashboard.html" class="nav-content hover:text-eco transition">Dashboard</a>
+            <a href="AllComplaints.html" class="font-semibold text-eco hover:text-eco-dark transition">All
+                Complaints</a>
+            <a href="Analytics.html" class="nav-content hover:text-eco transition">Analytics</a>
+
+            <!-- Profile Menu -->
+            <div class="relative">
+                <button id="profileButton" class="flex items-center space-x-2 focus:outline-none">
+                    <i class="fas fa-user-shield text-gray-500 text-2xl hover:text-eco transition"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile Hamburger -->
+        <button id="mobileMenuButton" class="md:hidden text-gray-800 dark:text-gray-200 focus:outline-none">
+            &#9776;
+        </button>
+    </header>
+
+    <!-- Mobile Side Menu -->
+    <aside id="mobileMenu"
+        class="fixed top-0 left-0 w-64 h-full bg-white dark:bg-gray-800 shadow-lg transform -translate-x-full transition-transform duration-300 z-50 flex flex-col justify-between">
+        <div>
+            <div class="flex items-center px-6 py-4 border-b dark:border-gray-700">
+                <img src="../images/BGlessLogoDark.png" alt="Logo" class="h-10">
+            </div>
+            <nav class="mt-6 flex flex-col space-y-2 px-6">
+                <a href="AdminDashboard.html" class="nav-content hover:text-eco">Dashboard</a>
+                <a href="AllComplaints.html" class="font-semibold text-eco hover:text-eco-dark">All Complaints</a>
+                <a href="Analytics.html" class="nav-content hover:text-eco">Analytics</a>
+                <a href="AdminProfile.html" class="nav-content hover:text-eco">Admin Profile</a>
+            </nav>
+        </div>
+        <div class="px-6 py-4 border-t dark:border-gray-700 flex flex-col space-y-2">
+            <a href="Login.html" class="block py-2 hover:text-red-500 transition">Log Out</a>
+        </div>
+    </aside>
+
+    <!-- Overlay -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1 px-4 md:px-10 py-6 md:py-8 max-w-5xl mx-auto w-full">
+
+        <!-- Back & Title -->
+        <div class="mb-6 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <a href="AllComplaints.html"
+                    class="flex items-center justify-center w-10 h-10 bg-white dark:bg-gray-800 rounded-full shadow hover:bg-gray-100 dark:hover:bg-gray-700 transition text-gray-600 dark:text-gray-300">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <div>
+                    <h1 class="text-2xl font-bold flex items-center gap-3 text-gray-800 dark:text-gray-100">
+                        <span id="complaintTitle">Loading Complaint...</span>
+                        <span id="statusBadge" class="hidden text-sm px-3 py-1 rounded-full border"></span>
+                    </h1>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                        ID: <span id="complaintId">#---</span> | Submitted: <span id="submittedDate">---</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            <!-- LEFT COLUMN: Main Details -->
+            <div class="md:col-span-2 space-y-6">
+
+                <!-- Description Card -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border-t-4 border-eco">
+                    <h2
+                        class="text-lg font-bold mb-4 border-b dark:border-gray-700 pb-2 text-gray-800 dark:text-gray-100">
+                        Description</h2>
+                    <p id="complaintDescription"
+                        class="text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">
+                        Loading description...
+                    </p>
+                </div>
+
+                <!-- Specific Category Details (Dynamic) -->
+                <div id="categoryDetailsCard"
+                    class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 hidden border-t-4 border-blue-400">
+                    <h2
+                        class="text-lg font-bold mb-4 border-b dark:border-gray-700 pb-2 text-gray-800 dark:text-gray-100">
+                        <span id="categoryName">Category</span> Details
+                    </h2>
+                    <div id="categoryFields" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Dynamic Key-Value pairs injected here -->
+                    </div>
+                </div>
+
+                <!-- Attachments -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border-t-4 border-purple-400">
+                    <h2
+                        class="text-lg font-bold mb-4 border-b dark:border-gray-700 pb-2 text-gray-800 dark:text-gray-100">
+                        Attachments</h2>
+                    <div id="attachmentsContainer" class="space-y-3">
+                        <p class="text-gray-500 text-sm italic">No attachments found.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN: Meta Info -->
+            <div class="space-y-6">
+
+                <!-- Complainant Info -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border-t-4 border-greenvine">
+                    <h2
+                        class="text-lg font-bold mb-4 border-b dark:border-gray-700 pb-2 text-gray-800 dark:text-gray-100">
+                        Complainant</h2>
+                    <div class="flex items-center space-x-4 mb-4">
+                        <!-- Initials Avatar (Default) -->
+                        <div id="avatarInitials"
+                            class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xl">
+                            U
+                        </div>
+                        <!-- Image Avatar (Hidden by default) -->
+                        <img id="avatarImage" src="" alt="Profile" class="w-12 h-12 rounded-full object-cover hidden">
+
+                        <div>
+                            <p class="font-bold text-gray-800 dark:text-gray-100" id="complainantName">Unknown</p>
+                            <p class="text-xs text-eco font-medium" id="complainantRole">Student</p>
+                        </div>
+                    </div>
+                    <div class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                        <div class="flex justify-between">
+                            <span class="font-medium">User ID:</span>
+                            <span id="complainantId" class="text-gray-800 dark:text-gray-200">---</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium">Email:</span>
+                            <span id="complainantEmail" class="text-gray-800 dark:text-gray-200">---</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium">Department:</span>
+                            <span id="complainantDept" class="text-gray-800 dark:text-gray-200">---</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Action / Feedback -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border-t-4 border-gray-400">
+                    <h2
+                        class="text-lg font-bold mb-4 border-b dark:border-gray-700 pb-2 text-gray-800 dark:text-gray-100">
+                        Admin Feedback</h2>
+
+                    <div id="feedbackContainer">
+                        <p class="text-gray-500 text-sm italic">No feedback provided yet.</p>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t dark:border-gray-700">
+                        <p class="text-xs text-gray-400 mb-2">Assigned To:</p>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-xs"
+                                id="adminInitials">
+                                A
+                            </div>
+                            <span class="text-sm font-medium text-gray-800 dark:text-gray-200"
+                                id="adminName">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer
+        class="w-full py-10 mt-10 bg-eco-light text-greenvine-dark dark:bg-[#0F1A24] dark:text-gray-300 text-center text-sm shadow-inner transition-colors">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 text-center md:text-left px-6">
+
+            <!-- Column 1 -->
+            <div>
+                <h2 class="text-xl font-heading font-semibold mb-4 text-greenvine dark:text-eco">
+                    ComplaNet Admin
+                </h2>
+                <p class="text-sm leading-6 opacity-80">
+                    Administrative portal for managing university complaints.<br>
+                    Monitor, assign, and resolve complaints efficiently.
+                </p>
+            </div>
+
+            <!-- Column 2 -->
+            <div>
+                <h2 class="text-xl font-heading font-semibold mb-4 text-greenvine dark:text-eco">
+                    Quick Navigation
+                </h2>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="./AdminDashboard.html"
+                            class="hover:text-eco-dark dark:hover:text-eco transition">Dashboard</a></li>
+                    <li><a href="AllComplaints.html" class="hover:text-eco-dark dark:hover:text-eco transition">All
+                            Complaints</a></li>
+                    <li><a href="Analytics.html"
+                            class="hover:text-eco-dark dark:hover:text-eco transition">Analytics</a></li>
+                </ul>
+            </div>
+
+            <!-- Column 3 -->
+            <div>
+                <h2 class="text-xl font-heading font-semibold mb-4 text-greenvine dark:text-eco">
+                    Admin Tools
+                </h2>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" class="hover:text-eco-dark dark:hover:text-eco transition">Settings</a></li>
+                    <li><a href="#" class="hover:text-eco-dark dark:hover:text-eco transition">Reports</a></li>
+                    <li><a href="#" class="hover:text-eco-dark dark:hover:text-eco transition">User Management</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="mt-10 pt-6 border-t border-gray-200 dark:border-gray-700 opacity-60">
+            © 2025 ComplaNet. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- TEMPLATES -->
+    <template id="category-field-template">
+        <div class="border-b border-gray-100 dark:border-gray-700 pb-2 mb-2 last:border-0">
+            <p class="field-label text-xs text-gray-500 uppercase font-semibold mb-1"></p>
+            <p class="field-value text-gray-800 dark:text-gray-200 text-sm font-medium whitespace-pre-wrap"></p>
+        </div>
+    </template>
+
+    <template id="attachment-item-template">
+        <a href="#" target="_blank"
+            class="attachment-link flex items-center p-3 bg-gray-50 dark:bg-gray-700/50 border border-transparent dark:border-gray-600 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition group mb-2">
+            <div class="mr-3 text-red-500"><i class="fas fa-file-pdf text-xl"></i></div>
+            <div class="flex-1 overflow-hidden">
+                <p
+                    class="attachment-filename text-sm font-medium text-blue-600 dark:text-blue-400 truncate group-hover:underline">
+                </p>
+                <p class="attachment-desc text-xs text-gray-500 dark:text-gray-400"></p>
+            </div>
+            <i class="fas fa-external-link-alt text-gray-400 dark:text-gray-500 text-xs"></i>
+        </a>
+    </template>
+
+</body>
+
+</html>

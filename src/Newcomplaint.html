@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ComplaNet — Dashboard</title>
+  <link rel="stylesheet" href="./style.css">
+
+</head>
+
+<body
+  class="flex flex-col min-h-screen bg-[var(--color-bg-light)] text-[var(--color-text-light)] dark:bg-[var(--color-bg-dark)] dark:text-[var(--color-text-dark)] transition-all duration-300 font-sans">
+
+  <!-- Header -->
+  <header class="flex items-center justify-between px-6 py-4 bg-pink dark:bg-gray-800 shadow-md">
+    <!-- Logo -->
+    <div class="flex items-center">
+      <!-- Light mode logo -->
+      <img src="../images/BGlessLogoDark.png" alt="ComplaNet Logo" class="h-16 block dark:hidden">
+
+      <!-- Dark mode logo -->
+      <img src="../images/BGlessLogo.png" alt="ComplaNet Logo Dark" class="h-16 hidden dark:block">
+    </div>
+
+
+    <!-- Desktop Navigation -->
+    <nav class="hidden md:flex space-x-6 items-center">
+      <a href="UserDashboard.html" class="nav-content">Dashboard</a>
+      <a href="Newcomplaint.html" class="font-semibold text-eco hover:text-eco-dark">New Complaint</a>
+      <a href="Mycomplaint.html" class="nav-content">My Complaints</a>
+
+
+
+      <!-- Profile Menu -->
+      <div class="relative">
+        <button id="profileButton" class="flex items-center space-x-2 focus:outline-none">
+          <i class="fas fa-user text-gray-500 text-2xl"></i>
+        </button>
+
+        <!-- Dropdown Menu -->
+        <div id="profileMenu"
+          class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 z-50">
+          <a href="Profile.html"
+            class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">View
+            Profile</a>
+          <a href="Login.html" class="block px-4 py-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700">Log Out</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Mobile Hamburger -->
+    <button id="mobileMenuButton" class="md:hidden text-gray-800 dark:text-gray-200 focus:outline-none">
+      &#9776;
+    </button>
+  </header>
+
+  <!-- Mobile Side Menu -->
+  <aside id="mobileMenu"
+    class="fixed top-0 left-0 w-64 h-full bg-white dark:bg-gray-800 shadow-lg transform -translate-x-full transition-transform duration-300 z-50 flex flex-col justify-between">
+    <div>
+      <div class="flex items-center px-6 py-4 border-b dark:border-gray-700">
+        <img src="../images/BGlessLogoDark.png" alt="Logo" class="h-10">
+      </div>
+      <nav class="mt-6 flex flex-col space-y-2 px-6">
+        <a href="UserDashboard.html" class="nav-content">Dashboard</a>
+        <a href="Newcomplaint.html" class="font-semibold text-eco hover:text-eco-dark">New Complaint</a>
+        <a href="Mycomplaint.html" class="nav-content">My Complaints</a>
+        <a href="Profile.html" class="nav-content">View Profile</a>
+      </nav>
+    </div>
+    <div class="px-6 py-4 border-t dark:border-gray-700 flex flex-col space-y-2">
+      <a href="Login.html" class="block py-2 hover:text-red-500 transition">Log Out</a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 px-6 py-8 md:px-10">
+    <h1 class="text-2xl font-bold mb-4 text-center">Complaint Categories</h1>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+      <!-- Student Behavior -->
+      <a href="StudentBehaviorForm.html"
+        class="relative group block bg-[var(--color-eco-dark)] dark:bg-[var(--color-green-dark)] rounded-xl shadow-lg h-52 overflow-hidden hover:shadow-xl hover:bg-[var(--color-eco)] dark:hover:bg-[var(--color-eco-dark)]  transition-all duration-300 ">
+        <div class="absolute inset-0 flex flex-col justify-center items-center p-6 transition-all duration-300">
+          <h3
+            class="text-xl font-semibold text-[var(--color-text-light)] dark:text-[var(--color-text-dark)] group-hover:text-base transition-all duration-300 transform group-hover:-translate-y-">
+            Student Behavior</h3>
+          <p
+            class="mt-2 text-center text-[var(--color-text-light)] dark:text-[var(--color-text-dark)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-sm">
+            Complaints about students' conduct, bullying, or harassment.</p>
+        </div>
+      </a>
+
+      <!-- Administrative -->
+      <a href="AdministrativeForm.html"
+        class="relative group block bg-[var(--color-eco-dark)] dark:bg-[var(--color-green-dark)]  rounded-xl shadow-lg h-52 overflow-hidden hover:shadow-xl  hover:bg-[var(--color-eco)] dark:hover:bg-[var(--color-eco-dark)] transition-all duration-300">
+        <div class="absolute inset-0 flex flex-col justify-center items-center p-6 transition-all duration-300">
+          <h3
+            class="text-xl font-semibold text-[var(--color-text-light)] dark:text-[var(--color-text-dark)] group-hover:text-base transition-all duration-300 transform group-hover:-translate-y-2">
+            Administrative</h3>
+          <p
+            class="mt-2 text-center text-[var(--color-text-light)] dark:text-[var(--color-text-dark)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-sm">
+            Complaints about registration, scheduling, or staff interactions.</p>
+        </div>
+      </a>
+
+      <!-- Technical -->
+      <a href="TechnicalForm.html"
+        class="relative group block bg-[var(--color-eco-dark)] dark:bg-[var(--color-green-dark)] rounded-xl shadow-lg h-52 overflow-hidden hover:shadow-xl  hover:bg-[var(--color-eco)] dark:hover:bg-[var(--color-eco-dark)] transition-all duration-300">
+        <div class="absolute inset-0 flex flex-col justify-center items-center p-6 transition-all duration-300">
+          <h3
+            class="text-xl font-semibold text-[var(--color-text-light)] dark:text-[var(--color-text-dark)] group-hover:text-base transition-all duration-300 transform group-hover:-translate-y-2">
+            Technical</h3>
+          <p
+            class="mt-2 text-center text-[var(--color-text-light)] dark:text-[var(--color-text-dark)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-sm">
+            Complaints about software, hardware, or technical services.</p>
+        </div>
+      </a>
+
+      <!-- Academic -->
+      <a href="AcademicForm.html"
+        class="relative group block bg-[var(--color-eco-dark)] dark:bg-[var(--color-green-dark)] rounded-xl shadow-lg h-52 overflow-hidden hover:shadow-xl  hover:bg-[var(--color-eco)] dark:hover:bg-[var(--color-eco-dark)] transition-all duration-300">
+        <div class="absolute inset-0 flex flex-col justify-center items-center p-6 transition-all duration-300">
+          <h3
+            class="text-xl font-semibold text-[var(--color-text-light)] dark:text-[var(--color-text-dark)] group-hover:text-base transition-all duration-300 transform group-hover:-translate-y-2">
+            Academic</h3>
+          <p
+            class="mt-2 text-center text-[var(--color-text-light)] dark:text-[var(--color-text-dark)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-sm">
+            Complaints about exams, grades, or coursework.</p>
+        </div>
+      </a>
+
+      <!-- Facility -->
+      <a href="FacilityForm.html"
+        class="relative group block bg-[var(--color-eco-dark)] dark:bg-[var(--color-green-dark)] rounded-xl shadow-lg h-52 overflow-hidden hover:shadow-xl  hover:bg-[var(--color-eco)] dark:hover:bg-[var(--color-eco-dark)] transition-all duration-300">
+        <div class="absolute inset-0 flex flex-col justify-center items-center p-6 transition-all duration-300">
+          <h3
+            class="text-xl font-semibold text-[var(--color-text-light)] dark:text-[var(--color-text-dark)] group-hover:text-base transition-all duration-300 transform group-hover:-translate-y-2">
+            Facility</h3>
+          <p
+            class="mt-2 text-center text-[var(--color-text-light)] dark:text-[var(--color-text-dark)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-sm">
+            Complaints about classrooms, labs, library, or Wi-Fi issues.</p>
+        </div>
+      </a>
+
+      <!-- Other -->
+      <a href="OtherForm.html"
+        class="relative group block bg-[var(--color-eco-dark)] dark:bg-[var(--color-green-dark)] rounded-xl shadow-lg h-52 overflow-hidden hover:shadow-xl  hover:bg-[var(--color-eco)] dark:hover:bg-[var(--color-eco-dark)] transition-all duration-300">
+        <div class="absolute inset-0 flex flex-col justify-center items-center p-6 transition-all duration-300">
+          <h3
+            class="text-xl font-semibold text-[var(--color-text-light)] dark:text-[var(--color-text-dark)] group-hover:text-base transition-all duration-300 transform group-hover:-translate-y-2">
+            Other</h3>
+          <p
+            class="mt-2 text-center text-[var(--color-text-light)] dark:text-[var(--color-text-dark)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-sm">
+            Complaints not fitting in any of the above categories.</p>
+        </div>
+      </a>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full py-10 mt-10 
+          bg-[var(--color-eco-light)] text-[var(--color-text-light)]
+          dark:bg-[#0F1A24] dark:text-gray-200">
+
+    <div class="max-w-7xl mx-auto 
+            flex flex-col space-y-10
+            md:grid md:grid-cols-3 md:gap-10 
+            text-center md:text-left">
+
+      <!-- Column 1 -->
+      <div>
+        <h2 class="text-xl font-semibold mb-4 
+                  text-[var(--color-blue-btn)] 
+                  dark:text-[var(--color-eco)]">
+          ComplaNet
+        </h2>
+        <p class="text-sm leading-6">
+          ComplaNet is your unified university complaint management system.<br>
+          Submit, track, and manage your complaints easily and securely.
+        </p>
+      </div>
+
+      <!-- Column 2 -->
+      <div>
+        <h2 class="text-xl font-semibold mb-4 
+                  text-[var(--color-blue-btn)]
+                  dark:text-[var(--color-eco)]">
+          Quick Navigation
+        </h2>
+        <ul class="space-y-2 text-sm">
+          <li><a href="./UserDashboard.html"
+              class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Dashboard</a></li>
+          <li><a href="./Newcomplaint.html"
+              class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">New Complaint</a></li>
+          <li><a href="./Mycomplaint.html"
+              class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">My Complaints</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 3 -->
+      <div>
+        <h2 class="text-xl font-semibold mb-4 
+                  text-[var(--color-blue-btn)]
+                  dark:text-[var(--color-eco)]">
+          Complaint Category
+        </h2>
+
+        <details class="bg-[var(--color-eco)] dark:bg-[#1A2C36] 
+                p-4 rounded-lg cursor-pointer text-sm">
+          <summary class="font-medium hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">
+            Select Complaint Type
+          </summary>
+
+          <ul class="mt-3 space-y-2 pl-3">
+            <li><a href="./AcademicForm.html"
+                class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Academic Complaint</a>
+            </li>
+            <li><a href="./FacilityForm.html"
+                class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Facility Complaint</a>
+            </li>
+            <li><a href="./AdministrativeForm.html"
+                class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Administrative
+                Complaint</a></li>
+            <li><a href="./StudentBehaviorForm.html"
+                class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Student Behavior
+                Complaint</a></li>
+            <li><a href="./TechnicalForm.html"
+                class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Technical Complaint</a>
+            </li>
+            <li><a href="./OtherForm.html"
+                class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Other Complaint</a></li>
+          </ul>
+        </details>
+      </div>
+
+    </div>
+
+    <div class="text-center text-sm mt-10 text-gray-700 dark:text-gray-400">
+      © 2025 ComplaNet. All rights reserved.
+    </div>
+
+  </footer>
+
+  <!-- Scripts -->
+  <script src="./darkMode.js"></script>
+
+</body>
+
+</html>

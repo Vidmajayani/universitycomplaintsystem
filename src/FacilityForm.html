@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ComplaNet — Dashboard</title>
+  <link rel="stylesheet" href="./style.css">
+
+</head>
+
+<body
+  class="flex flex-col min-h-screen bg-[var(--color-bg-light)] text-[var(--color-text-light)] dark:bg-[var(--color-bg-dark)] dark:text-[var(--color-text-dark)] transition-all duration-300 font-sans">
+
+  <!-- Header -->
+  <header class="flex items-center justify-between px-6 py-4 bg-pink dark:bg-gray-800 shadow-md">
+    <!-- Logo -->
+    <div class="flex items-center">
+      <!-- Light mode logo -->
+      <img src="../images/BGlessLogoDark.png" alt="ComplaNet Logo" class="h-16 block dark:hidden">
+
+      <!-- Dark mode logo -->
+      <img src="../images/BGlessLogo.png" alt="ComplaNet Logo Dark" class="h-16 hidden dark:block">
+    </div>
+
+
+    <!-- Desktop Navigation -->
+    <nav class="hidden md:flex space-x-6 items-center">
+      <a href="UserDashboard.html" class="nav-content">Dashboard</a>
+      <a href="Newcomplaint.html" class="font-semibold text-eco hover:text-eco-dark">New Complaint</a>
+      <a href="Mycomplaint.html" class="nav-content">My Complaints</a>
+
+      <!-- Profile Menu -->
+      <div class="relative">
+        <button id="profileButton" class="flex items-center space-x-2 focus:outline-none">
+          <i class="fas fa-user text-gray-500 text-2xl"></i>
+        </button>
+
+        <!-- Dropdown Menu -->
+        <div id="profileMenu"
+          class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 z-50">
+          <a href="Profile.html"
+            class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">View
+            Profile</a>
+          <a href="Login.html" class="block px-4 py-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700">Log Out</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Mobile Hamburger -->
+    <button id="mobileMenuButton" class="md:hidden text-gray-800 dark:text-gray-200 focus:outline-none">
+      &#9776;
+    </button>
+  </header>
+
+  <!-- Mobile Side Menu -->
+  <aside id="mobileMenu"
+    class="fixed top-0 left-0 w-64 h-full bg-white dark:bg-gray-800 shadow-lg transform -translate-x-full transition-transform duration-300 z-50 flex flex-col justify-between">
+    <div>
+      <div class="flex items-center px-6 py-4 border-b dark:border-gray-700">
+        <img src="../images/BGlessLogoDark.png" alt="Logo" class="h-10">
+      </div>
+      <nav class="mt-6 flex flex-col space-y-2 px-6">
+        <a href="UserDashboard.html" class="nav-content">Dashboard</a>
+        <a href="Newcomplaint.html" class="font-semibold text-eco hover:text-eco-dark">New Complaint</a>
+        <a href="Mycomplaint.html" class="nav-content">My Complaints</a>
+        <a href="Profile.html" class="nav-content">View Profile</a>
+      </nav>
+    </div>
+    <div class="px-6 py-4 border-t dark:border-gray-700 flex flex-col space-y-2">
+      <a href="Login.html" class="block py-2 hover:text-red-500 transition">Log Out</a>
+    </div>
+  </aside>
+
+  <!-- Overlay -->
+  <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40"></div>
+
+  <!-- Main Content -->
+  <main class="flex-1 flex justify-center px-6 py-10">
+    <form id="facilityComplaintForm"
+      class="w-full max-w-3xl bg-white dark:bg-gray-800 p-10 rounded-2xl shadow-lg space-y-6">
+
+      <h1 class="text-3xl font-semibold text-center mb-6">Facility Complaint Form</h1>
+
+      <div>
+        <label for="complaintTitle" class="block mb-1 font-medium">Complaint Title *</label>
+        <input type="text" id="complaintTitle" placeholder="Enter complaint title" class="form-textbox">
+        <p class="error-text"></p>
+      </div>
+
+      <!-- Type of Facility -->
+      <div>
+        <label for="facilityType" class="block font-medium mb-1">Type of Facility *</label>
+        <select id="facilityType" required class="form-textbox">
+          <option value="">Select Facility</option>
+          <option>Library</option>
+          <option>Canteen</option>
+          <option>Parking Lot</option>
+          <option>Class Room</option>
+          <option>Discussion Room</option>
+          <option>Prayer Room</option>
+          <option>IT Labs</option>
+          <option>Washroom</option>
+          <option>Auditorium</option>
+          <option>Stairs</option>
+          <option>Lifts</option>
+          <option>Hallways</option>
+          <option>Lobby</option>
+        </select>
+      </div>
+
+      <!-- Type of Facility Issue -->
+      <div>
+        <label for="facilityIssue" class="block font-medium mb-1">Type of Facility Issue *</label>
+        <select id="facilityIssue" required class="form-textbox">
+          <option value="">Select Issue</option>
+          <option>Cleanliness</option>
+          <option>Maintenance</option>
+          <option>Equipment Failure</option>
+          <option>Safety Hazard</option>
+          <option>Electric Issue</option>
+          <option>Plumbing Issue</option>
+          <option>Damaged Furniture</option>
+          <option>Poor Air conditioning</option>
+        </select>
+      </div>
+
+      <!-- Floor of Facility -->
+      <div>
+        <label for="floor" class="block font-medium mb-1">Floor of Facility *</label>
+        <select id="floor" required class="form-textbox">
+          <option value="">Select Floor</option>
+          <option>Parking Area</option>
+          <option>Ground Floor</option>
+          <option>Level 1</option>
+          <option>Level 2</option>
+          <option>Level 3</option>
+          <option>Level 4</option>
+          <option>Level 5</option>
+          <option>Level 6</option>
+        </select>
+      </div>
+
+      <!-- Date of Observation -->
+      <div>
+        <label for="dateObservation" class="block font-medium mb-1">Date of Observation *</label>
+        <input type="date" id="dateObservation" required class="form-textbox">
+      </div>
+
+      <!-- Description (max 500 words) -->
+      <div>
+        <label for="description" class="block font-medium mb-1">Description of Issue *</label>
+        <textarea id="description" rows="4" required class="form-textbox"
+          placeholder="Describe the Issue in detail"></textarea>
+        <p id="descCounter" class="text-sm text-gray-500 mt-1">0 / 500 words</p>
+      </div>
+
+      <!-- File Upload -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label for="file" class="block mb-1 font-medium">File Attachment (Optional)</label>
+          <input type="file" id="file" class="w-full text-gray-700 dark:text-gray-200">
+        </div>
+
+        <div>
+          <label for="fileDesc" class="block mb-1 font-medium">File Description (max 100 words)</label>
+          <textarea id="fileDesc" rows="2" class="form-textbox" placeholder="Describe the file"></textarea>
+          <p id="fileCounter" class="text-sm text-gray-500 mt-1">0 / 100 words</p>
+        </div>
+      </div>
+
+      <!-- Previous Attempt (max 100 words) -->
+      <div>
+        <label for="previousAttempt" class="block font-medium mb-1">Previous Attempt to Resolve</label>
+        <textarea id="previousAttempt" rows="3" class="form-textbox"
+          placeholder="Describe the previous attempt"></textarea>
+        <p id="prevAttemptCounter" class="text-sm text-gray-500 mt-1">0 / 100 words</p>
+      </div>
+
+      <!-- Declaration -->
+      <div class="flex items-center space-x-3">
+        <input type="checkbox" id="declaration"
+          class="h-5 w-5 rounded border-gray-300 dark:border-gray-600 focus:ring-blue-400">
+        <label for="declaration" class="font-medium">
+          I confirm that all information provided is accurate.
+        </label>
+      </div>
+
+      <button type="submit"
+        class="w-full py-3 mt-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition">
+        Submit Complaint
+      </button>
+    </form>
+
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full py-10 mt-10 
+          bg-[var(--color-eco-light)] text-[var(--color-text-light)]
+          dark:bg-[#0F1A24] dark:text-gray-200">
+
+    <div class="max-w-7xl mx-auto 
+            flex flex-col space-y-10
+            md:grid md:grid-cols-3 md:gap-10 
+            text-center md:text-left">
+
+      <!-- Column 1 -->
+      <div>
+        <h2 class="text-xl font-semibold mb-4 
+                  text-[var(--color-blue-btn)] 
+                  dark:text-[var(--color-eco)]">
+          ComplaNet
+        </h2>
+        <p class="text-sm leading-6">
+          ComplaNet is your unified university complaint management system.<br>
+          Submit, track, and manage your complaints easily and securely.
+        </p>
+      </div>
+
+      <!-- Column 2 -->
+      <div>
+        <h2 class="text-xl font-semibold mb-4 
+                  text-[var(--color-blue-btn)]
+                  dark:text-[var(--color-eco)]">
+          Quick Navigation
+        </h2>
+        <ul class="space-y-2 text-sm">
+          <li><a href="./UserDashboard.html"
+              class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Dashboard</a></li>
+          <li><a href="./Newcomplaint.html"
+              class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">New Complaint</a></li>
+          <li><a href="./Mycomplaint.html"
+              class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">My Complaints</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 3 -->
+      <div>
+        <h2 class="text-xl font-semibold mb-4 
+                  text-[var(--color-blue-btn)]
+                  dark:text-[var(--color-eco)]">
+          Complaint Category
+        </h2>
+
+        <details class="bg-[var(--color-eco)] dark:bg-[#1A2C36] 
+                p-4 rounded-lg cursor-pointer text-sm">
+          <summary class="font-medium hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">
+            Select Complaint Type
+          </summary>
+
+          <ul class="mt-3 space-y-2 pl-3">
+            <li><a href="./AcademicForm.html"
+                class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Academic Complaint</a>
+            </li>
+            <li><a href="./FacilityForm.html"
+                class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Facility Complaint</a>
+            </li>
+            <li><a href="./AdministrativeForm.html"
+                class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Administrative
+                Complaint</a></li>
+            <li><a href="./StudentBehaviorForm.html"
+                class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Student Behavior
+                Complaint</a></li>
+            <li><a href="./TechnicalForm.html"
+                class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Technical Complaint</a>
+            </li>
+            <li><a href="./OtherForm.html"
+                class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Other Complaint</a></li>
+          </ul>
+        </details>
+      </div>
+
+    </div>
+
+    <div class="text-center text-sm mt-10 text-gray-700 dark:text-gray-400">
+      © 2025 ComplaNet. All rights reserved.
+    </div>
+
+  </footer>
+
+  <!-- Script for validation & dark mode -->
+  <script src="./darkMode.js"></script>
+  <script type="module" src="./FacilityForm.js"></script>
+
+</body>
+
+</html>

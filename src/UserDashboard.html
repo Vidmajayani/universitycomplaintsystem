@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ComplaNet — Dashboard</title>
+  <link rel="stylesheet" href="./style.css">
+
+</head>
+
+<body
+  class="flex flex-col min-h-screen bg-[var(--color-bg-light)] text-[var(--color-text-light)] dark:bg-[var(--color-bg-dark)] dark:text-[var(--color-text-dark)] transition-all duration-300 font-sans">
+
+  <!-- Header -->
+  <header class="flex items-center justify-between px-6 py-4 bg-pink dark:bg-gray-800 shadow-md">
+    <!-- Logo -->
+    <div class="flex items-center">
+      <!-- Light mode logo -->
+      <img src="../images/BGlessLogoDark.png" alt="ComplaNet Logo" class="h-16 block dark:hidden">
+      <!-- Dark mode logo -->
+      <img src="../images/BGlessLogo.png" alt="ComplaNet Logo Dark" class="h-16 hidden dark:block">
+    </div>
+
+    <!-- Right Side Actions (Links + Bell + Profile + Hamburger) -->
+    <div class="flex items-center space-x-4 md:space-x-6">
+
+      <!-- Desktop Links -->
+      <nav class="hidden md:flex space-x-6 items-center">
+        <a href="UserDashboard.html" class="font-semibold text-eco hover:text-eco-dark">Dashboard</a>
+        <a href="Newcomplaint.html" class="nav-content">New Complaint</a>
+        <a href="Mycomplaint.html" class="nav-content">My Complaints</a>
+      </nav>
+
+      <!-- Notification Bell (Always Visible) -->
+      <div class="relative">
+        <button id="notificationBtn" class="flex items-center space-x-2 focus:outline-none relative">
+          <i class="fas fa-bell text-gray-500 text-2xl hover:text-eco transition"></i>
+          <span id="notificationBadge"
+            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full hidden">0</span>
+        </button>
+      </div>
+
+      <!-- Profile Menu (Desktop Only) -->
+      <div class="relative hidden md:block">
+        <button id="profileButton" class="flex items-center space-x-2 focus:outline-none">
+          <i class="fas fa-user text-gray-500 text-2xl"></i>
+        </button>
+        <!-- Dropdown Menu -->
+        <div id="profileMenu"
+          class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 z-50">
+          <a href="Profile.html"
+            class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">View
+            Profile</a>
+          <a href="Login.html" class="block px-4 py-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700">Log Out</a>
+        </div>
+      </div>
+
+      <!-- Mobile Hamburger -->
+      <button id="mobileMenuButton" class="md:hidden text-gray-800 dark:text-gray-200 focus:outline-none">
+        &#9776;
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Side Menu -->
+  <aside id="mobileMenu"
+    class="fixed top-0 left-0 w-64 h-full bg-white dark:bg-gray-800 shadow-lg transform -translate-x-full transition-transform duration-300 z-50 flex flex-col justify-between">
+    <div>
+      <div class="flex items-center px-6 py-4 border-b dark:border-gray-700">
+        <img src="../images/BGlessLogoDark.png" alt="Logo" class="h-10">
+      </div>
+      <nav class="mt-6 flex flex-col space-y-2 px-6">
+        <a href="UserDashboard.html" class="font-semibold text-eco hover:text-eco-dark">Dashboard</a>
+        <a href="Notifications.html" class="nav-content">Notifications</a>
+        <a href="Newcomplaint.html" class="nav-content">New Complaint</a>
+        <a href="Mycomplaint.html" class="nav-content">My Complaints</a>
+        <a href="Profile.html" class="nav-content">View Profile</a>
+      </nav>
+    </div>
+    <div class="px-6 py-4 border-t dark:border-gray-700 flex flex-col space-y-2">
+      <a href="Login.html" class="block py-2 hover:text-red-500 transition">Log Out</a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 px-6 py-8 md:px-10">
+
+    <!-- USER NAME SHOULD BE FROM DB -->
+    <!-- Welcome message -->
+    <h1 class="text-2xl font-bold mb-4" id="welcomeUsername">Welcome!</h1>
+    <p class="mb-6 text-gray-600 dark:text-gray-300">
+      This is your complaints dashboard where you can submit new complaints and track their progress.
+    </p>
+
+    <button class="px-6 py-3 rounded-xl font-semibold
+    bg-gray-700 text-white
+    hover:bg-blue-400 hover:-translate-y-0.5
+    shadow-[0_4px_12px_rgba(0,0,0,0.3)]
+    transition-all duration-300 mb-8" onclick="window.location.href='Newcomplaint.html'">
+      FILE A COMPLAINT
+    </button>
+
+    <!-- Complaint Stats -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+      <div
+        class="cursor-pointer bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 text-center border-l-4 border-pending"
+        onclick="filterComplaints('Pending')">
+        <h3 class="text-xl font-bold text-pending" id="pendingCount">0</h3>
+        <p class="text-gray-500 dark:text-gray-400">Pending Complaints</p>
+      </div>
+      <div
+        class="cursor-pointer bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 text-center border-l-4 border-progress"
+        onclick="filterComplaints('In-Progress')">
+        <h3 class="text-xl font-bold text-progress" id="inProgressCount">0</h3>
+        <p class="text-gray-500 dark:text-gray-400">In-Progress</p>
+      </div>
+      <div
+        class="cursor-pointer bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 text-center border-l-4 border-resolved"
+        onclick="filterComplaints('Resolved')">
+        <h3 class="text-xl font-bold text-resolved" id="resolvedCount">0</h3>
+        <p class="text-gray-500 dark:text-gray-400">Resolved Complaints</p>
+      </div>
+      <div
+        class="cursor-pointer bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 text-center border-l-4 border-red-500"
+        onclick="filterComplaints('Deleted')">
+        <h3 class="text-xl font-bold text-red-500" id="deletedCount">0</h3>
+        <p class="text-gray-500 dark:text-gray-400">Deleted Complaints</p>
+      </div>
+    </div>
+
+    <!-- ============================
+        RECENT COMPLAINTS SECTION  
+        ============================ -->
+    <section class="mt-12">
+      <h2 class="text-xl font-bold mb-4">Recent Complaints</h2>
+
+      <!-- List Container -->
+      <div id="recentComplaintsContainer"></div>
+
+      <!-- TEMPLATE (JS will clone this) -->
+      <template id="complaintCardTemplate">
+        <div
+          class="complaint-card mb-2 bg-white dark:bg-gray-800 rounded-xl shadow p-5 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition cursor-pointer">
+
+          <h3 class="title text-lg font-semibold"></h3>
+          <p class="description mt-1 text-gray-600 dark:text-gray-300 text-sm line-clamp-2"></p>
+
+          <div class="footer mt-4 flex justify-between items-center mobile:flex-col mobile:items-start mobile:gap-1">
+            <span class="status px-3 py-1 text-xs font-semibold rounded-full"></span>
+            <span class="date text-xs text-gray-500"></span>
+          </div>
+        </div>
+      </template>
+
+      <div class="mt-6 text-center">
+        <a href="Mycomplaint.html" class="px-6 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-600 transition">
+          See More
+        </a>
+      </div>
+    </section>
+
+    <footer class="w-full py-10 mt-10 
+         bg-[var(--color-eco-light)] text-[var(--color-text-light)]
+         dark:bg-[#0F1A24] dark:text-gray-200">
+
+      <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 text-center md:text-left">
+
+        <!-- Column 1 -->
+        <div>
+          <h2 class="text-xl font-semibold mb-4 
+                 text-[var(--color-blue-btn)] 
+                 dark:text-[var(--color-eco)]">
+            ComplaNet
+          </h2>
+          <p class="text-sm leading-6">
+            ComplaNet is your unified university complaint management system.<br>
+            Submit, track, and manage your complaints easily and securely.
+          </p>
+        </div>
+
+        <!-- Column 2 -->
+        <div>
+          <h2 class="text-xl font-semibold mb-4 
+                 text-[var(--color-blue-btn)]
+                 dark:text-[var(--color-eco)]">
+            Quick Navigation
+          </h2>
+          <ul class="space-y-2 text-sm">
+            <li><a href="./UserDashboard.html"
+                class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Dashboard</a></li>
+            <li><a href="./Newcomplaint.html"
+                class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">New Complaint</a></li>
+            <li><a href="./Mycomplaint.html"
+                class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">My Complaints</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3 -->
+        <div>
+          <h2 class="text-xl font-semibold mb-4 
+                 text-[var(--color-blue-btn)]
+                 dark:text-[var(--color-eco)]">
+            Complaint Category
+          </h2>
+
+          <details class="bg-[var(--color-eco)] dark:bg-[#1A2C36] 
+               p-4 rounded-lg cursor-pointer text-sm">
+            <summary class="font-medium hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">
+              Select Complaint Type
+            </summary>
+
+            <ul class="mt-3 space-y-2 pl-3">
+              <li><a href="./AcademicForm.html"
+                  class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Academic Complaint</a>
+              </li>
+              <li><a href="./FacilityForm.html"
+                  class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Facility Complaint</a>
+              </li>
+              <li><a href="./AdministrativeForm.html"
+                  class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Administrative
+                  Complaint</a></li>
+              <li><a href="./StudentBehaviorForm.html"
+                  class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Student Behavior
+                  Complaint</a></li>
+              <li><a href="./TechnicalForm.html"
+                  class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Technical Complaint</a>
+              </li>
+              <li><a href="./OtherForm.html"
+                  class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Other Complaint</a></li>
+            </ul>
+          </details>
+        </div>
+
+      </div>
+
+      <div class="text-center text-sm mt-10 text-gray-700 dark:text-gray-400">
+        © 2025 ComplaNet. All rights reserved.
+      </div>
+
+    </footer>
+
+    <script type="module" src="./darkMode.js"></script>
+    <script type="module" src="./dashboardComplaints.js"></script>
+    <script type="module" src="./notifications.js"></script>
+
+  </main>
+
+</body>
+
+</html>

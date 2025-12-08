@@ -1,0 +1,180 @@
+/* Font Awesome - Local for PWA offline support */
+@import '@fortawesome/fontawesome-free/css/all.min.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-blue-light-btn: #6dbbfa;
+  --color-blue-btn: #1d4ed8;
+  --color-green-dark: #1e3249;
+
+  --color-eco-light: #E3F2FD;
+  --color-eco: #a6e3ff;
+  --color-eco-dark: #2b88ba;
+
+  --color-bg-light: #F5F6F8;
+  --color-bg-dark: #1E1E1E;
+
+  --color-text-light: #2B2B2B;
+  --color-text-dark: #FFFFFF;
+
+  --color-border-light: #E0E0E0;
+  --color-border-dark: #424242;
+
+  --color-pending: #EF5350;
+  /* Red — Pending */
+  --color-progress: #FBC02D;
+  /* Yellow — In Progress */
+  --color-resolved: #66BB6A;
+  /* Green — Resolved */
+
+  /* Dashboard Card Gradients */
+  --card-total-from: #3b82f6;
+  /* blue-500 */
+  --card-total-to: #2563eb;
+  /* blue-600 */
+
+  --card-pending-from: #eab308;
+  /* yellow-500 */
+  --card-pending-to: #f97316;
+  /* orange-500 */
+
+  --card-progress-from: #a855f7;
+  /* purple-500 */
+  --card-progress-to: #4f46e5;
+  /* indigo-600 */
+
+  --card-resolved-from: #22c55e;
+  /* green-500 */
+  --card-resolved-to: #10b981;
+  /* emerald-600 */
+
+}
+
+body {
+  background-color: var(--color-bg-light);
+  color: var(--color-text-light);
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.3s ease-in-out;
+}
+
+@media (max-width: 640px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+
+.dark body {
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-dark);
+}
+
+
+.btn {
+  @apply inline-block px-5 py-2 font-semibold transition duration-300;
+}
+
+.btn-primary {
+  @apply bg-greenvine text-[var(--color-text-light)] hover:bg-greenvine-dark;
+}
+
+.btn-secondary {
+  @apply bg-eco text-white hover:bg-eco-dark;
+}
+
+.container {
+  @apply max-w-6xl mx-auto px-4;
+}
+
+.btn-add-to-cart {
+  @apply px-4 py-2 font-bold transition duration-300;
+  background-color: var(--color-green);
+  color: var(--color-text-light);
+}
+
+.dark .btn-add-to-cart {
+  background-color: var(--color-green-dark);
+  color: var(--color-text-dark);
+}
+
+.btn-add-to-cart:hover {
+  @apply brightness-110;
+}
+
+.card-hover {
+  @apply transform transition duration-300 hover:scale-105 hover:shadow-lg;
+}
+
+
+/* UCMS  */
+
+.form-textbox {
+  @apply w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-400 focus:outline-none dark:text-black
+}
+
+.Submit-btn {
+  @apply w-full py-3 mt-2 bg-[var(--color-blue-btn)] hover:bg-[var(--color-blue-light-btn)] text-white font-semibold rounded-lg shadow-md transition
+}
+
+.Form-Layout {
+  @apply w-full max-w-3xl bg-white dark:bg-gray-800 p-10 rounded-2xl shadow-lg space-y-6
+}
+
+.header-style {
+  @apply flex items-center justify-between px-6 py-4 bg-white dark:bg-gray-800 shadow-md
+}
+
+.footer-style {
+  @apply bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 px-6 py-4 mt-auto shadow-inner
+}
+
+.Form-body {
+  @apply flex flex-col min-h-screen bg-[var(--color-bg-light)] text-[var(--color-text-light)] dark:bg-[var(--color-bg-dark)] dark:text-[var(--color-text-dark)] transition-all duration-300 font-sans
+}
+
+.nav-content {
+  @apply font-semibold text-gray-700 dark:text-gray-200 hover:text-eco-dark
+}
+
+.darkmode-btn {
+  @apply px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition
+}
+
+
+/* Small spacing between complaint cards */
+.complaint-card {
+  margin-bottom: 0.5rem;
+  /* ~2px spacing, adjust if needed */
+}
+
+/* Dashboard Statistics Cards */
+.dashboard-card-total {
+  background: linear-gradient(to bottom right, var(--card-total-from), var(--card-total-to));
+}
+
+.dashboard-card-pending {
+  background: linear-gradient(to bottom right, var(--card-pending-from), var(--card-pending-to));
+}
+
+.dashboard-card-progress {
+  background: linear-gradient(to bottom right, var(--card-progress-from), var(--card-progress-to));
+}
+
+.dashboard-card-resolved {
+  background: linear-gradient(to bottom right, var(--card-resolved-from), var(--card-resolved-to));
+}
+
+/* Mobile view adjustments */
+@media (max-width: 655px) {
+  .complaint-card .footer {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .complaint-card .footer .actions {
+    width: 100%;
+  }
+}

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ComplaNet — Dashboard</title>
+  <link rel="stylesheet" href="./style.css">
+
+</head>
+
+<body
+  class="flex flex-col min-h-screen bg-[var(--color-bg-light)] text-[var(--color-text-light)] dark:bg-[var(--color-bg-dark)] dark:text-[var(--color-text-dark)] transition-all duration-300 font-sans">
+
+  <!-- Header -->
+  <header class="flex items-center justify-between px-6 py-4 bg-pink dark:bg-gray-800 shadow-md">
+    <!-- Logo -->
+    <div class="flex items-center">
+      <!-- Light mode logo -->
+      <img src="../images/BGlessLogoDark.png" alt="ComplaNet Logo" class="h-16 block dark:hidden">
+
+      <!-- Dark mode logo -->
+      <img src="../images/BGlessLogo.png" alt="ComplaNet Logo Dark" class="h-16 hidden dark:block">
+    </div>
+
+    <!-- Desktop Navigation -->
+    <nav class="hidden md:flex space-x-6 items-center">
+      <a href="UserDashboard.html" class="nav-content">Dashboard</a>
+      <a href="Newcomplaint.html" class="font-semibold text-eco hover:text-eco-dark">New Complaint</a>
+      <a href="Mycomplaint.html" class="nav-content">My Complaints</a>
+
+
+      <!-- Profile Menu -->
+      <div class="relative">
+        <button id="profileButton" class="flex items-center space-x-2 focus:outline-none">
+          <i class="fas fa-user text-gray-500 text-2xl"></i>
+        </button>
+
+        <!-- Dropdown Menu -->
+        <div id="profileMenu"
+          class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 z-50">
+          <a href="Profile.html"
+            class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">View
+            Profile</a>
+          <a href="Login.html" class="block px-4 py-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700">Log Out</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Mobile Hamburger -->
+    <button id="mobileMenuButton" class="md:hidden text-gray-800 dark:text-gray-200 focus:outline-none">
+      &#9776;
+    </button>
+  </header>
+
+  <!-- Mobile Side Menu -->
+  <aside id="mobileMenu"
+    class="fixed top-0 left-0 w-64 h-full bg-white dark:bg-gray-800 shadow-lg transform -translate-x-full transition-transform duration-300 z-50 flex flex-col justify-between">
+    <div>
+      <div class="flex items-center px-6 py-4 border-b dark:border-gray-700">
+        <img src="../images/BGlessLogoDark.png" alt="Logo" class="h-10">
+      </div>
+      <nav class="mt-6 flex flex-col space-y-2 px-6">
+        <a href="UserDashboard.html" class="nav-content">Dashboard</a>
+        <a href="Newcomplaint.html" class="font-semibold text-eco hover:text-eco-dark">New Complaint</a>
+        <a href="Mycomplaint.html" class="nav-content">My Complaints</a>
+        <a href="Profile.html" class="nav-content">View Profile</a>
+      </nav>
+    </div>
+    <div class="px-6 py-4 border-t dark:border-gray-700 flex flex-col space-y-2">
+      <a href="Login.html" class="block py-2 hover:text-red-500 transition">Log Out</a>
+    </div>
+  </aside>
+
+  <!-- Overlay -->
+  <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40"></div>
+
+
+  <!-- Main Content -->
+  <main class="flex-1 flex justify-center px-6 py-10">
+    <form id="complaintForm" class="Form-Layout">
+
+      <h1 class="text-3xl font-semibold text-center mb-6">Academic Complaint Form</h1>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <div>
+          <label for="complaintTitle" class="block mb-1 font-medium">Complaint Title *</label>
+          <input type="text" id="complaintTitle" requirepattern="^[a-zA-Z0-9\\s]+$" placeholder="Enter complaint title"
+            class="form-textbox">
+          <p class="error-text"></p>
+        </div>
+
+        <div>
+          <label for="moduleName" class="block mb-1 font-medium">Module Name *</label>
+          <input type="text" id="moduleName" required pattern="^[a-zA-Z0-9\\s]+$" placeholder="Enter module name"
+            class="form-textbox">
+          <p class="error-text"></p>
+        </div>
+
+        <div>
+          <label for="batchCode" class="block mb-1 font-medium">Batch Code *</label>
+          <input type="text" id="batchCode" required pattern="^[a-zA-Z0-9\\s]+$" placeholder="Enter batch code"
+            class="form-textbox">
+          <p class="error-text"></p>
+        </div>
+
+        <!-- CURRENT LEVEL DROPDOWN -->
+        <div>
+          <label for="currentLevel" class="block mb-1 font-medium">Current Level *</label>
+          <select id="currentLevel" required class="form-textbox">
+            <option value="">Select your level</option>
+            <option value="foundation">Foundation</option>
+            <option value="year1">1st Year</option>
+            <option value="year2">2nd Year</option>
+            <option value="year3">3rd Year / Final Year</option>
+            <p class="error-text"></p>
+          </select>
+        </div>
+
+        <!-- SEMESTER DROPDOWN -->
+        <div>
+          <label for="semester" class="block mb-1 font-medium">Semester *</label>
+          <select id="semester" required class="form-textbox">
+            <option value="">Select semester</option>
+            <option value="1">Semester 1</option>
+            <option value="2">Semester 2</option>
+            <p class="error-text"></p>
+          </select>
+        </div>
+
+      </div>
+
+      <div>
+        <label for="dateIncident" class="block mb-1 font-medium">Date of Incident *</label>
+        <input type="date" id="dateIncident" required class="form-textbox">
+        <p class="error-text"></p>
+      </div>
+
+      <div>
+        <label for="phone" class="block mb-1 font-medium">Phone Number</label>
+        <input type="tel" id="phone" maxlength="10" placeholder="10-digit phone number" class="form-textbox">
+        <p class="error-text"></p>
+      </div>
+
+      <div>
+        <label for="lecturer" class="block mb-1 font-medium">Lecturer Name *</label>
+        <input type="text" id="lecturer" required pattern="^[a-zA-Z\\s]+$" placeholder="Enter lecturer name"
+          class="form-textbox">
+        <p class="error-text"></p>
+      </div>
+
+      <!-- DESCRIPTION WITH WORD COUNTER -->
+      <div>
+        <label for="description" class="block mb-1 font-medium">Description of Issue * (max 500 words)</label>
+        <textarea id="description" rows="4" required placeholder="Describe your complaint"
+          class="form-textbox"></textarea>
+        <p id="descCounter" class="text-sm text-gray-500 mt-1">0 / 500 words</p>
+        <p class="error-text"></p>
+      </div>
+
+      <!-- FILE & FILE DESCRIPTION -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <div>
+          <label for="file" class="block mb-1 font-medium">File Attachment (Optional)</label>
+          <input type="file" id="file" class="w-full text-gray-700 dark:text-gray-200">
+          <p class="error-text"></p>
+        </div>
+
+        <div>
+          <label for="fileDesc" class="block mb-1 font-medium">File Description (max 100 words)</label>
+          <textarea id="fileDesc" rows="2" placeholder="Describe the file" class="form-textbox"></textarea>
+          <p id="fileCounter" class="text-sm text-gray-500 mt-1">0 / 100 words</p>
+          <p class="error-text"></p>
+        </div>
+
+      </div>
+
+      <!-- ISSUE TYPE -->
+      <div>
+        <label for="issueSpec" class="block mb-1 font-medium">Specification of Issue *</label>
+        <select id="issueSpec" required class="form-textbox">
+          <option value="">Select academic issue</option>
+          <option value="grading">Grading / Marks</option>
+          <option value="attendance">Attendance</option>
+          <option value="content">Course Content / Material</option>
+          <option value="assessment">Exams / Assessments</option>
+          <option value="scheduling">Class / Exam Scheduling Conflict</option>
+          <option value="advising">Academic Advising Issues</option>
+          <option value="registration">Enrollment / Registration Issues</option>
+          <option value="resources">Learning Resources / Academic Support</option>
+          <option value="accessibility">Academic Accessibility / Accommodations</option>
+          <option value="group-work">Group Work / Collaboration Issues</option>
+          <option value="supervision">Research / Supervision Issues</option>
+          <option value="integrity">Academic Integrity Concerns</option>
+          <option value="other">Other Academic Issue</option>
+          <p class="error-text"></p>
+        </select>
+      </div>
+
+      <!-- PREVIOUS ATTEMPTS -->
+      <div>
+        <label for="previousAttempt" class="block mb-1 font-medium">Previous Attempts to Resolve (max 100 words)</label>
+        <textarea id="previousAttempt" rows="3" placeholder="Describe previous attempts"
+          class="form-textbox"></textarea>
+        <p id="attemptCounter" class="text-sm  text-gray-500 mt-1">0 / 100 words</p>
+        <p class="error-text"></p>
+      </div>
+
+      <div>
+        <label for="desiredOutcome" class="block mb-1 font-medium">Desired Outcome</label>
+        <input type="text" id="desiredOutcome" placeholder="Enter your desired outcome" class="form-textbox">
+        <p class="error-text"></p>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <input type="checkbox" id="declaration" class="h-5 w-5 rounded border-gray-300 dark:border-gray-600">
+        <label for="declaration" class="font-medium">I declare all information provided is accurate and honest.</label>
+      </div>
+
+      <button type="submit" class="Submit-btn">Submit Complaint</button>
+
+    </form>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full py-10 mt-10 
+          bg-[var(--color-eco-light)] text-[var(--color-text-light)]
+          dark:bg-[#0F1A24] dark:text-gray-200">
+
+    <div class="max-w-7xl mx-auto 
+            flex flex-col space-y-10
+            md:grid md:grid-cols-3 md:gap-10 
+            text-center md:text-left">
+
+      <!-- Column 1 -->
+      <div>
+        <h2 class="text-xl font-semibold mb-4 
+                  text-[var(--color-blue-btn)] 
+                  dark:text-[var(--color-eco)]">
+          ComplaNet
+        </h2>
+        <p class="text-sm leading-6">
+          ComplaNet is your unified university complaint management system.<br>
+          Submit, track, and manage your complaints easily and securely.
+        </p>
+      </div>
+
+      <!-- Column 2 -->
+      <div>
+        <h2 class="text-xl font-semibold mb-4 
+                  text-[var(--color-blue-btn)]
+                  dark:text-[var(--color-eco)]">
+          Quick Navigation
+        </h2>
+        <ul class="space-y-2 text-sm">
+          <li><a href="./UserDashboard.html"
+              class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Dashboard</a></li>
+          <li><a href="./Newcomplaint.html"
+              class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">New Complaint</a></li>
+          <li><a href="./Mycomplaint.html"
+              class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">My Complaints</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 3 -->
+      <div>
+        <h2 class="text-xl font-semibold mb-4 
+                  text-[var(--color-blue-btn)]
+                  dark:text-[var(--color-eco)]">
+          Complaint Category
+        </h2>
+
+        <details class="bg-[var(--color-eco)] dark:bg-[#1A2C36] 
+                p-4 rounded-lg cursor-pointer text-sm">
+          <summary class="font-medium hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">
+            Select Complaint Type
+          </summary>
+
+          <ul class="mt-3 space-y-2 pl-3">
+            <li><a href="./AcademicForm.html"
+                class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Academic Complaint</a>
+            </li>
+            <li><a href="./FacilityForm.html"
+                class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Facility Complaint</a>
+            </li>
+            <li><a href="./AdministrativeForm.html"
+                class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Administrative
+                Complaint</a></li>
+            <li><a href="./StudentBehaviorForm.html"
+                class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Student Behavior
+                Complaint</a></li>
+            <li><a href="./TechnicalForm.html"
+                class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Technical Complaint</a>
+            </li>
+            <li><a href="./OtherForm.html"
+                class="hover:text-[var(--color-eco-dark)] dark:hover:text-[var(--color-eco)]">Other Complaint</a></li>
+          </ul>
+        </details>
+      </div>
+
+    </div>
+
+    <div class="text-center text-sm mt-10 text-gray-700 dark:text-gray-400">
+      © 2025 ComplaNet. All rights reserved.
+    </div>
+
+  </footer>
+
+
+  <!-- Validation Script -->
+  <script src="./darkMode.js"></script>
+  <script type="module" src="./AcademicForm.js"></script>
+
+
+
+</body>
+
+</html>

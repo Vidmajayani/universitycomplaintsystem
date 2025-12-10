@@ -120,21 +120,28 @@ async function loadComplaints() {
 
             const { data: users, error: userError } = await supabase
                 .from('users')
-                .select('id, first_name, last_name')
+                .select('id, first_name, last_name, email') // Added email
                 .in('id', userIds);
 
             if (!userError && users) {
-                // Create a map of userId -> fullName
+                // Create a map of userId -> userDetails
                 const userMap = {};
                 users.forEach(u => {
-                    userMap[u.id] = `${u.first_name} ${u.last_name}`;
+                    userMap[u.id] = {
+                        name: `${u.first_name} ${u.last_name}`,
+                        email: u.email
+                    };
                 });
 
-                // Attach user names to complaints
-                allComplaints = allComplaints.map(c => ({
-                    ...c,
-                    complainantName: userMap[c.complainantid] || 'Unknown User'
-                }));
+                // Attach user names and emails to complaints
+                allComplaints = allComplaints.map(c => {
+                    const user = userMap[c.complainantid];
+                    return {
+                        ...c,
+                        complainantName: user ? user.name : 'Unknown User',
+                        complainantEmail: user ? user.email : null // Store email
+                    };
+                });
             }
         }
 
@@ -442,6 +449,15 @@ async function updateComplaintStatus(complaintId, newStatus, reason) {
                 message: message,
                 is_read: false
             }]);
+
+            // 4. Send Email Notification
+            await sendEmailNotification(
+                complaint.complainantEmail,
+                complaint.complainantName,
+                complaint.complainttitle,
+                newStatus,
+                reason
+            );
         }
 
         // Update local data
@@ -457,6 +473,33 @@ async function updateComplaintStatus(complaintId, newStatus, reason) {
     } catch (err) {
         console.error('Error updating status:', err);
         alert('Failed to update status.');
+    }
+}
+
+// ------------------------
+//  EMAIL NOTIFICATION HELPER
+// ------------------------
+async function sendEmailNotification(userEmail, userName, complaintTitle, newStatus, message) {
+    if (!userEmail) {
+        console.warn('No email found for user. Skipping email notification.');
+        return;
+    }
+
+    const templateParams = {
+        to_name: userName,
+        to_email: userEmail,
+        complaint_title: complaintTitle,
+        new_status: newStatus,
+        message: message
+    };
+
+    try {
+        // Pass Public Key as 4th argument to ensure it works
+        await emailjs.send('service_q77wg09', 'template_sb3k70p', templateParams, '08jWWt0PNjZJ4BcQw');
+        console.log(`Email sent to ${userEmail}`);
+    } catch (error) {
+        console.error('EmailJS Error:', error);
+        // Don't block UI; just log error
     }
 }
 
@@ -493,6 +536,15 @@ async function softDeleteComplaint(id, reason) {
                 message: message,
                 is_read: false
             }]);
+
+            // 4. Send Email Notification
+            await sendEmailNotification(
+                complaint.complainantEmail,
+                complaint.complainantName,
+                complaint.complainttitle,
+                'Deleted',
+                reason
+            );
         }
 
         // Update local data

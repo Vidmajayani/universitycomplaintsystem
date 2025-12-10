@@ -739,9 +739,21 @@ async function generatePDFReport() {
         pdf.text('Key Performance Indicators', 20, yPosition);
         yPosition += 8;
 
+        // Determine PDF generation options based on device
+        const isMobile = window.innerWidth <= 1366;
+        const canvasOptions = {
+            scale: 2,
+            backgroundColor: '#ffffff',
+            logging: false
+        };
+
+        if (isMobile) {
+            canvasOptions.windowWidth = 1440;
+        }
+
         const kpiSection = document.getElementById('kpiContainer');
         if (kpiSection) {
-            const canvas = await html2canvas(kpiSection, { scale: 2, backgroundColor: '#ffffff', logging: false });
+            const canvas = await html2canvas(kpiSection, canvasOptions);
             const imgData = canvas.toDataURL('image/png');
             const imgWidth = pageWidth - 40;
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
@@ -766,28 +778,45 @@ async function generatePDFReport() {
             }
         }
 
-        // 2. Render visible charts without gaps
+        // 2. Render visible charts with descriptions
         for (let i = 0; i < visibleCharts.length; i++) {
             const container = visibleCharts[i];
-            const canvas = await html2canvas(container, { scale: 2, backgroundColor: '#ffffff', logging: false });
-            const imgData = canvas.toDataURL('image/png');
-            const imgWidth = (pageWidth - 50) / 2;
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            const canvasEl = container.querySelector('canvas');
+            const canvasId = canvasEl ? canvasEl.id : null;
 
-            if (yPosition + imgHeight > pageHeight - 20) { pdf.addPage(); yPosition = 20; }
+            // Capture Screenshot
+            const canvasImg = await html2canvas(container, canvasOptions);
+            const imgData = canvasImg.toDataURL('image/png');
 
-            // Arrange charts in a grid (2 per row) based on VISIBLE index
-            const xPosition = i % 2 === 0 ? 20 : pageWidth / 2 + 5;
-            pdf.addImage(imgData, 'PNG', xPosition, yPosition, imgWidth, imgHeight);
+            // Dimensions
+            // We'll stack them simply: Image then Text, then next chart. 
+            // 2-column grid is tricky with variable text height, let's switch to 1-column single list for cleaner "Report" style?
+            // User asked for "under every report you can show the informations". 
+            // A 1-column layout is safer for this.
 
-            // Move Y down only after every 2nd chart (or if it's the last one)
-            if (i % 2 === 1 || i === visibleCharts.length - 1) {
-                // If it's the end of a row, move down. 
-                // Note: We use the height of the current chart for spacing. 
-                // Ideally they are same height, if not, this might need max-height logic, 
-                // but standard charts usually match.
-                if (i % 2 === 1) yPosition += imgHeight + 10;
+            const imgWidth = pageWidth - 40; // Full width (minus margins)
+            const imgHeight = (canvasImg.height * imgWidth) / canvasImg.width;
+
+            // Check Page Break for Image
+            if (yPosition + imgHeight > pageHeight - 30) {
+                pdf.addPage();
+                yPosition = 20;
             }
+
+            pdf.addImage(imgData, 'PNG', 20, yPosition, imgWidth, imgHeight);
+            yPosition += imgHeight + 5;
+
+            // Add Insight Text
+            const insightText = getChartInsight(canvasId);
+            pdf.setFontSize(10);
+            pdf.setTextColor(80, 80, 80);
+
+            // Split text to fit width
+            const splitText = pdf.splitTextToSize(insightText, pageWidth - 40);
+            pdf.text(splitText, 20, yPosition);
+
+            // Update Y position based on text lines
+            yPosition += (splitText.length * 5) + 15; // +15 for gap to next chart
         }
 
         // 4. Add Active Issues Section (Master Admin Only)
@@ -798,41 +827,217 @@ async function generatePDFReport() {
 
             yPosition += 10;
             pdf.setFontSize(14);
-            pdf.setTextColor(40, 40, 40);
             pdf.text('Active Issues Breakdown', 20, yPosition);
-            yPosition += 10;
+            yPosition += 10; // Space after title
 
-            const canvas = await html2canvas(activeIssuesContainer, { scale: 2, backgroundColor: '#ffffff', logging: false });
+            // Capture the Active Issues container
+            const canvas = await html2canvas(activeIssuesContainer, canvasOptions);
             const imgData = canvas.toDataURL('image/png');
-            const imgWidth = pageWidth - 40; // Full width
+            const imgWidth = pageWidth - 40; // Full width - margins
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
+            // Page break check (again, just in case) - redundant but safe
             if (yPosition + imgHeight > pageHeight - 20) { pdf.addPage(); yPosition = 20; }
+
             pdf.addImage(imgData, 'PNG', 20, yPosition, imgWidth, imgHeight);
+
+            yPosition += imgHeight + 5;
+
+            // Add Insight Text for Active Issues
+            const insightText = getChartInsight('activeIssues');
+            pdf.setFontSize(10);
+            pdf.setTextColor(80, 80, 80);
+
+            // Split text to fit width
+            const splitText = pdf.splitTextToSize(insightText, pageWidth - 40);
+
+            // Check page break for text
+            if (yPosition + (splitText.length * 5) > pageHeight - 20) {
+                pdf.addPage();
+                yPosition = 20;
+            }
+
+            pdf.text(splitText, 20, yPosition);
         }
 
-        // 5. Add Footer with Page Numbers
-        const totalPages = pdf.internal.getNumberOfPages();
-        for (let i = 1; i <= totalPages; i++) {
-            pdf.setPage(i);
-            pdf.setFontSize(8);
-            pdf.setTextColor(150, 150, 150);
-            pdf.text(`Page ${i} of ${totalPages} | ComplaNet Analytics | ${reportDate}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
-        }
+        // Save
+        pdf.save(`Analytics_Report_${Date.now()}.pdf`);
 
-        // 6. Save File
-        const dateStr = new Date().toISOString().split('T')[0];
-        const filterSuffix = filterState.type === 'all' ? 'AllTime' : filterState.type.charAt(0).toUpperCase() + filterState.type.slice(1);
-        pdf.save(`Analytics_Report_${dateStr}_${filterSuffix}.pdf`);
-
+        // Reset Button
         button.disabled = false;
         button.innerHTML = '<i class="fas fa-download"></i><span>Download Report</span>';
 
-    } catch (error) {
-        console.error('Error generating PDF:', error);
-        alert('Failed to generate PDF. Please try again.');
+    } catch (err) {
+        console.error('Error generating PDF:', err);
+        alert('Failed to generate PDF report.');
         const button = document.getElementById('downloadPdfBtn');
         button.disabled = false;
         button.innerHTML = '<i class="fas fa-download"></i><span>Download Report</span>';
+    }
+}
+
+/**
+ * Generates a text summary/insight for a specific chart.
+ */
+function getChartInsight(canvasId) {
+    if (!filteredComplaints || filteredComplaints.length === 0) return "No data available.";
+
+    const total = filteredComplaints.length;
+
+    switch (canvasId) {
+        case 'statusChart': {
+            const pending = filteredComplaints.filter(c => c.complaintstatus === 'Pending').length;
+            const inProgress = filteredComplaints.filter(c => c.complaintstatus === 'In-Progress').length;
+            const resolved = filteredComplaints.filter(c => c.complaintstatus === 'Resolved').length;
+            const deleted = filteredComplaints.filter(c => c.complaintstatus === 'Deleted').length;
+
+            const pSent = total > 0 ? ((pending / total) * 100).toFixed(1) : 0;
+            const iSent = total > 0 ? ((inProgress / total) * 100).toFixed(1) : 0;
+            const rSent = total > 0 ? ((resolved / total) * 100).toFixed(1) : 0;
+
+            return `Detailed Status Breakdown:
+• Total Complaints Processed: ${total}
+• Resolved: ${resolved} (${rSent}%) - Completed cases.
+• Pending: ${pending} (${pSent}%) - Awaiting initial action.
+• In-Progress: ${inProgress} (${iSent}%) - Currently being worked on.
+• Deleted/Invalid: ${deleted}`;
+        }
+
+        case 'categoryChart': {
+            const counts = {};
+            filteredComplaints.forEach(c => {
+                const cat = c.categoryName || 'Unknown';
+                counts[cat] = (counts[cat] || 0) + 1;
+            });
+
+            // Sort categories by count desc
+            const sortedCats = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+            const top3 = sortedCats.slice(0, 3).map(([k, v]) => `• ${k}: ${v} (${((v / total) * 100).toFixed(1)}%)`).join('\n');
+            const least = sortedCats.length > 3 ? sortedCats[sortedCats.length - 1][0] : null;
+
+            let text = `Category Analysis:\n${top3}`;
+            if (least) text += `\n• Least Reported: ${least}`;
+            text += `\n\nInsight: The majority of issues stem from the top category, indicating a potential systemic issue in that area.`;
+            return text;
+        }
+
+        case 'trendChart': {
+            if (charts.trend && charts.trend.data.datasets[0].data.length > 0) {
+                const data = charts.trend.data.datasets[0].data;
+                const labels = charts.trend.data.labels;
+
+                const maxVal = Math.max(...data);
+                const minVal = Math.min(...data);
+                const maxIndex = data.indexOf(maxVal);
+                const totalPeriod = data.reduce((a, b) => a + b, 0);
+                const avg = (totalPeriod / data.length).toFixed(1);
+
+                return `Temporal Trends (Last 6 Months):
+• Peak Activity: ${labels[maxIndex]} with ${maxVal} complaints.
+• Lowest Activity: ${minVal} complaints.
+• Monthly Average: ~${avg} complaints/month.
+
+Observation: Monitoring spikes in ${labels[maxIndex]} helps in resource planning for future similar periods.`;
+            }
+            return "Trend data shows complaint volume over the last 6 months.";
+        }
+
+        case 'resolutionChart': {
+            const categories = [...new Set(filteredComplaints.map(c => c.categoryName).filter(Boolean))];
+            let timings = [];
+
+            categories.forEach(cat => {
+                const catComplaints = filteredComplaints.filter(c => c.categoryName === cat && c.complaintstatus === 'Resolved');
+                if (catComplaints.length > 0) {
+                    const totalDays = catComplaints.reduce((sum, c) => sum + Math.floor((new Date() - new Date(c.submitteddate)) / (1000 * 60 * 60 * 24)), 0);
+                    const avg = totalDays / catComplaints.length;
+                    timings.push({ cat, avg });
+                }
+            });
+
+            if (timings.length === 0) return "No resolution time data available yet.";
+
+            timings.sort((a, b) => a.avg - b.avg); // Sort fastest to slowest
+            const fastest = timings[0];
+            const slowest = timings[timings.length - 1];
+            const avgAll = (timings.reduce((a, b) => a + b.avg, 0) / timings.length).toFixed(1);
+
+            return `Resolution Performance:
+• Fastest Category: "${fastest.cat}" (~${Math.round(fastest.avg)} days).
+• Slowest Category: "${slowest.cat}" (~${Math.round(slowest.avg)} days).
+• Average Across All: ${avgAll} days.
+
+Recommendation: Investigate bottlenecks in "${slowest.cat}" to improve overall turnaround time.`;
+        }
+
+        case 'dailyChart': {
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const counts = new Array(7).fill(0);
+            filteredComplaints.forEach(c => counts[new Date(c.submitteddate).getDay()]++);
+
+            const maxVal = Math.max(...counts);
+            const busiestDay = days[counts.indexOf(maxVal)];
+            const weekendCount = counts[0] + counts[6];
+            const weekdayCount = counts.reduce((a, b) => a + b, 0) - weekendCount;
+
+            return `Day-of-Week Patterns:
+• Busiest Day: ${busiestDay} (${maxVal} complaints).
+• Weekday Load: ${weekdayCount} (${((weekdayCount / total) * 100).toFixed(0)}%).
+• Weekend Load: ${weekendCount} (${((weekendCount / total) * 100).toFixed(0)}%).
+
+Insight: Staffing should be optimized for ${busiestDay} to handle peak volumes effectively.`;
+        }
+
+        case 'adminChart': {
+            if (adminRole !== 'Master Admin') return "";
+
+            const counts = {};
+            let totalResolved = 0;
+            filteredComplaints.forEach(c => {
+                if (c.adminid && c.complaintstatus === 'Resolved') {
+                    const role = adminMap[c.adminid] || 'Unknown';
+                    counts[role] = (counts[role] || 0) + 1;
+                    totalResolved++;
+                }
+            });
+
+            if (totalResolved === 0) return "No resolution data available for admins.";
+
+            const sortedAdmins = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+            const top = sortedAdmins[0];
+
+            return `Admin Performance Leaderboard:
+• Top Performer: ${top[0]} with ${top[1]} resolved cases.
+• Contribution: This role accounts for ${((top[1] / totalResolved) * 100).toFixed(1)}% of all resolutions.
+
+Note: Balanced workload distribution ensures simpler cases don't inflate statistics artificially.`;
+        }
+
+        case 'activeIssues': {
+            // For the Active Issues List
+            const active = filteredComplaints.filter(c => c.complaintstatus !== 'Resolved' && c.complaintstatus !== 'Deleted');
+            if (active.length === 0) return "No active issues currently.";
+
+            const counts = {};
+            active.forEach(c => {
+                const cat = c.categoryName || 'Unknown';
+                counts[cat] = (counts[cat] || 0) + 1;
+            });
+
+            const verifiedTotal = active.length;
+            if (verifiedTotal === 0) return "No active issues.";
+
+            const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+            const top = sorted[0];
+
+            return `Active Issues Overview:
+• Critical Focus: "${top[0]}" has the highest backlog with ${top[1]} active complaints.
+• Total Backlog: ${verifiedTotal} issues requiring attention.
+• Impact: This category represents ${((top[1] / verifiedTotal) * 100).toFixed(1)}% of the total active workload.
+
+Recommendation: Immediate resource allocation to "${top[0]}" is advised to reduce the backlog.`;
+        }
+        default:
+            return "Analytics Chart Data";
     }
 }

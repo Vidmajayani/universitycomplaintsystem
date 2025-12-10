@@ -30,6 +30,7 @@ const complainantDept = document.getElementById('complainantDept');
 // Admin Feedback
 const feedbackContainer = document.getElementById('feedbackContainer');
 const adminInitials = document.getElementById('adminInitials');
+const adminProfileImage = document.getElementById('adminProfileImage');
 const adminName = document.getElementById('adminName');
 
 
@@ -140,19 +141,25 @@ async function loadComplaintDetails(id) {
         }
 
         // 6. Fetch Assigned Admin Name
+        // 6. Fetch Assigned Admin Name & Profile
         let adminNameStr = 'Unassigned';
+        let adminData = null; // Store full admin object
+
         if (complaint.adminid) {
             const { data: admin } = await supabase
                 .from('admin')
-                .select('adminfirstname, adminlastname')
+                .select('adminfirstname, adminlastname, profile_pic')
                 .eq('id', complaint.adminid)
                 .single();
 
-            if (admin) adminNameStr = `${admin.adminfirstname} ${admin.adminlastname}`;
+            if (admin) {
+                adminNameStr = `${admin.adminfirstname} ${admin.adminlastname}`;
+                adminData = admin; // Save it to pass later
+            }
         }
 
         // RENDER ALL
-        renderMainDetails(complaint, catName, user, adminNameStr);
+        renderMainDetails(complaint, catName, user, adminNameStr, adminData);
         renderSpecificDetails(catName, specificData);
         renderAttachments(attachments);
         renderFeedback(complaint);
@@ -163,7 +170,7 @@ async function loadComplaintDetails(id) {
     }
 }
 
-function renderMainDetails(complaint, catName, user, adminNameStr) {
+function renderMainDetails(complaint, catName, user, adminNameStr, adminData) {
     // Header
     complaintTitle.textContent = complaint.complainttitle || 'Untitled';
     complaintIdEl.textContent = `#${complaint.complaintid}`;
@@ -213,10 +220,20 @@ function renderMainDetails(complaint, catName, user, adminNameStr) {
 
     // Assigned Admin
     adminName.textContent = adminNameStr;
-    const adminInit = adminNameStr !== 'Unassigned'
-        ? adminNameStr.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
-        : '?';
-    adminInitials.textContent = adminInit;
+
+    // Toggle between Image or Initials
+    if (adminData && adminData.profile_pic) {
+        adminProfileImage.src = adminData.profile_pic;
+        adminProfileImage.classList.remove('hidden');
+        adminInitials.classList.add('hidden');
+    } else {
+        const adminInit = adminNameStr !== 'Unassigned'
+            ? adminNameStr.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
+            : '?';
+        adminInitials.textContent = adminInit;
+        adminInitials.classList.remove('hidden');
+        adminProfileImage.classList.add('hidden');
+    }
 }
 
 function renderSpecificDetails(catName, data) {

@@ -32,29 +32,29 @@ document.addEventListener('DOMContentLoaded', () => {
         // Check Users Table (if not admin)
         // We use maybeSingle() to avoid errors if 0 rows
         const { data: user, error: userError } = await supabase
-            .from('users')
-            .select('id')
-            .eq('email', email)
-            .maybeSingle();
-        
+          .from('users')
+          .select('id')
+          .eq('email', email)
+          .maybeSingle();
+
         if (user) emailExists = true;
-        
+
         // If getting user failed (e.g. column missing), we might assume false or log it
         if (userError && userError.code !== 'PGRST116') {
-             console.warn('Could not verify/search users table:', userError);
+          console.warn('Could not verify/search users table:', userError);
         }
       }
 
       if (!emailExists) {
         alert('This email is not registered in our system.');
-        return; 
+        return;
       }
 
       // ------------------------------------------
       // 2. Send Reset Link (Only if verified)
       // ------------------------------------------
       const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/src/ChangePassword.html`,
+        redirectTo: new URL('ChangePassword.html', window.location.href).href,
       });
 
       if (error) {

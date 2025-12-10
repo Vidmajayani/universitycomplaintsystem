@@ -119,6 +119,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     alert("Password updated successfully!");
-    window.location.href = "/Login.html";
+    window.location.href = "Login.html";
   });
 });

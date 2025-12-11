@@ -52,9 +52,18 @@ async function checkAdminSession() {
 
     // Handle Profile Pic (Read-Only)
     if (adminData.profile_pic) {
+        // Main Profile Card Image
         profileImage.src = adminData.profile_pic;
         profileImage.classList.remove('hidden');
         defaultProfileIcon.classList.add('hidden');
+
+        // Header Profile Icon (Standardized)
+        const profileBtn = document.getElementById('profileButton');
+        if (profileBtn) {
+            profileBtn.innerHTML = `
+                <img src="${adminData.profile_pic}" alt="Profile" class="h-10 w-10 rounded-full object-cover border-2 border-white dark:border-gray-600 shadow-sm">
+            `;
+        }
     } else {
         profileImage.classList.add('hidden');
         defaultProfileIcon.classList.remove('hidden');

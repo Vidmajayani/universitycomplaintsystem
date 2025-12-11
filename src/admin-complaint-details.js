@@ -48,24 +48,44 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    const mobileMenuButton = document.getElementById('mobileMenuButton');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const overlay = document.getElementById('overlay');
+    checkAdminSession();
+});
 
-    if (mobileMenuButton && mobileMenu && overlay) {
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('-translate-x-full');
-            overlay.classList.toggle('hidden');
-        });
+// ------------------------
+//  CHECK ADMIN SESSION
+// ------------------------
+async function checkAdminSession() {
+    const { data: { session } } = await supabase.auth.getSession();
 
-        overlay.addEventListener('click', () => {
-            mobileMenu.classList.add('-translate-x-full');
-            overlay.classList.add('hidden');
-        });
+    if (!session) {
+        window.location.href = 'Login.html';
+        return;
     }
 
+    // Get admin details
+    const { data: adminData, error } = await supabase
+        .from('admin')
+        .select('id, adminrole, profile_pic')
+        .eq('id', session.user.id)
+        .single();
+
+    if (error || !adminData) {
+        alert('Access denied.');
+        window.location.href = 'Login.html';
+        return;
+    }
+
+    // Update Profile Picture in Header
+    const profileBtn = document.getElementById('profileButton');
+    if (profileBtn && adminData.profile_pic) {
+        profileBtn.innerHTML = `
+            <img src="${adminData.profile_pic}" alt="Profile" class="h-10 w-10 rounded-full object-cover border-2 border-white dark:border-gray-600 shadow-sm">
+        `;
+    }
+
+    // Load details
     loadComplaintDetails(currentComplaintId);
-});
+}
 
 async function loadComplaintDetails(id) {
     try {

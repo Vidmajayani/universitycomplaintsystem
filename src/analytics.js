@@ -57,7 +57,7 @@ async function checkAdminSession() {
     // Verify user exists in the 'admin' table
     const { data: adminData, error } = await supabase
         .from('admin')
-        .select('id, adminrole')
+        .select('id, adminrole, profile_pic')
         .eq('id', session.user.id)
         .single();
 
@@ -71,6 +71,14 @@ async function checkAdminSession() {
     adminId = adminData.id;
     adminRole = adminData.adminrole;
     console.log(`Analytics loaded for Admin: ${adminRole}`);
+
+    // Update Profile Picture in Header
+    const profileBtn = document.getElementById('profileButton');
+    if (profileBtn && adminData.profile_pic) {
+        profileBtn.innerHTML = `
+            <img src="${adminData.profile_pic}" alt="Profile" class="h-10 w-10 rounded-full object-cover border-2 border-white dark:border-gray-600 shadow-sm">
+        `;
+    }
 
     // Proceed to load data
     await loadAnalyticsData();

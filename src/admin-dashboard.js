@@ -10,7 +10,7 @@ let allComplaints = [];
 document.addEventListener('DOMContentLoaded', () => {
     checkAdminSession();
     setupEventListeners();
-    setupEventListeners();
+    setupNotepad(); // Initialize Notepad
 });
 
 // Make function global for HTML onclick access
@@ -38,7 +38,7 @@ async function checkAdminSession() {
     // Get admin details
     const { data: adminData, error } = await supabase
         .from('admin')
-        .select('id, adminfirstname, adminlastname, adminrole')
+        .select('id, adminfirstname, adminlastname, adminrole, profile_pic')
         .eq('id', session.user.id)
         .single();
 
@@ -65,6 +65,13 @@ async function checkAdminSession() {
             `${adminData.adminrole} Dashboard — Manage and monitor all ${adminData.adminrole.toLowerCase()} complaints assigned to you.`;
     }
 
+    // Update Profile Picture in Header
+    const profileBtn = document.getElementById('profileButton');
+    if (profileBtn && adminData.profile_pic) {
+        profileBtn.innerHTML = `
+            <img src="${adminData.profile_pic}" alt="Profile" class="h-10 w-10 rounded-full object-cover border-2 border-white dark:border-gray-600 shadow-sm">
+        `;
+    }
 
     // Load complaints for this admin
     loadAdminComplaints();
@@ -225,19 +232,9 @@ function renderRecentActivity(complaints) {
 //  EVENT LISTENERS (MENU, PROFILE, ETC.)
 // ------------------------
 function setupEventListeners() {
-    const profileButton = document.getElementById('profileButton');
-    const profileMenu = document.getElementById('profileMenu');
-
-    if (profileButton && profileMenu) {
-        profileButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            profileMenu.classList.toggle('hidden');
-        });
-
-        document.addEventListener('click', () => {
-            profileMenu.classList.add('hidden');
-        });
-    }
+    // Mobile menu is handled by darkMode.js
+    // Profile Menu is handled by darkMode.js
+    // We only need to handle Logout here
 
     // Mobile menu is handled by darkMode.js
 
@@ -256,5 +253,43 @@ async function handleLogout() {
     } else {
         window.location.href = 'Login.html';
     }
+}
+
+// ------------------------
+//  PERSONAL NOTEPAD LOGIC
+// ------------------------
+function setupNotepad() {
+    const notepad = document.getElementById('adminNotepad');
+    const saveStatus = document.getElementById('saveStatus');
+
+    if (!notepad) return;
+
+    // 1. Load saved notes locally
+    const savedNotes = localStorage.getItem('admin_scratchpad_notes');
+    if (savedNotes) {
+        notepad.value = savedNotes;
+    }
+
+    // 2. Auto-save on input
+    let timeoutId;
+    notepad.addEventListener('input', () => {
+        // Update status to "Saving..."
+        saveStatus.textContent = "Saving...";
+
+        // Clear previous timeout
+        clearTimeout(timeoutId);
+
+        // Debounce save (wait 500ms after typing stops)
+        timeoutId = setTimeout(() => {
+            localStorage.setItem('admin_scratchpad_notes', notepad.value);
+            saveStatus.textContent = "Auto-saved";
+
+            // Visual feedback (flash green/text)
+            saveStatus.classList.add('text-green-600', 'dark:text-green-400');
+            setTimeout(() => {
+                saveStatus.classList.remove('text-green-600', 'dark:text-green-400');
+            }, 1000);
+        }, 500);
+    });
 }
 

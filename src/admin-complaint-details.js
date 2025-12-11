@@ -160,7 +160,6 @@ async function loadComplaintDetails(id) {
             else console.warn(`Error fetching ${subTable}:`, subError);
         }
 
-        // 6. Fetch Assigned Admin Name
         // 6. Fetch Assigned Admin Name & Profile
         let adminNameStr = 'Unassigned';
         let adminData = null; // Store full admin object
@@ -248,13 +247,78 @@ function renderMainDetails(complaint, catName, user, adminNameStr, adminData) {
         adminInitials.classList.add('hidden');
     } else {
         const adminInit = adminNameStr !== 'Unassigned'
-            ? adminNameStr.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
-            : '?';
+            ? adminNameStr.split(' ').map(n => n[0]).join('')
+            : 'U';
         adminInitials.textContent = adminInit;
-        adminInitials.classList.remove('hidden');
         adminProfileImage.classList.add('hidden');
+        adminInitials.classList.remove('hidden');
+    }
+
+    // Display Delete Button if not deleted
+    const deleteBtn = document.getElementById('deleteComplaintBtn');
+    if (deleteBtn) {
+        if (complaint.complaintstatus === 'Deleted') {
+            deleteBtn.classList.add('hidden');
+        } else {
+            deleteBtn.classList.remove('hidden');
+            deleteBtn.onclick = () => handleDelete(complaint);
+        }
     }
 }
+
+// ------------------------
+//  HANDLE DELETE
+// ------------------------
+async function handleDelete(complaint) {
+    const reason = prompt("Enter a reason for deleting this complaint:");
+    if (!reason) return;
+
+    try {
+        // 1. Soft Delete
+        const { error } = await supabase
+            .from('complaint')
+            .update({
+                complaintstatus: 'Deleted',
+                admin_feedback: reason || "Deleted by Admin"
+            })
+            .eq('complaintid', complaint.complaintid);
+
+        if (error) throw error;
+
+        // 2. Notification for User
+        const message = `Your complaint "${complaint.complainttitle}" was marked as Deleted. Reason: ${reason}`;
+        await supabase.from('notifications').insert([{
+            userid: complaint.complainantid,
+            complaint_id: complaint.complaintid,
+            type: 'Deleted',
+            message: message,
+            is_read: false
+        }]);
+
+        // 3. Email Notification (if email exists)
+        if (complaint.complainantEmail) {
+            const templateParams = {
+                to_name: complaint.complainantName || "Student",
+                to_email: complaint.complainantEmail,
+                complaint_title: complaint.complainttitle,
+                new_status: 'Deleted',
+                message: message
+            };
+            // Public Key: 08jWWt0PNjZJ4BcQw
+            emailjs.send('service_q77wg09', 'template_sb3k70p', templateParams, '08jWWt0PNjZJ4BcQw')
+                .then(() => console.log('Email sent'))
+                .catch(err => console.error('Email failed', err));
+        }
+
+        alert('Complaint deleted successfully.');
+        window.location.href = 'AllComplaints.html';
+
+    } catch (err) {
+        console.error('Error deleting complaint:', err);
+        alert('Failed to delete complaint.');
+    }
+}
+
 
 function renderSpecificDetails(catName, data) {
     if (!data) return;

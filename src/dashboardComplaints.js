@@ -1,15 +1,16 @@
 import { supabase } from './supabaseClient.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
+  // 1. Immediate Session Check
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) {
+    window.location.href = 'Login.html';
+    return;
+  }
+
   try {
     // Get the currently logged-in user
-    const { data: { user }, error: sessionError } = await supabase.auth.getUser();
-
-    if (sessionError || !user) {
-      alert('You are not logged in! Redirecting to login page...');
-      window.location.href = 'Login.html';
-      return;
-    }
+    const user = session.user;
 
     const userId = user.id;
 

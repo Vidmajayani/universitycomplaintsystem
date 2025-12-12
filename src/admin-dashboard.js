@@ -7,7 +7,15 @@ let adminRole = null;
 let allComplaints = [];
 
 // Initialize dashboard
-document.addEventListener('DOMContentLoaded', () => {
+// Initialize dashboard
+document.addEventListener('DOMContentLoaded', async () => {
+    // 1. Immediate Session Check
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+        window.location.href = 'Login.html';
+        return;
+    }
+
     checkAdminSession();
     setupEventListeners();
     setupNotepad(); // Initialize Notepad

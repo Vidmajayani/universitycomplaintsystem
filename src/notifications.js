@@ -6,7 +6,14 @@ let currentUser = null;
 const notificationBtn = document.getElementById('notificationBtn');
 const notificationBadge = document.getElementById('notificationBadge');
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // 1. Immediate Session Check
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+        window.location.href = 'Login.html';
+        return;
+    }
+
     // 1. Initialize Bell Icon Logic
     initNotifications();
 

@@ -14,6 +14,12 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024;
 // DOMContentLoaded
 // ==============================
 document.addEventListener("DOMContentLoaded", async () => {
+  // 1. Immediate Session Check
+  const { data: { session: activeSession } } = await supabase.auth.getSession();
+  if (!activeSession || !activeSession.user) {
+    window.location.href = "/login.html";
+    return;
+  }
 
   const form = document.getElementById("technicalForm");
 
@@ -58,11 +64,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ======================
   // SUPABASE SESSION
   // ======================
-  let session = null;
+  let session = activeSession;
 
   try {
-    const { data } = await supabase.auth.getSession();
-    session = data.session;
+    // session retrieved
   } catch (err) {
     console.error("Session error:", err);
   }

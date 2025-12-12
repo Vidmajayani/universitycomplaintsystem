@@ -1,13 +1,24 @@
 import { supabase } from "./supabaseClient.js";
 
-document.addEventListener("DOMContentLoaded", loadProfile);
-
-async function loadProfile() {
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) {
+document.addEventListener("DOMContentLoaded", async () => {
+  // 1. Immediate Session Check
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) {
     window.location.href = "Login.html";
     return;
   }
+  loadProfile();
+});
+
+async function loadProfile() {
+  const { data: { session } } = await supabase.auth.getSession();
+
+  if (!session || !session.user) {
+    window.location.href = "Login.html";
+    return;
+  }
+
+  const user = session.user;
 
   const userId = user.id;
 

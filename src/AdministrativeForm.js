@@ -5,6 +5,13 @@ import { supabase } from "./supabaseClient.js";
 // ==============================
 
 document.addEventListener("DOMContentLoaded", async () => {
+  // 1. Immediate Session Check
+  const { data: { session: activeSession } } = await supabase.auth.getSession();
+  if (!activeSession || !activeSession.user) {
+    window.location.href = "/login.html";
+    return;
+  }
+
   const form = document.getElementById("adminComplaintForm");
 
   const description = document.getElementById("description");
@@ -44,10 +51,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ==============================
   // Supabase Session
   // ==============================
-  let session = null;
+  let session = activeSession;
   try {
-    const response = await supabase.auth.getSession();
-    session = response.data.session;
+    // Session already retrieved
   } catch (e) {
     console.error("Supabase session error:", e);
   }

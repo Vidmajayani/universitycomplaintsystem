@@ -37,7 +37,14 @@ const adminName = document.getElementById('adminName');
 // State
 let currentComplaintId = null;
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // 1. Immediate Session Check
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+        window.location.href = 'Login.html';
+        return;
+    }
+
     // Get ID from URL
     const urlParams = new URLSearchParams(window.location.search);
     currentComplaintId = urlParams.get('id');

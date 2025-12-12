@@ -15,7 +15,14 @@ const defaultProfileIcon = document.getElementById('defaultProfileIcon');
 const profileImage = document.getElementById('profileImage');
 
 // Initialize
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // 1. Immediate Session Check
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+        window.location.href = 'Login.html';
+        return;
+    }
+
     checkAdminSession();
     setupEventListeners();
 });

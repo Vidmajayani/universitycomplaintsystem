@@ -26,14 +26,21 @@ let filterState = {
 // INITIALIZATION
 // ==========================================
 // Runs when the page is fully loaded
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Setup Event Listeners
+document.addEventListener('DOMContentLoaded', async () => {
+    // 1. Immediate Session Check
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+        window.location.href = 'Login.html';
+        return;
+    }
+
+    // 2. Setup Event Listeners
     const downloadBtn = document.getElementById('downloadPdfBtn');
     if (downloadBtn) {
         downloadBtn.onclick = generatePDFReport;
     }
 
-    // 2. Start Authentication Flow
+    // 3. Start Authentication Flow
     checkAdminSession();
 });
 

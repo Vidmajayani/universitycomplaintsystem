@@ -1,6 +1,12 @@
 import { supabase } from "./supabaseClient.js";
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  // 1. Immediate Session Check
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) {
+    window.location.href = "Login.html";
+    return;
+  }
   const list = document.getElementById("complaintList");
   const statusFilter = document.getElementById("statusFilter");
   const categoryFilter = document.getElementById("categoryFilter");

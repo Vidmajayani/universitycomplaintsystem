@@ -61,11 +61,32 @@ document.addEventListener("DOMContentLoaded", async () => {
   const query = new URLSearchParams(window.location.search);
   const code = query.get("code");
 
-  if (code) {
-    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+  // -----------------------------------------------------------
+  // 1. IMMEDIATE SESSION CHECK (Security)
+  // -----------------------------------------------------------
+  // Allow access ONLY if:
+  // - There is a session already
+  // - OR there is a 'code' in URL (PKCE flow)
+  // - OR there is an 'error' in URL (Auth failure feedback)
+  const params = new URLSearchParams(window.location.search);
+  const hasCode = params.has("code");
+  const hasError = window.location.hash.includes("error=");
+
+  const { data: { session } } = await supabase.auth.getSession();
+
+  if (!session && !hasCode && !hasError) {
+    // User is trying to access directly without a link or session
+    window.location.href = "Login.html";
+    return;
+  }
+
+  if (hasCode) {
+    const { data, error } = await supabase.auth.exchangeCodeForSession(params.get("code"));
     if (error) {
       console.error("Exchange code error:", error);
       alert("Invalid or expired link: " + error.message);
+      window.location.href = "Login.html";
+      return;
     } else {
       console.log("PKCE Session established");
     }

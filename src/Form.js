@@ -2,8 +2,15 @@
 // FORMS.JS
 // Handles form-specific functionality
 // ===============================
+import { supabase } from './supabaseClient.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // 1. Immediate Session Check
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+        window.location.href = 'Login.html';
+        return;
+    }
     const complaintForms = document.querySelectorAll('form');
 
     complaintForms.forEach(form => {

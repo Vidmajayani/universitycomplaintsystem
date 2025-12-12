@@ -40,6 +40,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         downloadBtn.onclick = generatePDFReport;
     }
 
+    setupEventListeners();
+
     // 3. Start Authentication Flow
     checkAdminSession();
 });
@@ -711,6 +713,62 @@ function renderCategoryStatus() {
             row.classList.remove('hidden');
         }
     });
+}
+
+// ==========================================
+// LOGOUT LOGIC
+// ==========================================
+function setupEventListeners() {
+    // Header Logout
+    const headerLogoutBtn = document.getElementById('headerLogoutBtn');
+    if (headerLogoutBtn) {
+        headerLogoutBtn.addEventListener('click', handleLogout);
+    }
+
+    // Modal Action Listeners
+    const modal = document.getElementById('logoutModal');
+    if (modal) {
+        const cancelBtn = document.getElementById('cancelLogoutBtn');
+        const confirmBtn = document.getElementById('confirmLogoutBtn');
+
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', () => {
+                modal.classList.add('hidden');
+            });
+        }
+
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', async () => {
+                const { error } = await supabase.auth.signOut();
+                if (error) console.error('Error signing out:', error);
+                window.location.href = 'Login.html';
+            });
+        }
+
+        // Close on outside click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.classList.add('hidden');
+        });
+    }
+
+    // Mobile Logout Interception
+    const mobileLogoutWait = setInterval(() => {
+        const mobileLogout = document.querySelector('#mobileMenu a[href="Login.html"]');
+        if (mobileLogout) {
+            mobileLogout.addEventListener('click', handleLogout);
+            clearInterval(mobileLogoutWait);
+        } else if (document.readyState === 'complete') {
+            const lastTry = document.querySelector('#mobileMenu a[href="Login.html"]');
+            if (lastTry) lastTry.addEventListener('click', handleLogout);
+            clearInterval(mobileLogoutWait);
+        }
+    }, 100);
+}
+
+function handleLogout(e) {
+    if (e) e.preventDefault();
+    const modal = document.getElementById('logoutModal');
+    if (modal) modal.classList.remove('hidden');
 }
 
 // ==========================================

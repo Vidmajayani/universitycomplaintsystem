@@ -22,7 +22,7 @@
         <!-- Desktop Navigation -->
         <nav class="hidden md:flex space-x-6 items-center">
             <a href="AdminDashboard.html" class="nav-content">Dashboard</a>
-            <a href="AllComplaints.html" class="font-semibold text-eco hover:text-eco-dark">All Complaints</a>
+            <a href="AllComplaints.html" class="font-semibold text-eco-dark hover:text-eco-dark">All Complaints</a>
             <a href="Analytics.html" class="nav-content">Analytics</a>
 
             <!-- Profile Menu -->
@@ -55,7 +55,7 @@
             </div>
             <nav class="mt-6 flex flex-col space-y-2 px-6">
                 <a href="AdminDashboard.html" class="nav-content">Dashboard</a>
-                <a href="AllComplaints.html" class="font-semibold text-eco hover:text-eco-dark">All Complaints</a>
+                <a href="AllComplaints.html" class="font-semibold text-eco-dark hover:text-eco-dark">All Complaints</a>
                 <a href="Analytics.html" class="nav-content">Analytics</a>
                 <a href="AdminProfile.html" class="nav-content">Admin Profile</a>
             </nav>
@@ -74,7 +74,7 @@
             <div>
                 <h1 class="text-3xl font-bold mb-1">Manage Complaints</h1>
                 <p class="text-gray-600 dark:text-gray-300">
-                    Total Complaints: <span id="totalComplaintsCount" class="font-bold text-eco">0</span>
+                    Total Complaints: <span id="totalComplaintsCount" class="font-bold text-eco-dark">0</span>
                 </p>
             </div>
         </div>
@@ -92,7 +92,17 @@
             </div>
 
             <!-- Actions -->
-            <div class="flex flex-col sm:flex-row gap-3">
+            <div class="flex flex-col xl:flex-row gap-3">
+                <!-- Date Filter -->
+                <div class="flex gap-2">
+                    <input type="date" id="filterDateFrom"
+                        class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-eco dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:[color-scheme:dark]"
+                        placeholder="From Date" title="From Date">
+                    <span class="self-center text-gray-500">-</span>
+                    <input type="date" id="filterDateTo"
+                        class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-eco dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:[color-scheme:dark]"
+                        placeholder="To Date" title="To Date">
+                </div>
                 <!-- Category Filter (Master Admin Only) -->
                 <select id="filterCategory"
                     class="hidden w-full sm:w-auto px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-eco dark:bg-gray-700 dark:border-gray-600 dark:text-white">
@@ -111,7 +121,6 @@
                     <option value="Pending">Pending</option>
                     <option value="In-Progress">In Progress</option>
                     <option value="Resolved">Resolved</option>
-                    <option value="Deleted">Deleted</option>
                 </select>
 
 

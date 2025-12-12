@@ -125,11 +125,12 @@ async function loadAdminComplaints() {
             categoryName: categoryMap[c.categoryid] || 'Uncategorized'
         }));
 
-        // Update summary boxes
+        // Update summary boxes (still counts deleted ones)
         updateStatistics(allComplaints);
 
-        // Render Recent Activity (Top 5)
-        renderRecentActivity(allComplaints.slice(0, 5));
+        // Render Recent Activity (Top 5 ACTIVE complaints only)
+        const activeComplaints = allComplaints.filter(c => c.complaintstatus !== 'Deleted');
+        renderRecentActivity(activeComplaints.slice(0, 5));
 
     } catch (err) {
         console.error('Unexpected error loading complaints:', err);

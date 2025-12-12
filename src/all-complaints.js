@@ -118,6 +118,9 @@ async function loadComplaints() {
             query = query.eq('adminid', adminId);
         }
 
+        // Hide Deleted complaints from the table view
+        query = query.neq('complaintstatus', 'Deleted');
+
         const { data: complaints, error } = await query.order('submitteddate', { ascending: false });
 
         if (error) throw error;
@@ -600,7 +603,30 @@ function filterComplaints() {
         const categoryFilter = filterCategory ? filterCategory.value : '';
         const matchesCategory = categoryFilter === '' || complaint.categoryName === categoryFilter; // Check Name
 
-        return matchesSearch && matchesStatus && matchesCategory;
+        // Date Range Filter
+        const dateFrom = document.getElementById('filterDateFrom').value;
+        const dateTo = document.getElementById('filterDateTo').value;
+        let matchesDate = true;
+
+        if (dateFrom || dateTo) {
+            const complaintDate = new Date(complaint.submitteddate);
+            // Reset time part for accurate date-only comparison
+            complaintDate.setHours(0, 0, 0, 0);
+
+            if (dateFrom) {
+                const innerFrom = new Date(dateFrom);
+                innerFrom.setHours(0, 0, 0, 0);
+                if (complaintDate < innerFrom) matchesDate = false;
+            }
+
+            if (dateTo && matchesDate) { // Only check if still matching
+                const innerTo = new Date(dateTo);
+                innerTo.setHours(0, 0, 0, 0);
+                if (complaintDate > innerTo) matchesDate = false;
+            }
+        }
+
+        return matchesSearch && matchesStatus && matchesCategory && matchesDate;
     });
 
     currentPage = 1; // Reset to first page
@@ -689,6 +715,12 @@ function setupEventListeners() {
     searchInput.addEventListener('input', filterComplaints);
     filterStatus.addEventListener('change', filterComplaints);
     if (filterCategory) filterCategory.addEventListener('change', filterComplaints);
+
+    // Date Inputs
+    const dateFromInput = document.getElementById('filterDateFrom');
+    const dateToInput = document.getElementById('filterDateTo');
+    if (dateFromInput) dateFromInput.addEventListener('change', filterComplaints);
+    if (dateToInput) dateToInput.addEventListener('change', filterComplaints);
 
     prevPageBtn.addEventListener('click', () => {
         if (currentPage > 1) {

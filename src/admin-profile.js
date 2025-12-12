@@ -23,6 +23,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
+    // REVEAL CONTENT
+    document.getElementById("mainContent").classList.remove("hidden");
+
     checkAdminSession();
     setupEventListeners();
 });

@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // 1. Immediate Session Check
   const { data: { session: activeSession } } = await supabase.auth.getSession();
   if (!activeSession || !activeSession.user) {
-    window.location.href = "/login.html";
+    window.location.href = "Login.html";
     return;
   }
 
@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   if (!session || !session.user) {
-    window.location.href = "/login.html";
+    window.location.href = "Login.html";
     return;
   }
 

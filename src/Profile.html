@@ -63,7 +63,7 @@
   </aside>
 
   <!-- Main Content -->
-  <main class="flex-1 px-6 py-10 md:px-12">
+  <main id="mainContent" class="flex-1 px-6 py-10 md:px-12 hidden">
     <h1 class="text-3xl font-bold mb-6 text-eco-dark dark:text-eco-light">User Profile</h1>
 
     <div class="flex flex-col lg:flex-row lg:space-x-8 gap-6">
@@ -72,7 +72,8 @@
       <section
         class="flex-none lg:w-1/3 bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 flex flex-col items-center relative">
         <div class="relative">
-          <img id="profileImage" src="../images/profile.png" class="h-32 w-32 rounded-full border-4 border-eco shadow-lg">
+          <img id="profileImage" src="../images/profile.png"
+            class="h-32 w-32 rounded-full border-4 border-eco shadow-lg">
           <!-- No upload button for read-only profile picture -->
         </div>
 

@@ -70,11 +70,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   // - OR there is an 'error' in URL (Auth failure feedback)
   const params = new URLSearchParams(window.location.search);
   const hasCode = params.has("code");
-  const hasError = window.location.hash.includes("error=");
+  const urlHash = window.location.hash;
+  const hasToken = urlHash.includes("access_token") || urlHash.includes("type=recovery");
+  const hasError = urlHash.includes("error=");
 
   const { data: { session } } = await supabase.auth.getSession();
 
-  if (!session && !hasCode && !hasError) {
+  if (!session && !hasCode && !hasToken && !hasError) {
     // User is trying to access directly without a link or session
     window.location.href = "Login.html";
     return;
@@ -91,6 +93,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log("PKCE Session established");
     }
   }
+
+  // REVEAL CONTENT (Validation Passed)
+  const mainContent = document.getElementById("mainContent");
+  if (mainContent) mainContent.classList.remove("hidden");
 
   // -----------------------------------------------------------
   // 3. LISTEN FOR AUTH STATE

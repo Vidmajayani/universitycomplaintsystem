@@ -7,6 +7,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.location.href = "Login.html";
     return;
   }
+
+  // REVEAL CONTENT
+  document.getElementById("mainContent").classList.remove("hidden");
+
   loadProfile();
 });
 

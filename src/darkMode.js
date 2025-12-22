@@ -1,6 +1,26 @@
 // Import Supabase for logout functionality
 import { supabase } from './supabaseClient.js';
 
+// ======================
+// AUTHENTICATION GUARD
+// ======================
+// Protect all user pages that load darkMode.js
+// Skip guard for login and reset password pages
+const currentPage = window.location.pathname.split('/').pop();
+const publicPages = ['Login.html', 'ResetPassword.html', 'ChangePassword.html'];
+
+if (!publicPages.includes(currentPage)) {
+  // Check authentication immediately
+  (async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (!session) {
+      // No active session - redirect to login
+      window.location.href = 'Login.html';
+    }
+  })();
+}
+
 // // ======================
 // // Helper Function
 // // ======================
@@ -384,11 +404,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // Find all logout links (both desktop and mobile)
   const logoutLinks = document.querySelectorAll('a[href="Login.html"]');
 
-  logoutLinks.forEach(link => {
-    // Check if the link text contains "Log Out" or "Logout"
-    if (link.textContent.trim().toLowerCase().includes('log out') ||
-      link.textContent.trim().toLowerCase().includes('logout')) {
+  console.log(`[darkMode.js] Found ${logoutLinks.length} links to Login.html`);
+
+  logoutLinks.forEach((link, index) => {
+    // Get text content and normalize whitespace
+    const linkText = link.textContent.replace(/\s+/g, ' ').trim().toLowerCase();
+    console.log(`[darkMode.js] Link ${index}: "${linkText}"`);
+
+    // Check if the link text contains "log out" or "logout"
+    if (linkText.includes('log out') || linkText.includes('logout')) {
       link.addEventListener('click', handleLogout);
+      console.log(`[darkMode.js] ✅ Attached logout handler to link ${index}`);
     }
   });
 });

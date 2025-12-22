@@ -10,7 +10,12 @@ if (!supabaseKey) {
 }
 
 const supabase = createClient(supabaseUrl, supabaseKey, {
-
+  auth: {
+    persistSession: false,  // Don't save session when tab is closed
+    autoRefreshToken: false, // Don't auto-refresh tokens
+    detectSessionInUrl: true,
+    storage: window.sessionStorage, // Use sessionStorage instead of localStorage (clears on tab close)
+  }
 });
 
 export { supabase }

@@ -9,17 +9,40 @@ import { supabase } from './supabaseClient.js';
 const currentPage = window.location.pathname.split('/').pop();
 const publicPages = ['Login.html', 'ResetPassword.html', 'ChangePassword.html'];
 
+// Hide page content until auth check completes
 if (!publicPages.includes(currentPage)) {
-  // Check authentication immediately
-  (async () => {
-    const { data: { session } } = await supabase.auth.getSession();
+  document.documentElement.style.visibility = 'hidden';
+}
 
-    if (!session) {
-      // No active session - redirect to login
+// Run authentication check
+(async () => {
+  if (!publicPages.includes(currentPage)) {
+    try {
+      const { data: { session }, error } = await supabase.auth.getSession();
+
+      if (error) {
+        console.error('Auth check error:', error);
+        window.location.href = 'Login.html';
+        return;
+      }
+
+      if (!session) {
+        // No active session - redirect to login
+        window.location.href = 'Login.html';
+        return;
+      }
+
+      // Session exists - show the page
+      document.documentElement.style.visibility = 'visible';
+    } catch (err) {
+      console.error('Unexpected auth error:', err);
       window.location.href = 'Login.html';
     }
-  })();
-}
+  } else {
+    // Public page - show immediately
+    document.documentElement.style.visibility = 'visible';
+  }
+})();
 
 // // ======================
 // // Helper Function

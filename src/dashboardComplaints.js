@@ -164,4 +164,3 @@ async function loadRecentComplaints() {
 }
 
 loadRecentComplaints();
-

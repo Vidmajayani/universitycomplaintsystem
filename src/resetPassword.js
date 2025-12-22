@@ -1,6 +1,41 @@
 import { supabase } from './supabaseClient.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  // ============================================
+  // CHECK IF USER IS ALREADY LOGGED IN
+  // If yes, redirect to appropriate dashboard
+  // ============================================
+  const { data: { session } } = await supabase.auth.getSession();
+
+  if (session && session.user) {
+    const userId = session.user.id;
+
+    // Check if user is an Admin
+    const { data: adminData } = await supabase
+      .from('admin')
+      .select('id')
+      .eq('id', userId)
+      .single();
+
+    if (adminData) {
+      window.location.href = 'AdminDashboard.html';
+      return;
+    }
+
+    // Check if user is a regular User
+    const { data: userData } = await supabase
+      .from('users')
+      .select('id')
+      .eq('id', userId)
+      .single();
+
+    if (userData) {
+      window.location.href = 'UserDashboard.html';
+      return;
+    }
+  }
+  // ============================================
+
   const form = document.getElementById('resetForm');
 
   form.addEventListener('submit', async (event) => {

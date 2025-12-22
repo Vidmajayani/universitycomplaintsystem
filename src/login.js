@@ -1,6 +1,43 @@
 import { supabase } from './supabaseClient.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // ============================================
+    // CHECK IF USER IS ALREADY LOGGED IN
+    // If yes, redirect to appropriate dashboard
+    // ============================================
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (session && session.user) {
+        const userId = session.user.id;
+
+        // Check if user is an Admin
+        const { data: adminData } = await supabase
+            .from('admin')
+            .select('id')
+            .eq('id', userId)
+            .single();
+
+        if (adminData) {
+            // User is already logged in as Admin
+            window.location.href = 'AdminDashboard.html';
+            return;
+        }
+
+        // Check if user is a regular User
+        const { data: userData } = await supabase
+            .from('users')
+            .select('id')
+            .eq('id', userId)
+            .single();
+
+        if (userData) {
+            // User is already logged in as regular User
+            window.location.href = 'UserDashboard.html';
+            return;
+        }
+    }
+    // ============================================
+
     const passwordInput = document.getElementById('password');
     const toggleBtn = document.getElementById('togglePassword');
     const eyeIcon = document.getElementById('eyeIcon');

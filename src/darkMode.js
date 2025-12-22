@@ -1,3 +1,6 @@
+// Import Supabase for logout functionality
+import { supabase } from './supabaseClient.js';
+
 // // ======================
 // // Helper Function
 // // ======================
@@ -345,3 +348,47 @@ if (profileButton && profileMenu) {
 function filterComplaints(status) {
   window.location.href = `my-complaints.html?status=${status}`;
 }
+
+// ======================
+// LOGOUT FUNCTIONALITY
+// ======================
+// This handles logout for all user pages
+
+// Function to handle logout
+async function handleLogout(e) {
+  e.preventDefault();
+
+  try {
+    // Sign out from Supabase
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      console.error('Error signing out:', error);
+      alert('Error logging out. Please try again.');
+      return;
+    }
+
+    // Clear localStorage
+    localStorage.clear();
+
+    // Redirect to login page
+    window.location.href = 'Login.html';
+  } catch (err) {
+    console.error('Unexpected logout error:', err);
+    alert('Error logging out. Please try again.');
+  }
+}
+
+// Attach logout handlers to all logout links
+document.addEventListener('DOMContentLoaded', () => {
+  // Find all logout links (both desktop and mobile)
+  const logoutLinks = document.querySelectorAll('a[href="Login.html"]');
+
+  logoutLinks.forEach(link => {
+    // Check if the link text contains "Log Out" or "Logout"
+    if (link.textContent.trim().toLowerCase().includes('log out') ||
+      link.textContent.trim().toLowerCase().includes('logout')) {
+      link.addEventListener('click', handleLogout);
+    }
+  });
+});

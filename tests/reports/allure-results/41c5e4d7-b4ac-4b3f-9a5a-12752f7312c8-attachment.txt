@@ -1,0 +1,5 @@
+[32mINFO    [0m root:test_search.py:71 ********** Description Search Test Started **********
+[32mINFO    [0m root:test_search.py:77 Searching for: Broken taps and doors in level 4 bathroom
+[32mINFO    [0m root:test_search.py:117 Using search term: The washroom located near the main lecture halls on the ground floor has been in an unhygienic condition for several days. The floors are often wet, trash bins are overflowing, and there is an unpleasant odor throughout the area. Some cubicles do not have working flush systems, and hand soap is frequently unavailable. This situation creates discomfort for students and raises concerns about health and hygiene, especially during busy lecture hours.
+[32mINFO    [0m root:test_search.py:123 Results found: 1
+[32mINFO    [0m root:test_search.py:127 ********** Description Search Passed **********

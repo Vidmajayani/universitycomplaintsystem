@@ -1,0 +1,2 @@
+[32mINFO    [0m root:test_filter.py:82 ********** Filter Apply Status Test Started **********
+[32mINFO    [0m root:test_filter.py:90 ********** Results found: 1 **********

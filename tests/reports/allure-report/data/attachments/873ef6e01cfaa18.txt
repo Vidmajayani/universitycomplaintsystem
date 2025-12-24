@@ -1,0 +1,1 @@
+[32mINFO    [0m root:test_filter.py:109 ********** Clear Filter Test Started **********

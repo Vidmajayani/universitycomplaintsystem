@@ -1,0 +1,5 @@
+[32mINFO    [0m root:test_search.py:71 ********** Complainant Name Search Test Started **********
+[32mINFO    [0m root:test_search.py:77 Searching for: level 4
+[32mINFO    [0m root:test_search.py:96 Using search term: Salma
+[32mINFO    [0m root:test_search.py:102 Results found: 1
+[32mINFO    [0m root:test_search.py:106 ********** Complainant Name Search Passed **********

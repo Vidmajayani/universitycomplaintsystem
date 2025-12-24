@@ -1,0 +1,5 @@
+[32mINFO    [0m root:test_search.py:71 ********** Exact Match Search Test Started **********
+[32mINFO    [0m root:test_search.py:77 Searching for: Broken taps and doors in level 4 bathroom
+[32mINFO    [0m root:test_search.py:96 Using search term: Broken Air Conditioning in the Library
+[32mINFO    [0m root:test_search.py:102 Results found: 1
+[32mINFO    [0m root:test_search.py:106 ********** Exact Match Search Passed **********

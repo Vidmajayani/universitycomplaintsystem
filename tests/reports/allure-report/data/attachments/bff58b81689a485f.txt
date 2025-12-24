@@ -1,0 +1,2 @@
+[32mINFO    [0m root:test_password_reset.py:70 ********** Valid Email Password Reset Test Started **********
+[32mINFO    [0m root:test_password_reset.py:110 ********** Password Reset Email Sent Successfully **********

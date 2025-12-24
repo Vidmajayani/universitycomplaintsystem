@@ -1,0 +1,2 @@
+[32mINFO    [0m root:test_filter.py:38 ********** Filter Page Title Verification Started **********
+[32mINFO    [0m root:test_filter.py:42 ********** Title Matched **********

@@ -1,0 +1,5 @@
+[32mINFO    [0m root:test_search.py:71 ********** Multiple Keywords Search Test Started **********
+[32mINFO    [0m root:test_search.py:77 Searching for: Broken taps leak
+[32mINFO    [0m root:test_search.py:117 Using search term: The washroom located
+[32mINFO    [0m root:test_search.py:123 Results found: 1
+[32mINFO    [0m root:test_search.py:127 ********** Multiple Keywords Search Passed **********

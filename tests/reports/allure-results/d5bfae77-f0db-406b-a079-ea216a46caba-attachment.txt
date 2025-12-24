@@ -1,0 +1,7 @@
+[32mINFO    [0m root:test_logout.py:22 ********** Test 07 Logout Started **********
+[32mINFO    [0m root:test_logout.py:23 ********** Successful Logout Test Started **********
+[32mINFO    [0m root:test_logout.py:27 Opening Login URL: https://vidmajayani.github.io/universitycomplaintsystem/src/Login.html
+[32mINFO    [0m root:test_logout.py:41 ********** Admin Dashboard Displayed Successfully **********
+[32mINFO    [0m root:test_logout.py:58 ********** Profile Dropdown Displayed Successfully **********
+[32mINFO    [0m root:test_logout.py:72 ********** Logout Modal Displayed Successfully **********
+[32mINFO    [0m root:test_logout.py:86 ********** Successfully Logged Out and Redirected to Login Page **********

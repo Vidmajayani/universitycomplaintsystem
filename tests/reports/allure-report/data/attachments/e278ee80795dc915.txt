@@ -1,0 +1,4 @@
+[32mINFO    [0m root:test_logout.py:127 ********** Back Button After Logout Test Started **********
+[32mINFO    [0m root:test_logout.py:144 ********** Admin Dashboard Displayed Successfully **********
+[32mINFO    [0m root:test_logout.py:173 ********** Successfully Logged Out and Redirected to Login Page **********
+[32mINFO    [0m root:test_logout.py:192 ********** SECURITY FLAW DETECTED: Admin can access dashboard via back button. Current URL: https://vidmajayani.github.io/universitycomplaintsystem/src/AdminDashboard.html **********

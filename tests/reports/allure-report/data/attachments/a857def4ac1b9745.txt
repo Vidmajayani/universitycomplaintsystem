@@ -1,0 +1,5 @@
+[32mINFO    [0m root:test_search.py:71 ********** Single Keyword Search Test Started **********
+[32mINFO    [0m root:test_search.py:77 Searching for: Student
+[32mINFO    [0m root:test_search.py:96 Using search term: Broken Air Conditioning in the Library
+[32mINFO    [0m root:test_search.py:102 Results found: 1
+[32mINFO    [0m root:test_search.py:106 ********** Single Keyword Search Passed **********

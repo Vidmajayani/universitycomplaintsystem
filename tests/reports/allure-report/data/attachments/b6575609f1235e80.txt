@@ -1,0 +1,4 @@
+[32mINFO    [0m root:test_delete.py:78 ********** Delete Complaint With Required Fields Test Started **********
+[32mINFO    [0m root:test_delete.py:111 Dynamically selected complaint to delete: No Toilet Paper in Bathroom
+[32mINFO    [0m root:test_delete.py:123 ********** Delete Complaint Modal Displayed **********
+[32mINFO    [0m root:test_delete.py:144 ********** Complaint Deleted Successfully **********

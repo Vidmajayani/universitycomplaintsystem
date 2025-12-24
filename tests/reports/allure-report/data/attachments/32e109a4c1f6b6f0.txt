@@ -1,0 +1,4 @@
+[32mINFO    [0m root:test_analytics.py:110 ********** Reset Filter Test Started **********
+[32mINFO    [0m root:test_analytics.py:133 ********** Analytics Page Displayed Successfully **********
+[32mINFO    [0m root:test_analytics.py:148 ********** Filter Text After Applying Month: Showing: This Month **********
+[32mINFO    [0m root:test_analytics.py:162 ********** Filters Cleared Successfully - Showing All Time **********

@@ -1,0 +1,2 @@
+[32mINFO    [0m root:test_login.py:123 ********** Invalid Email Format Test Started **********
+[32mINFO    [0m root:test_login.py:141 ********** Invalid Email Format Passed - Validation Matched **********

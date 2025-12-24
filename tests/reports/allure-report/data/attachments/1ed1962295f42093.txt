@@ -1,0 +1,4 @@
+[32mINFO    [0m root:test_view.py:21 ********** Test 09 View Complaint Started **********
+[32mINFO    [0m root:test_view.py:22 ********** View Complaint Details Test Started **********
+[32mINFO    [0m root:test_view.py:56 ********** Navigated to Complaint Details Page Successfully **********
+[32mINFO    [0m root:test_view.py:65 ********** Complaint Details Displayed: Broken Air Conditioning in the Library **********

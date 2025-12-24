@@ -1,0 +1,4 @@
+[32mINFO    [0m root:test_analytics.py:23 ********** Test 08 Analytics Started **********
+[32mINFO    [0m root:test_analytics.py:24 ********** Download Report Test Started **********
+[32mINFO    [0m root:test_analytics.py:47 ********** Analytics Page Displayed Successfully **********
+[32mINFO    [0m root:test_analytics.py:81 ********** Report Downloaded Successfully: {'Analytics_Report_1766459459723.pdf'} **********

@@ -1,0 +1,3 @@
+[32mINFO    [0m root:test_view.py:163 ********** Attachment View Test Started **********
+[32mINFO    [0m root:test_view.py:197 ********** On Complaint Details Page **********
+[32mINFO    [0m root:test_view.py:242 ********** No Attachments Found - Test Skipped **********

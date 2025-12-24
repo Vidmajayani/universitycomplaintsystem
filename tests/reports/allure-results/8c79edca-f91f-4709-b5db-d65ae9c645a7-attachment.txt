@@ -1,0 +1,2 @@
+[32mINFO    [0m root:test_login.py:72 ********** Invalid Password Test Started **********
+[32mINFO    [0m root:test_login.py:89 ********** Invalid Password Passed - Alert Matched **********

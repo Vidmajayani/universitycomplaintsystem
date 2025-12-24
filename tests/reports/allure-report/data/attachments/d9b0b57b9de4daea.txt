@@ -1,0 +1,7 @@
+[32mINFO    [0m root:test_login_data_driven.py:27 ********** Valid Data Driven Login Test Started **********
+[32mINFO    [0m root:test_login_data_driven.py:88 ********** Test Data Passed **********
+[32mINFO    [0m root:test_login_data_driven.py:66 ********** Error Message Matched **********
+[32mINFO    [0m root:test_login_data_driven.py:70 ********** Test Data Passed **********
+[32mINFO    [0m root:test_login_data_driven.py:66 ********** Error Message Matched **********
+[32mINFO    [0m root:test_login_data_driven.py:70 ********** Test Data Passed **********
+[32mINFO    [0m root:test_login_data_driven.py:107 ********** Data Driven Login Test Passed **********

@@ -1,0 +1,3 @@
+[32mINFO    [0m root:test_view.py:91 ********** Back Arrow Navigation Test Started **********
+[32mINFO    [0m root:test_view.py:125 ********** On Complaint Details Page **********
+[32mINFO    [0m root:test_view.py:137 ********** Successfully Returned to All Complaints Page **********

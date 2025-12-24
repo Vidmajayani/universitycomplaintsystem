@@ -1,0 +1,2 @@
+[32mINFO    [0m root:test_login.py:123 ********** Empty Fields Test Started **********
+[32mINFO    [0m root:test_login.py:141 ********** Empty Fields Passed - Validation Matched **********

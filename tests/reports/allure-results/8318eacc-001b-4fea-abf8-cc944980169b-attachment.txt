@@ -1,0 +1,3 @@
+[32mINFO    [0m root:test_delete.py:181 ********** Cancel Button Functionality Test Started **********
+[32mINFO    [0m root:test_delete.py:218 ********** Delete Complaint Modal Displayed **********
+[32mINFO    [0m root:test_delete.py:235 ********** Delete Complaint Modal Closed Successfully **********

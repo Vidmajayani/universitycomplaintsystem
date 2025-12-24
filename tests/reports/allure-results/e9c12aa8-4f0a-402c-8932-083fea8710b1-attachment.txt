@@ -1,0 +1,3 @@
+[32mINFO    [0m root:test_update_status.py:77 ********** Update Status With Required Fields Test Started **********
+[32mINFO    [0m root:test_update_status.py:114 ********** Update Status Modal Displayed **********
+[32mINFO    [0m root:test_update_status.py:137 ********** Status Updated Successfully **********

@@ -1,0 +1,3 @@
+[32mINFO    [0m root:test_delete.py:269 ********** Empty Field Handling Test Started **********
+[32mINFO    [0m root:test_delete.py:304 ********** Delete Complaint Modal Displayed **********
+[32mINFO    [0m root:test_delete.py:323 ********** Empty Field Error Message Matched **********

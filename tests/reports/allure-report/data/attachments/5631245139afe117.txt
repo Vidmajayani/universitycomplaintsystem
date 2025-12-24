@@ -1,0 +1,6 @@
+[32mINFO    [0m root:test_logout.py:22 ********** Test 07 Logout Started **********
+[32mINFO    [0m root:test_logout.py:23 ********** Successful Logout Test Started **********
+[32mINFO    [0m root:test_logout.py:40 ********** Admin Dashboard Displayed Successfully **********
+[32mINFO    [0m root:test_logout.py:57 ********** Profile Dropdown Displayed Successfully **********
+[32mINFO    [0m root:test_logout.py:71 ********** Logout Modal Displayed Successfully **********
+[32mINFO    [0m root:test_logout.py:85 ********** Successfully Logged Out and Redirected to Login Page **********

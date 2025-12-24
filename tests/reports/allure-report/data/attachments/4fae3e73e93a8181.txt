@@ -1,0 +1,2 @@
+[32mINFO    [0m root:test_filter.py:65 ********** Filter Options Test Started **********
+[32mINFO    [0m root:test_filter.py:73 ********** Options Matched **********

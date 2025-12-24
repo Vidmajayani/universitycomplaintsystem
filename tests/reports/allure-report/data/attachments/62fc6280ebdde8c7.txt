@@ -1,0 +1,2 @@
+[32mINFO    [0m root:test_search.py:39 ********** Search Page Title Verification Started **********
+[32mINFO    [0m root:test_search.py:46 ********** Title Matched **********

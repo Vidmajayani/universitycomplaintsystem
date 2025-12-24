@@ -23,6 +23,35 @@ let filterState = {
 };
 
 // ==========================================
+// HELPER FUNCTIONS
+// ==========================================
+
+/**
+ * Calculate the difference in calendar days between two dates.
+ * This ignores the time component and only counts midnight-to-midnight transitions.
+ * 
+ * Example: Dec 19 at 9:00 AM to Dec 20 at 10:00 AM = 1 day (not 25 hours)
+ * 
+ * @param {Date} startDate - The earlier date
+ * @param {Date} endDate - The later date
+ * @returns {number} Number of calendar days between the dates
+ */
+function getCalendarDaysDifference(startDate, endDate) {
+    // Create new date objects set to midnight (00:00:00.000)
+    const start = new Date(startDate);
+    start.setHours(0, 0, 0, 0);
+
+    const end = new Date(endDate);
+    end.setHours(0, 0, 0, 0);
+
+    // Calculate difference in milliseconds and convert to days
+    const diffMs = end - start;
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    return diffDays;
+}
+
+// ==========================================
 // INITIALIZATION
 // ==========================================
 // Runs when the page is fully loaded
@@ -201,9 +230,13 @@ function applyDateFilter() {
 
         // Calculate start/end dates based on filter type
         if (filterState.type === 'week') {
+            // Sri Lankan week: Monday to Sunday
+            // getDay() returns: 0=Sunday, 1=Monday, 2=Tuesday, ..., 6=Saturday
             const dayOfWeek = now.getDay();
+            const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // If Sunday, go back 6 days; else go back (dayOfWeek - 1) days
+
             startDate = new Date(now);
-            startDate.setDate(now.getDate() - dayOfWeek); // Start of this week (Sunday)
+            startDate.setDate(now.getDate() - daysFromMonday); // Start of this week (Monday)
             startDate.setHours(0, 0, 0, 0);
             endDate = new Date(now);
             endDate.setHours(23, 59, 59, 999);
@@ -332,7 +365,8 @@ function renderKPIs() {
         const totalDays = resolvedComplaints.reduce((sum, c) => {
             const submitted = new Date(c.submitteddate);
             const now = new Date(); // Note: Ideally this should be resolution date, using 'now' as proxy if missing
-            const days = Math.floor((now - submitted) / (1000 * 60 * 60 * 24));
+            // Use calendar days (midnight to midnight) instead of exact 24-hour periods
+            const days = getCalendarDaysDifference(submitted, now);
             return sum + days;
         }, 0);
         avgResolution = Math.round(totalDays / resolvedComplaints.length);
@@ -549,7 +583,8 @@ function renderResolutionChart(textColor, gridColor) {
     const avgTimes = categories.map(cat => {
         const catComplaints = filteredComplaints.filter(c => c.categoryName?.toLowerCase() === cat.toLowerCase() && c.complaintstatus === 'Resolved');
         if (catComplaints.length === 0) return 0;
-        const totalDays = catComplaints.reduce((sum, c) => sum + Math.floor((new Date() - new Date(c.submitteddate)) / (1000 * 60 * 60 * 24)), 0);
+        // Use calendar days (midnight to midnight) instead of exact 24-hour periods
+        const totalDays = catComplaints.reduce((sum, c) => sum + getCalendarDaysDifference(new Date(c.submitteddate), new Date()), 0);
         return Math.round(totalDays / catComplaints.length);
     });
 
@@ -587,12 +622,16 @@ function renderDailyTrendChart(textColor, gridColor) {
     if (!ctx) return;
     if (charts.daily) charts.daily.destroy();
 
-    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    // Days starting from Monday (Sri Lankan/International standard)
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     const counts = new Array(7).fill(0);
 
     filteredComplaints.forEach(c => {
         const dayIndex = new Date(c.submitteddate).getDay();
-        counts[dayIndex]++;
+        // Remap: getDay() returns 0=Sun, 1=Mon, ..., 6=Sat
+        // We want: 0=Mon, 1=Tue, ..., 6=Sun
+        const remappedIndex = dayIndex === 0 ? 6 : dayIndex - 1;
+        counts[remappedIndex]++;
     });
 
     charts.daily = new Chart(ctx, {
@@ -1022,7 +1061,8 @@ Observation: Monitoring spikes in ${labels[maxIndex]} helps in resource planning
             categories.forEach(cat => {
                 const catComplaints = filteredComplaints.filter(c => c.categoryName === cat && c.complaintstatus === 'Resolved');
                 if (catComplaints.length > 0) {
-                    const totalDays = catComplaints.reduce((sum, c) => sum + Math.floor((new Date() - new Date(c.submitteddate)) / (1000 * 60 * 60 * 24)), 0);
+                    // Use calendar days (midnight to midnight) instead of exact 24-hour periods
+                    const totalDays = catComplaints.reduce((sum, c) => sum + getCalendarDaysDifference(new Date(c.submitteddate), new Date()), 0);
                     const avg = totalDays / catComplaints.length;
                     timings.push({ cat, avg });
                 }
@@ -1044,13 +1084,22 @@ Recommendation: Investigate bottlenecks in "${slowest.cat}" to improve overall t
         }
 
         case 'dailyChart': {
-            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            // Days in Monday-Sunday order to match the chart
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
             const counts = new Array(7).fill(0);
-            filteredComplaints.forEach(c => counts[new Date(c.submitteddate).getDay()]++);
+
+            filteredComplaints.forEach(c => {
+                const dayIndex = new Date(c.submitteddate).getDay();
+                // Remap: getDay() returns 0=Sun, 1=Mon, ..., 6=Sat
+                // We want: 0=Mon, 1=Tue, ..., 6=Sun
+                const remappedIndex = dayIndex === 0 ? 6 : dayIndex - 1;
+                counts[remappedIndex]++;
+            });
 
             const maxVal = Math.max(...counts);
             const busiestDay = days[counts.indexOf(maxVal)];
-            const weekendCount = counts[0] + counts[6];
+            // Weekend: Saturday (index 5) and Sunday (index 6)
+            const weekendCount = counts[5] + counts[6];
             const weekdayCount = counts.reduce((a, b) => a + b, 0) - weekendCount;
 
             return `Day-of-Week Patterns:

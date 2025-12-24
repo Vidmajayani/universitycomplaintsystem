@@ -1,770 +1,301 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8"/>
-    <title id="head-title">report.html</title>
-      <link href="assets\style.css" rel="stylesheet" type="text/css"/>
-  </head>
-  <body>
-    <h1 id="title">report.html</h1>
-    <p>Report generated on 06-Dec-2025 at 15:03:51 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a>
-        v4.1.1</p>
-    <div id="environment-header">
-      <h2>Environment</h2>
-    </div>
-    <table id="environment"></table>
-    <!-- TEMPLATES -->
-      <template id="template_environment_row">
-      <tr>
-        <td></td>
-        <td></td>
-      </tr>
-    </template>
-    <template id="template_results-table__body--empty">
-      <tbody class="results-table-row">
-        <tr id="not-found-message">
-          <td colspan="4">No results found. Check the filters.</th>
-        </tr>
-    </template>
-    <template id="template_results-table__tbody">
-      <tbody class="results-table-row">
-        <tr class="collapsible">
-        </tr>
-        <tr class="extras-row">
-          <td class="extra" colspan="4">
-            <div class="extraHTML"></div>
-            <div class="media">
-              <div class="media-container">
-                  <div class="media-container__nav--left"><</div>
-                  <div class="media-container__viewport">
-                    <img src="" />
-                    <video controls>
-                      <source src="" type="video/mp4">
-                    </video>
-                  </div>
-                  <div class="media-container__nav--right">></div>
+
+    <!DOCTYPE html>
+    <html lang="en" class="dark">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ComplaNet — Automated Test Report</title>
+        <!-- Use Tailwind CSS for styling -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <!-- Use Alpine.js for interactivity -->
+        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        
+        <script>
+            // Configure Tailwind to support dark mode and custom colors
+            tailwind.config = {
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        colors: {
+                            'bg-light': '#F5F6F8',
+                            'bg-dark': '#1E1E1E',
+                            'eco-light': '#E3F2FD',
+                            'eco': '#a6e3ff',
+                            'eco-dark': '#2b88ba',
+                            'greenvine': '#1d4ed8'
+                        },
+                        fontFamily: {
+                            sans: ['Poppins', 'sans-serif'],
+                        }
+                    }
+                }
+            }
+        </script>
+        <style>
+            /* Custom styles for dashboard cards and scrollbar */
+            :root {
+                --card-total-from: #3b82f6; --card-total-to: #2563eb;
+                --card-pending-from: #eab308; --card-pending-to: #f97316;
+                --card-progress-from: #a855f7; --card-progress-to: #4f46e5;
+                --card-resolved-from: #22c55e; --card-resolved-to: #10b981;
+            }
+            body { font-family: 'Poppins', sans-serif; }
+            [x-cloak] { display: none !important; }
+            .dashboard-card-total { background: linear-gradient(to bottom right, var(--card-total-from), var(--card-total-to)); }
+            .dashboard-card-resolved { background: linear-gradient(to bottom right, var(--card-resolved-from), var(--card-resolved-to)); }
+            ::-webkit-scrollbar { width: 8px; }
+            ::-webkit-scrollbar-track { background: #1E1E1E; }
+            ::-webkit-scrollbar-thumb { background: #424242; border-radius: 4px; }
+        </style>
+    </head>
+    <body class="flex flex-col min-h-screen bg-[#F5F6F8] text-[#2B2B2B] dark:bg-[#1E1E1E] dark:text-white transition-all duration-300 font-sans" x-data="app()">
+
+        <!-- Header Section -->
+        <header class="flex items-center justify-between px-3 md:px-6 py-4 bg-pink dark:bg-gray-800 shadow-md">
+            <div class="flex items-center">
+                <img src="../../public/images/BGlessLogoDark.png" alt="ComplaNet Logo" class="h-16 block dark:hidden">
+                <img src="../../public/images/BGlessLogo.png" alt="ComplaNet Logo Dark" class="h-16 hidden dark:block">
+            </div>
+            <div class="hidden md:flex space-x-6 items-center">
+                <span class="font-semibold text-xl text-eco-dark dark:text-eco">Automated Test Report</span>
+            </div>
+            <div class="text-sm text-gray-500 dark:text-gray-300 font-medium">
+                December 23, 2025
+            </div>
+        </header>
+
+        <!-- Main Dashboard Content -->
+        <main class="flex-1 px-6 py-8 md:px-10">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold mb-2">Test Dashboard</h1>
+                <p class="text-gray-600 dark:text-gray-300">Monitor automated test execution results and status.</p>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 mb-10">
+                <!-- Total Tests -->
+                <div class="dashboard-card-total text-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-blue-100 text-sm font-medium mb-1">Total Tests</p>
+                            <h3 class="text-3xl font-bold" x-text="stats.total"></h3>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-full p-3"><i class="fas fa-clipboard-list text-2xl"></i></div>
+                    </div>
                 </div>
-                <div class="media__name"></div>
-                <div class="media__counter"></div>
+                <!-- Passed Tests -->
+                <div class="dashboard-card-resolved text-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-green-100 text-sm font-medium mb-1">Passed</p>
+                            <h3 class="text-3xl font-bold" x-text="stats.passed"></h3>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-full p-3"><i class="fas fa-check-circle text-2xl"></i></div>
+                    </div>
+                </div>
+                <!-- Failed Tests -->
+                <div class="bg-red-500 text-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-red-100 text-sm font-medium mb-1">Failed</p>
+                            <h3 class="text-3xl font-bold" x-text="stats.failed"></h3>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-full p-3"><i class="fas fa-exclamation-triangle text-2xl"></i></div>
+                    </div>
+                </div>
+                <!-- Success Rate -->
+                <div class="dashboard-card-progress text-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-purple-100 text-sm font-medium mb-1">Success Rate</p>
+                            <h3 class="text-3xl font-bold" x-text="passRate + '%'"></h3>
+                        </div>
+                        <div class="bg-white bg-opacity-20 rounded-full p-3"><i class="fas fa-chart-pie text-2xl"></i></div>
+                    </div>
+                </div>
             </div>
-            <div class="logwrapper">
-              <div class="logexpander"></div>
-              <div class="log"></div>
+
+            <!-- Test List Section -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-4">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-gray-200">Test Log</h2>
+                    <!-- Filters -->
+                    <div class="flex gap-2">
+                         <button @click="filter = 'all'" :class="filter === 'all' ? 'text-eco-dark dark:text-eco font-bold' : 'text-gray-500 hover:text-gray-300'" class="text-sm transition-colors">All</button>
+                         <span class="text-gray-400">|</span>
+                         <button @click="filter = 'failed'" :class="filter === 'failed' ? 'text-red-500 font-bold' : 'text-gray-500 hover:text-gray-300'" class="text-sm transition-colors">Failed</button>
+                    </div>
+                </div>
+                
+                <!-- Desktop View: Table -->
+                <div class="hidden md:block overflow-x-auto">
+                    <table class="min-w-full bg-white dark:bg-gray-800">
+                        <thead class="text-gray-500 dark:text-gray-400 uppercase text-xs leading-normal border-b dark:border-gray-700">
+                            <tr>
+                                <th class="py-3 px-6 text-left">Test Name</th>
+                                <th class="py-3 px-6 text-left">Duration</th>
+                                <th class="py-3 px-6 text-center">Status</th>
+                                <th class="py-3 px-6 text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-600 dark:text-gray-300 text-sm font-light">
+                            <template x-for="test in filteredTests" :key="test.uuid">
+                                <tr class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                                    <td class="py-3 px-6 text-left font-medium text-gray-800 dark:text-gray-200">
+                                        <div x-text="test.name"></div>
+                                    </td>
+                                    <td class="py-3 px-6 text-left font-mono text-xs" x-text="formatDuration(test.stop - test.start)"></td>
+                                    <td class="py-3 px-6 text-center">
+                                         <span class="py-1 px-3 rounded-full text-xs font-bold uppercase"
+                                              :class="{
+                                                'passed': 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400',
+                                                'failed': 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400',
+                                                'broken': 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400',
+                                                'skipped': 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'
+                                              }[test.status]" 
+                                              x-text="test.status"></span>
+                                    </td>
+                                    <td class="py-3 px-6 text-center">
+                                        <button 
+                                            @click="openModal(test)"
+                                            class="px-3 py-1.5 rounded-md text-xs font-semibold text-white shadow-sm transition-all focus:outline-none"
+                                            :class="['passed', 'skipped'].includes(test.status) ? 'bg-gray-300 dark:bg-gray-700 cursor-not-allowed opacity-50' : 'bg-blue-600 hover:bg-blue-700 hover:shadow-md'"
+                                            :disabled="['passed', 'skipped'].includes(test.status)">
+                                            View
+                                        </button>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Mobile View: Cards -->
+                <div class="md:hidden grid grid-cols-1 gap-4">
+                    <template x-for="test in filteredTests" :key="'card-' + test.uuid">
+                        <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600 flex flex-col space-y-3">
+                            <div class="flex justify-between items-start gap-3">
+                                <h3 class="font-bold text-gray-800 dark:text-white text-sm leading-tight break-all flex-1 min-w-0" x-text="test.name"></h3>
+                                <div class="shrink-0">
+                                    <span class="py-1 px-2 rounded text-[10px] font-bold uppercase tracking-wide whitespace-nowrap block"
+                                        :class="{
+                                            'passed': 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-300',
+                                            'failed': 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-300',
+                                            'broken': 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-300',
+                                            'skipped': 'bg-gray-100 text-gray-600 dark:bg-gray-600 dark:text-gray-300'
+                                        }[test.status]" 
+                                        x-text="test.status"></span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-300 pt-2 border-t dark:border-gray-600">
+                                <span class="bg-gray-200 dark:bg-gray-600 px-2 py-1 rounded font-mono" x-text="formatDuration(test.stop - test.start)"></span>
+                                <div>
+                                    <button 
+                                        @click="openModal(test)"
+                                        class="text-blue-500 hover:text-blue-400 font-bold uppercase tracking-wide text-xs"
+                                        :class="['passed', 'skipped'].includes(test.status) ? 'hidden' : ''">
+                                        View Details &rarr;
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                
+                 <div x-show="filteredTests.length === 0" class="text-center py-6 text-gray-500">No records found.</div>
             </div>
-          </td>
-        </tr>
-      </tbody>
-    </template>
-    <!-- END TEMPLATES -->
-    <div class="summary">
-      <div class="summary__data">
-        <h2>Summary</h2>
-        <div class="additional-summary prefix">
+        </main>
+
+        <!-- Footer -->
+        <footer class="w-full py-6 mt-2 bg-eco-light text-[#2B2B2B] dark:bg-[#0F1A24] dark:text-gray-200 text-center">
+             <div class="max-w-7xl mx-auto px-6">
+                <p class="font-medium text-sm">ComplaNet Test Report</p>
+                <p class="text-xs text-gray-500 mt-1">© 2025 All Rights Reserved</p>
+            </div>
+        </footer>
+        
+        <!-- Details Modal -->
+        <div x-show="activeTest" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60]" x-cloak 
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100">
+             
+            <div @click.away="closeModal()" class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-4 md:p-6 w-11/12 max-w-2xl transform transition-all scale-100 my-4 max-h-[90vh] flex flex-col">
+                 <div class="flex justify-between items-start mb-4 border-b dark:border-gray-700 pb-4 shrink-0">
+                     <h3 class="text-lg md:text-xl font-bold text-gray-900 dark:text-white break-words pr-4" x-text="activeTest?.name"></h3>
+                     <button @click="closeModal()" class="text-gray-500 hover:text-gray-300 focus:outline-none shrink-0"><i class="fas fa-times text-xl"></i></button>
+                 </div>
+                 
+                 <div class="space-y-4 overflow-y-auto pr-2 grow">
+                     <template x-if="activeTest && ['failed', 'broken'].includes(activeTest.status)">
+                         <div>
+                            <h4 class="text-red-500 font-bold text-sm mb-2 uppercase tracking-wide">Error Message</h4>
+                            <div class="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 p-4 rounded-lg text-red-600 dark:text-red-400 font-mono text-xs whitespace-pre-wrap break-all" x-text="activeTest.statusDetails?.message"></div>
+                            <template x-if="activeTest.statusDetails?.trace">
+                                <div class="mt-4">
+                                     <h4 class="text-gray-500 dark:text-gray-400 font-bold text-sm mb-2 uppercase tracking-wide">Stack Trace</h4>
+                                     <div class="bg-gray-100 dark:bg-gray-900 p-4 rounded-lg border dark:border-gray-700 font-mono text-[10px] text-gray-600 dark:text-gray-400 overflow-y-auto max-h-60 whitespace-pre-wrap break-all" x-text="activeTest.statusDetails?.trace"></div>
+                                </div>
+                            </template>
+                         </div>
+                     </template>
+                 </div>
+                 <div class="mt-6 flex justify-end shrink-0">
+                     <button @click="closeModal()" class="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-700 text-white font-medium shadow-md transition-colors text-sm">Close</button>
+                 </div>
+            </div>
         </div>
-        <p class="run-count">1 test took 00:00:17.</p>
-        <p class="filter">(Un)check the boxes to filter the results.</p>
-        <div class="summary__reload">
-          <div class="summary__reload__button hidden" onclick="location.reload()">
-            <div>There are still tests running. <br />Reload this page to get the latest results!</div>
-          </div>
-        </div>
-        <div class="summary__spacer"></div>
-        <div class="controls">
-          <div class="filters">
-            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="failed" />
-            <span class="failed">1 Failed,</span>
-            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="passed" disabled/>
-            <span class="passed">0 Passed,</span>
-            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="skipped" disabled/>
-            <span class="skipped">0 Skipped,</span>
-            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="xfailed" disabled/>
-            <span class="xfailed">0 Expected failures,</span>
-            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="xpassed" disabled/>
-            <span class="xpassed">0 Unexpected passes,</span>
-            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="error" disabled/>
-            <span class="error">0 Errors,</span>
-            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="rerun" disabled/>
-            <span class="rerun">0 Reruns</span>
-          </div>
-          <div class="collapse">
-            <button id="show_all_details">Show all details</button>&nbsp;/&nbsp;<button id="hide_all_details">Hide all details</button>
-          </div>
-        </div>
-      </div>
-      <div class="additional-summary summary">
-      </div>
-      <div class="additional-summary postfix">
-      </div>
-    </div>
-    <table id="results-table">
-      <thead id="results-table-head">
-        <tr>
-          <th class="sortable" data-column-type="result">Result</th>
-          <th class="sortable" data-column-type="testId">Test</th>
-          <th class="sortable" data-column-type="duration">Duration</th>
-          <th>Links</th>
-        </tr>
-      </thead>
-    </table>
-  </body>
-  <footer>
-    <div id="data-container" data-jsonblob="{&#34;environment&#34;: {&#34;Python&#34;: &#34;3.14.0&#34;, &#34;Platform&#34;: &#34;Windows-11-10.0.26100-SP0&#34;, &#34;Packages&#34;: {&#34;pytest&#34;: &#34;9.0.1&#34;, &#34;pluggy&#34;: &#34;1.6.0&#34;}, &#34;Project Name&#34;: &#34;University Concern Management System, ComplaNet&#34;, &#34;Test Module Name&#34;: &#34;Admin Login Tests&#34;, &#34;Quality Assurance Analyst Name&#34;: &#34;Fathima Salma Muzammil&#34;}, &#34;tests&#34;: {&#34;tests/test_cases/test_login_data_driven.py::Test_02_Login_Data_Driven::test_valid_login_data_driven&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;tests/test_cases/test_login_data_driven.py::Test_02_Login_Data_Driven::test_valid_login_data_driven&#34;, &#34;duration&#34;: &#34;00:00:17&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;tests/test_cases/test_login_data_driven.py::Test_02_Login_Data_Driven::test_valid_login_data_driven&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:17&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;self = &amp;lt;tests.test_cases.test_login_data_driven.Test_02_Login_Data_Driven object at 0x00000116C77D4CD0&amp;gt;\nsetup = &amp;lt;selenium.webdriver.chrome.webdriver.WebDriver (session=&amp;quot;bf83681eb47bdc00f424015283b58c13&amp;quot;)&amp;gt;\n\n    def test_valid_login_data_driven(self, setup):\n        self.logger.info(&amp;quot;********** Valid Data Driven Login Test Started **********&amp;quot;)\n        # launch the chrome browser\n        driver = setup\n        driver.implicitly_wait(10)\n        # open the login page\n        driver.get(self.login_page_url)\n        # object for Login_Page class\n        # pass the driver\n        self.login_page = Login_Page(driver)\n    \n        self.rows = excel_utils.get_row_count(self.path, &amp;#x27;Sheet1&amp;#x27;)\n        print(&amp;quot;number of rows &amp;quot;, self.rows)\n    \n        status_list = []\n    \n        # fetch the data using iteration and store it in a variable\n        for r in range(2, self.rows+1):\n            self.email = excel_utils.read_data(self.path, &amp;#x27;Sheet1&amp;#x27;, r, 1)\n            self.password = excel_utils.read_data(self.path, &amp;#x27;Sheet1&amp;#x27;, r, 2)\n            self.expected_login =  excel_utils.read_data(self.path, &amp;#x27;Sheet1&amp;#x27;, r, 3)\n    \n            # pass the email\n            self.login_page.enter_email(self.email)\n            # pass the password\n            self.login_page.enter_password(self.password)\n            # perform click action\n            self.login_page.click_login()\n    \n            # wait for the admin dashboard page to load\n            time.sleep(5)\n    \n            # fetch the title\n            actual_dashboard_title = driver.title\n            expected_dashboard_title = &amp;quot;ComplaNet \u2014 Admin Dashboard&amp;quot;\n    \n            # check whether actual and expected title matches\n            # check whether login was expected\n            if actual_dashboard_title == expected_dashboard_title:\n                if self.expected_login == &amp;quot;Yes&amp;quot;:\n                    self.logger.info(&amp;quot;********** Test Data Passed **********&amp;quot;)\n                    status_list.append(&amp;quot;Pass&amp;quot;)\n&amp;gt;                   self.login_page.click_logout()\n\ntests\\test_cases\\test_login_data_driven.py:61: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests\\base_pages\\Login_Page.py:40: in click_logout\n    self.driver.find_element(By.LINK_TEXT, self.logout_link_text).click()\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n..\\..\\..\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\site-packages\\selenium\\webdriver\\remote\\webdriver.py:926: in find_element\n    return self.execute(Command.FIND_ELEMENT, {&amp;quot;using&amp;quot;: by, &amp;quot;value&amp;quot;: value})[&amp;quot;value&amp;quot;]\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n..\\..\\..\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\site-packages\\selenium\\webdriver\\remote\\webdriver.py:458: in execute\n    self.error_handler.check_response(response)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = &amp;lt;selenium.webdriver.remote.errorhandler.ErrorHandler object at 0x00000116C7E5C590&amp;gt;\nresponse = {&amp;#x27;status&amp;#x27;: 404, &amp;#x27;value&amp;#x27;: &amp;#x27;{&amp;quot;value&amp;quot;:{&amp;quot;error&amp;quot;:&amp;quot;no such element&amp;quot;,&amp;quot;message&amp;quot;:&amp;quot;no such element: Unable to locate element: {\\...ff7ca59e6fc\\\\n\\\\t0x7ff7ca581974\\\\n\\\\t0x7ff7ca581b25\\\\n\\\\t0x7ff7ca567852\\\\n\\\\t0x7ffd2dfde8d7\\\\n\\\\t0x7ffd2f04c53c\\\\n&amp;quot;}}&amp;#x27;}\n\n    def check_response(self, response: dict[str, Any]) -&amp;gt; None:\n        &amp;quot;&amp;quot;&amp;quot;Checks that a JSON response from the WebDriver does not have an\n        error.\n    \n        Args:\n            response: The JSON response from the WebDriver server as a dictionary\n                object.\n    \n        Raises:\n            WebDriverException: If the response contains an error message.\n        &amp;quot;&amp;quot;&amp;quot;\n        status = response.get(&amp;quot;status&amp;quot;, None)\n        if not status or status == ErrorCode.SUCCESS:\n            return\n        value = None\n        message = response.get(&amp;quot;message&amp;quot;, &amp;quot;&amp;quot;)\n        screen: str = response.get(&amp;quot;screen&amp;quot;, &amp;quot;&amp;quot;)\n        stacktrace = None\n        if isinstance(status, int):\n            value_json = response.get(&amp;quot;value&amp;quot;, None)\n            if value_json and isinstance(value_json, str):\n                try:\n                    value = json.loads(value_json)\n                    if isinstance(value, dict):\n                        if len(value) == 1:\n                            value = value[&amp;quot;value&amp;quot;]\n                        status = value.get(&amp;quot;error&amp;quot;, None)\n                        if not status:\n                            status = value.get(&amp;quot;status&amp;quot;, ErrorCode.UNKNOWN_ERROR)\n                            message = value.get(&amp;quot;value&amp;quot;) or value.get(&amp;quot;message&amp;quot;)\n                            if not isinstance(message, str):\n                                value = message\n                                message = message.get(&amp;quot;message&amp;quot;) if isinstance(message, dict) else None\n                        else:\n                            message = value.get(&amp;quot;message&amp;quot;, None)\n                except ValueError:\n                    pass\n    \n        exception_class: type[WebDriverException]\n        e = ErrorCode()\n        error_codes = [item for item in dir(e) if not item.startswith(&amp;quot;__&amp;quot;)]\n        for error_code in error_codes:\n            error_info = getattr(ErrorCode, error_code)\n            if isinstance(error_info, list) and status in error_info:\n                exception_class = getattr(ExceptionMapping, error_code, WebDriverException)\n                break\n        else:\n            exception_class = WebDriverException\n    \n        if not value:\n            value = response[&amp;quot;value&amp;quot;]\n        if isinstance(value, str):\n            raise exception_class(value)\n        if message == &amp;quot;&amp;quot; and &amp;quot;message&amp;quot; in value:\n            message = value[&amp;quot;message&amp;quot;]\n    \n        screen = None  # type: ignore[assignment]\n        if &amp;quot;screen&amp;quot; in value:\n            screen = value[&amp;quot;screen&amp;quot;]\n    \n        stacktrace = None\n        st_value = value.get(&amp;quot;stackTrace&amp;quot;) or value.get(&amp;quot;stacktrace&amp;quot;)\n        if st_value:\n            if isinstance(st_value, str):\n                stacktrace = st_value.split(&amp;quot;\\n&amp;quot;)\n            else:\n                stacktrace = []\n                try:\n                    for frame in st_value:\n                        line = frame.get(&amp;quot;lineNumber&amp;quot;, &amp;quot;&amp;quot;)\n                        file = frame.get(&amp;quot;fileName&amp;quot;, &amp;quot;&amp;lt;anonymous&amp;gt;&amp;quot;)\n                        if line:\n                            file = f&amp;quot;{file}:{line}&amp;quot;\n                        meth = frame.get(&amp;quot;methodName&amp;quot;, &amp;quot;&amp;lt;anonymous&amp;gt;&amp;quot;)\n                        if &amp;quot;className&amp;quot; in frame:\n                            meth = f&amp;quot;{frame[&amp;#x27;className&amp;#x27;]}.{meth}&amp;quot;\n                        msg = &amp;quot;    at %s (%s)&amp;quot;\n                        msg = msg % (meth, file)\n                        stacktrace.append(msg)\n                except TypeError:\n                    pass\n        if exception_class == UnexpectedAlertPresentException:\n            alert_text = None\n            if &amp;quot;data&amp;quot; in value:\n                alert_text = value[&amp;quot;data&amp;quot;].get(&amp;quot;text&amp;quot;)\n            elif &amp;quot;alert&amp;quot; in value:\n                alert_text = value[&amp;quot;alert&amp;quot;].get(&amp;quot;text&amp;quot;)\n            raise exception_class(message, screen, stacktrace, alert_text)  # type: ignore[call-arg]  # mypy is not smart enough here\n&amp;gt;       raise exception_class(message, screen, stacktrace)\nE       selenium.common.exceptions.NoSuchElementException: Message: no such element: Unable to locate element: {&amp;quot;method&amp;quot;:&amp;quot;link text&amp;quot;,&amp;quot;selector&amp;quot;:&amp;quot;Log Out&amp;quot;}\nE         (Session info: chrome=143.0.7499.41); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nE       Stacktrace:\nE       Symbols not available. Dumping unresolved backtrace:\nE       \t0x7ff7ca578255\nE       \t0x7ff7ca5782b0\nE       \t0x7ff7ca35165d\nE       \t0x7ff7ca3a9a33\nE       \t0x7ff7ca3a9d3c\nE       \t0x7ff7ca3fdf67\nE       \t0x7ff7ca3fac97\nE       \t0x7ff7ca39ac29\nE       \t0x7ff7ca39ba93\nE       \t0x7ff7ca88fff0\nE       \t0x7ff7ca88a930\nE       \t0x7ff7ca8a9096\nE       \t0x7ff7ca595754\nE       \t0x7ff7ca59e6fc\nE       \t0x7ff7ca581974\nE       \t0x7ff7ca581b25\nE       \t0x7ff7ca567852\nE       \t0x7ffd2dfde8d7\nE       \t0x7ffd2f04c53c\n\n..\\..\\..\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\site-packages\\selenium\\webdriver\\remote\\errorhandler.py:233: NoSuchElementException\n\n------------------------------ Captured log call -------------------------------\nINFO     root:test_login_data_driven.py:20 ********** Valid Data Driven Login Test Started **********\nINFO     root:test_login_data_driven.py:59 ********** Test Data Passed **********\n\n&#34;}]}, &#34;renderCollapsed&#34;: [&#34;passed&#34;], &#34;initialSort&#34;: &#34;result&#34;, &#34;title&#34;: &#34;report.html&#34;}"></div>
-    <script>
-      (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-const { getCollapsedCategory, setCollapsedIds } = require('./storage.js')
 
-class DataManager {
-    setManager(data) {
-        const collapsedCategories = [...getCollapsedCategory(data.renderCollapsed)]
-        const collapsedIds = []
-        const tests = Object.values(data.tests).flat().map((test, index) => {
-            const collapsed = collapsedCategories.includes(test.result.toLowerCase())
-            const id = `test_${index}`
-            if (collapsed) {
-                collapsedIds.push(id)
+        <script>
+            // Vue/Alpine logic for the dashboard
+            function app() {
+                return {
+                    tests: [{"name": "test_download_report", "status": "passed", "attachments": [{"name": "log", "source": "a9523058-ab66-4b8b-aa56-8addb23e1d0d-attachment.txt", "type": "text/plain"}], "start": 1766459446303, "stop": 1766459463358, "uuid": "3e5bf454-8624-4528-bffe-136632f50f61", "historyId": "825252a1dce7d482e5888e1cc6946a68", "testCaseId": "825252a1dce7d482e5888e1cc6946a68", "fullName": "test_cases.test_analytics.TestAnalytics#test_download_report", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_analytics"}, {"name": "subSuite", "value": "TestAnalytics"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_analytics"}], "titlePath": ["test_cases", "test_analytics.py", "TestAnalytics"]}, {"name": "test_reset_filter", "status": "passed", "attachments": [{"name": "log", "source": "f5e3e120-10a0-497c-aa49-17ce4209c9f9-attachment.txt", "type": "text/plain"}], "start": 1766459467175, "stop": 1766459487024, "uuid": "5d572425-b7c8-432a-ba2f-c58e87531e4d", "historyId": "3b870bd2714a28dfd5c790f8a533c942", "testCaseId": "3b870bd2714a28dfd5c790f8a533c942", "fullName": "test_cases.test_analytics.TestAnalytics#test_reset_filter", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_analytics"}, {"name": "subSuite", "value": "TestAnalytics"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_analytics"}], "titlePath": ["test_cases", "test_analytics.py", "TestAnalytics"]}, {"name": "test_all_complaints_page_title_verification", "status": "passed", "attachments": [{"name": "log", "source": "ff90055f-6c39-41fc-94bf-202fcb90b78d-attachment.txt", "type": "text/plain"}], "start": 1766459490608, "stop": 1766459499852, "uuid": "9afbd92a-e9a9-43b8-ae83-632e3a3f3249", "historyId": "8eb8c48158e37c0a55ad371d8f459b01", "testCaseId": "8eb8c48158e37c0a55ad371d8f459b01", "fullName": "test_cases.test_delete.TestDelete#test_all_complaints_page_title_verification", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_delete"}, {"name": "subSuite", "value": "TestDelete"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_delete"}], "titlePath": ["test_cases", "test_delete.py", "TestDelete"]}, {"name": "test_cancel_button_functionality", "status": "passed", "attachments": [{"name": "log", "source": "8318eacc-001b-4fea-abf8-cc944980169b-attachment.txt", "type": "text/plain"}], "start": 1766459503209, "stop": 1766459522145, "uuid": "42f5e14f-6ae2-4b13-92a4-a9266a8c7448", "historyId": "771dab116aecc723d604e4a612f1cf3b", "testCaseId": "771dab116aecc723d604e4a612f1cf3b", "fullName": "test_cases.test_delete.TestDelete#test_cancel_button_functionality", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_delete"}, {"name": "subSuite", "value": "TestDelete"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_delete"}], "titlePath": ["test_cases", "test_delete.py", "TestDelete"]}, {"name": "test_empty_field_handling", "status": "passed", "attachments": [{"name": "log", "source": "bd2aa2a3-5b3d-469d-b507-90a329db2bed-attachment.txt", "type": "text/plain"}], "start": 1766459525724, "stop": 1766459544688, "uuid": "01750b04-fbe7-4c78-8aa3-0461821c6d3c", "historyId": "07980d6cd3eb94b0f4c26308f8b1363e", "testCaseId": "07980d6cd3eb94b0f4c26308f8b1363e", "fullName": "test_cases.test_delete.TestDelete#test_empty_field_handling", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_delete"}, {"name": "subSuite", "value": "TestDelete"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_delete"}], "titlePath": ["test_cases", "test_delete.py", "TestDelete"]}, {"name": "test_all_complaints_page_title_verification", "status": "passed", "attachments": [{"name": "log", "source": "b868412a-b92d-43cb-a54f-2114fec14335-attachment.txt", "type": "text/plain"}], "start": 1766459556256, "stop": 1766459556269, "uuid": "5a46777c-90e3-42bb-8484-4dc89f2c8ad0", "historyId": "309c59458ee78c02616aa5fab226b050", "testCaseId": "309c59458ee78c02616aa5fab226b050", "fullName": "test_cases.test_filter.TestFilter#test_all_complaints_page_title_verification", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_filter"}, {"name": "subSuite", "value": "TestFilter"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_filter"}], "titlePath": ["test_cases", "test_filter.py", "TestFilter"]}, {"name": "test_filter_dropdown_clickable", "status": "passed", "attachments": [{"name": "log", "source": "91c52232-fea0-4d9d-8bcb-f7c1fe969451-attachment.txt", "type": "text/plain"}], "start": 1766459568592, "stop": 1766459568692, "uuid": "92a42125-f165-42d3-b50a-3db3b489baee", "historyId": "2fa2a7437a71faa69d9ace34990eec12", "testCaseId": "2fa2a7437a71faa69d9ace34990eec12", "fullName": "test_cases.test_filter.TestFilter#test_filter_dropdown_clickable", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_filter"}, {"name": "subSuite", "value": "TestFilter"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_filter"}], "titlePath": ["test_cases", "test_filter.py", "TestFilter"]}, {"name": "test_filter_options_display", "status": "passed", "attachments": [{"name": "log", "source": "bea336bd-8521-4916-b5fe-a308811970aa-attachment.txt", "type": "text/plain"}], "start": 1766459582130, "stop": 1766459582298, "uuid": "d25f4f11-19c1-40ae-ae23-b05e4e39a3b0", "historyId": "9d23c56fe4e3a0084a38014fcac9b676", "testCaseId": "9d23c56fe4e3a0084a38014fcac9b676", "fullName": "test_cases.test_filter.TestFilter#test_filter_options_display", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_filter"}, {"name": "subSuite", "value": "TestFilter"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_filter"}], "titlePath": ["test_cases", "test_filter.py", "TestFilter"]}, {"name": "test_filter_apply_status", "status": "passed", "attachments": [{"name": "log", "source": "97f99817-292e-4907-a9f0-c063ffc6a12b-attachment.txt", "type": "text/plain"}], "start": 1766459594579, "stop": 1766459603779, "uuid": "cba74002-32d7-4c63-892b-39ec35033052", "historyId": "3090f8c9e336ff96bac94fe3733fad0b", "testCaseId": "3090f8c9e336ff96bac94fe3733fad0b", "fullName": "test_cases.test_filter.TestFilter#test_filter_apply_status", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_filter"}, {"name": "subSuite", "value": "TestFilter"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_filter"}], "titlePath": ["test_cases", "test_filter.py", "TestFilter"]}, {"name": "test_multiple_filters", "status": "passed", "attachments": [{"name": "log", "source": "1dd1fd5c-e170-4858-86f1-5f85c2bc34ee-attachment.txt", "type": "text/plain"}], "start": 1766459617155, "stop": 1766459630349, "uuid": "0bc9b114-7126-4280-a7c9-e8a598e07978", "historyId": "10df8569cb1466b508d65dd80937a9f6", "testCaseId": "10df8569cb1466b508d65dd80937a9f6", "fullName": "test_cases.test_filter.TestFilter#test_multiple_filters", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_filter"}, {"name": "subSuite", "value": "TestFilter"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_filter"}], "titlePath": ["test_cases", "test_filter.py", "TestFilter"]}, {"name": "test_clear_date_filter", "status": "passed", "attachments": [{"name": "log", "source": "e4e0f8e1-5d58-4e39-8dc9-602832a94e2c-attachment.txt", "type": "text/plain"}], "start": 1766459645735, "stop": 1766459654802, "uuid": "1fc883fa-2cf1-49cd-821d-d9cf6bc66670", "historyId": "26aa67b143589ecf8fda630bfa7a699a", "testCaseId": "26aa67b143589ecf8fda630bfa7a699a", "fullName": "test_cases.test_filter.TestFilter#test_clear_date_filter", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_filter"}, {"name": "subSuite", "value": "TestFilter"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_filter"}], "titlePath": ["test_cases", "test_filter.py", "TestFilter"]}, {"name": "test_change_filter", "status": "passed", "attachments": [{"name": "log", "source": "b0417592-4e5f-42d2-9c66-1b285f755957-attachment.txt", "type": "text/plain"}], "start": 1766459674491, "stop": 1766459682552, "uuid": "a1ebe875-6cce-4292-be45-5695f091e933", "historyId": "7b05b1e80868a713f9c6e58d4289b537", "testCaseId": "7b05b1e80868a713f9c6e58d4289b537", "fullName": "test_cases.test_filter.TestFilter#test_change_filter", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_filter"}, {"name": "subSuite", "value": "TestFilter"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_filter"}], "titlePath": ["test_cases", "test_filter.py", "TestFilter"]}, {"name": "test_title_verification", "status": "passed", "attachments": [{"name": "log", "source": "77a7cba7-7971-41f4-bfcf-0d9cf6ee91db-attachment.txt", "type": "text/plain"}], "start": 1766459686298, "stop": 1766459689042, "uuid": "1f17cdfb-6cf5-4545-be05-6289f1ee5385", "historyId": "0369c7792ea701cc1ed6b7612f33d8a4", "testCaseId": "0369c7792ea701cc1ed6b7612f33d8a4", "fullName": "test_cases.test_login.TestLogin#test_title_verification", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_login"}, {"name": "subSuite", "value": "TestLogin"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_login"}], "titlePath": ["test_cases", "test_login.py", "TestLogin"]}, {"name": "test_valid_login", "status": "passed", "attachments": [{"name": "log", "source": "a66c56d2-33f7-4b23-ae03-4d0f2ff26260-attachment.txt", "type": "text/plain"}], "start": 1766459692637, "stop": 1766459700979, "uuid": "1764383b-b2c2-4327-a2fc-9f337cb4724a", "historyId": "86a067c1ede4f2d27edbcbb9a7f8e025", "testCaseId": "86a067c1ede4f2d27edbcbb9a7f8e025", "fullName": "test_cases.test_login.TestLogin#test_valid_login", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_login"}, {"name": "subSuite", "value": "TestLogin"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_login"}], "titlePath": ["test_cases", "test_login.py", "TestLogin"]}, {"name": "test_invalid_login_alert[Invalid Email-salma@gmail.com-LauraPass#123-Login failed: Invalid login credentials]", "status": "passed", "attachments": [{"name": "log", "source": "c2f32c4e-2ab9-4889-9d7b-16e6a856dffe-attachment.txt", "type": "text/plain"}], "parameters": [{"name": "scenario", "value": "'Invalid Email'"}, {"name": "email", "value": "'salma@gmail.com'"}, {"name": "password", "value": "'LauraPass#123'"}, {"name": "expected_msg", "value": "'Login failed: Invalid login credentials'"}], "start": 1766459704625, "stop": 1766459710146, "uuid": "e9b7c503-6b7e-45fc-b251-67b50f18cfe6", "historyId": "cf8edb9380350c1dd17217df89ab6246", "testCaseId": "a136a899ec4be2dc5550f3094a05cb3e", "fullName": "test_cases.test_login.TestLogin#test_invalid_login_alert", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_login"}, {"name": "subSuite", "value": "TestLogin"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_login"}], "titlePath": ["test_cases", "test_login.py", "TestLogin"]}, {"name": "test_invalid_login_alert[Invalid Password-laura.reed@admin.university.edu-salma123-Login failed: Invalid login credentials]", "status": "passed", "attachments": [{"name": "log", "source": "8c79edca-f91f-4709-b5db-d65ae9c645a7-attachment.txt", "type": "text/plain"}], "parameters": [{"name": "scenario", "value": "'Invalid Password'"}, {"name": "email", "value": "'laura.reed@admin.university.edu'"}, {"name": "password", "value": "'salma123'"}, {"name": "expected_msg", "value": "'Login failed: Invalid login credentials'"}], "start": 1766459714140, "stop": 1766459721625, "uuid": "eaf09729-b2ad-4614-a034-3bcc67546504", "historyId": "de8611deb749e8c1c134a5d7e10178b0", "testCaseId": "a136a899ec4be2dc5550f3094a05cb3e", "fullName": "test_cases.test_login.TestLogin#test_invalid_login_alert", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_login"}, {"name": "subSuite", "value": "TestLogin"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_login"}], "titlePath": ["test_cases", "test_login.py", "TestLogin"]}, {"name": "test_login_validation_message[Empty Fields---email-Please fill out this field.]", "status": "passed", "attachments": [{"name": "log", "source": "97604f20-8fc6-47be-a492-5da32050400f-attachment.txt", "type": "text/plain"}], "parameters": [{"name": "scenario", "value": "'Empty Fields'"}, {"name": "email", "value": "''"}, {"name": "password", "value": "''"}, {"name": "field_id", "value": "'email'"}, {"name": "expected_msg", "value": "'Please fill out this field.'"}], "start": 1766459725328, "stop": 1766459728555, "uuid": "601eb95a-43f1-4e13-99af-d4f8742a543f", "historyId": "258e8c8f7fa78359a342b2070f0babdb", "testCaseId": "540d16a4427cc48ca35cbe617ae62a0f", "fullName": "test_cases.test_login.TestLogin#test_login_validation_message", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_login"}, {"name": "subSuite", "value": "TestLogin"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_login"}], "titlePath": ["test_cases", "test_login.py", "TestLogin"]}, {"name": "test_login_validation_message[Invalid Email Format-sally-LauraPass#123-email-Please include an '@' in the email address. 'sally' is missing an '@'.]", "status": "passed", "attachments": [{"name": "log", "source": "524b133c-4213-4cd3-af71-450223bd2a28-attachment.txt", "type": "text/plain"}], "parameters": [{"name": "scenario", "value": "'Invalid Email Format'"}, {"name": "email", "value": "'sally'"}, {"name": "password", "value": "'LauraPass#123'"}, {"name": "field_id", "value": "'email'"}, {"name": "expected_msg", "value": "'Please include an '@' in the email address. 'sally' is missing an '@'.'"}], "start": 1766459732502, "stop": 1766459735963, "uuid": "a5f9771b-eb35-4b42-aba5-dd2c3fa33a52", "historyId": "01be519aa7da4bda64d3902356eedb68", "testCaseId": "540d16a4427cc48ca35cbe617ae62a0f", "fullName": "test_cases.test_login.TestLogin#test_login_validation_message", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_login"}, {"name": "subSuite", "value": "TestLogin"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_login"}], "titlePath": ["test_cases", "test_login.py", "TestLogin"]}, {"name": "test_successful_logout", "status": "passed", "attachments": [{"name": "log", "source": "d5bfae77-f0db-406b-a079-ea216a46caba-attachment.txt", "type": "text/plain"}], "start": 1766459739545, "stop": 1766459754263, "uuid": "7277e3e3-054a-43d9-9e37-cc97cb2c82e8", "historyId": "08b88666fb4574e3e957340edd01d7ef", "testCaseId": "08b88666fb4574e3e957340edd01d7ef", "fullName": "test_cases.test_logout.TestLogout#test_successful_logout", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_logout"}, {"name": "subSuite", "value": "TestLogout"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_logout"}], "titlePath": ["test_cases", "test_logout.py", "TestLogout"]}, {"name": "test_back_button_after_logout", "status": "passed", "attachments": [{"name": "log", "source": "2c6f58fb-0bf4-433f-accc-9f29ca7c9144-attachment.txt", "type": "text/plain"}], "start": 1766459757697, "stop": 1766459775977, "uuid": "9a85dcbf-991e-4fb0-a4de-681a33c86548", "historyId": "c0e4643d37ccd49218f127b40db87ddf", "testCaseId": "c0e4643d37ccd49218f127b40db87ddf", "fullName": "test_cases.test_logout.TestLogout#test_back_button_after_logout", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_logout"}, {"name": "subSuite", "value": "TestLogout"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_logout"}], "titlePath": ["test_cases", "test_logout.py", "TestLogout"]}, {"name": "test_reset_password_page_title_verification", "status": "passed", "attachments": [{"name": "log", "source": "22db3801-c815-4581-a13a-d6eac0e7bda5-attachment.txt", "type": "text/plain"}], "start": 1766459779501, "stop": 1766459785816, "uuid": "c0ea3f8f-5c89-4fdc-8b76-3c23863d2c45", "historyId": "6f90ab20ca72d13a4d0864ba37e240d4", "testCaseId": "6f90ab20ca72d13a4d0864ba37e240d4", "fullName": "test_cases.test_password_reset.TestPasswordReset#test_reset_password_page_title_verification", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_password_reset"}, {"name": "subSuite", "value": "TestPasswordReset"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_password_reset"}], "titlePath": ["test_cases", "test_password_reset.py", "TestPasswordReset"]}, {"name": "test_valid_email_password_reset", "status": "passed", "attachments": [{"name": "log", "source": "9c7ce10a-2900-4beb-9377-9314c879003f-attachment.txt", "type": "text/plain"}], "start": 1766459789236, "stop": 1766459800875, "uuid": "6580a24d-a760-4b02-8700-ea774d736387", "historyId": "36cc41fad1dcf732003a232ddc6fbfee", "testCaseId": "36cc41fad1dcf732003a232ddc6fbfee", "fullName": "test_cases.test_password_reset.TestPasswordReset#test_valid_email_password_reset", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_password_reset"}, {"name": "subSuite", "value": "TestPasswordReset"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_password_reset"}], "titlePath": ["test_cases", "test_password_reset.py", "TestPasswordReset"]}, {"name": "test_invalid_email_password_reset", "status": "passed", "attachments": [{"name": "log", "source": "18e598e1-fb8a-49c6-bbf5-01f7818b515b-attachment.txt", "type": "text/plain"}], "start": 1766459804330, "stop": 1766459816105, "uuid": "6b393071-f4ea-4b1f-81df-ac724a994abb", "historyId": "6759ca7cadb822e70120532ef3c65b67", "testCaseId": "6759ca7cadb822e70120532ef3c65b67", "fullName": "test_cases.test_password_reset.TestPasswordReset#test_invalid_email_password_reset", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_password_reset"}, {"name": "subSuite", "value": "TestPasswordReset"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_password_reset"}], "titlePath": ["test_cases", "test_password_reset.py", "TestPasswordReset"]}, {"name": "test_search_page_title_verification", "status": "passed", "attachments": [{"name": "log", "source": "a8d5d29f-9083-46ad-ab62-e6e9b4bbbcba-attachment.txt", "type": "text/plain"}], "start": 1766459825156, "stop": 1766459825182, "uuid": "40e86af9-8b1b-4ca5-9002-16bee51de2c2", "historyId": "b9cefbe7528e2913a2a88ecfc0282544", "testCaseId": "b9cefbe7528e2913a2a88ecfc0282544", "fullName": "test_cases.test_search.TestSearch#test_search_page_title_verification", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_search"}, {"name": "subSuite", "value": "TestSearch"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_search"}], "titlePath": ["test_cases", "test_search.py", "TestSearch"]}, {"name": "test_search_functionality[Single Keyword-get_single_keyword-found]", "status": "passed", "attachments": [{"name": "log", "source": "b8de28db-a5bc-4f18-a908-c204d01f4b7f-attachment.txt", "type": "text/plain"}], "parameters": [{"name": "test_case_name", "value": "'Single Keyword'"}, {"name": "config_method", "value": "'get_single_keyword'"}, {"name": "expectation", "value": "'found'"}], "start": 1766459836800, "stop": 1766459844679, "uuid": "72561bc8-4009-4443-90cb-485bae1d8bc1", "historyId": "951735b769abd03cd78dcceed87e26c6", "testCaseId": "b6f1925b342a25fc69eb5e5702b53c1d", "fullName": "test_cases.test_search.TestSearch#test_search_functionality", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_search"}, {"name": "subSuite", "value": "TestSearch"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_search"}], "titlePath": ["test_cases", "test_search.py", "TestSearch"]}, {"name": "test_search_functionality[Multiple Keywords-get_multiple_keywords-found]", "status": "passed", "attachments": [{"name": "log", "source": "7533cd96-0f54-4c49-a7ef-6db3323849e0-attachment.txt", "type": "text/plain"}], "parameters": [{"name": "test_case_name", "value": "'Multiple Keywords'"}, {"name": "config_method", "value": "'get_multiple_keywords'"}, {"name": "expectation", "value": "'found'"}], "start": 1766459854286, "stop": 1766459861070, "uuid": "fa31ad46-a0ec-45c2-9f96-b7db710022bf", "historyId": "df6036b28f2ba79a0006165d0aeedb0d", "testCaseId": "b6f1925b342a25fc69eb5e5702b53c1d", "fullName": "test_cases.test_search.TestSearch#test_search_functionality", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_search"}, {"name": "subSuite", "value": "TestSearch"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_search"}], "titlePath": ["test_cases", "test_search.py", "TestSearch"]}, {"name": "test_search_functionality[Exact Match-get_exact_match-found]", "status": "passed", "attachments": [{"name": "log", "source": "fcae738a-b8f1-4ae4-96d1-ea3ac9563d29-attachment.txt", "type": "text/plain"}], "parameters": [{"name": "test_case_name", "value": "'Exact Match'"}, {"name": "config_method", "value": "'get_exact_match'"}, {"name": "expectation", "value": "'found'"}], "start": 1766459872436, "stop": 1766459880280, "uuid": "af1da1a6-24b1-46e7-8f60-d3a954fa74ff", "historyId": "e747b4a52ecfd426117c8f7adfeaed4a", "testCaseId": "b6f1925b342a25fc69eb5e5702b53c1d", "fullName": "test_cases.test_search.TestSearch#test_search_functionality", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_search"}, {"name": "subSuite", "value": "TestSearch"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_search"}], "titlePath": ["test_cases", "test_search.py", "TestSearch"]}, {"name": "test_search_functionality[Partial Keyword-get_partial_keyword-found]", "status": "passed", "attachments": [{"name": "log", "source": "f05e8756-6b30-42bd-ae04-8780cc769fbe-attachment.txt", "type": "text/plain"}], "parameters": [{"name": "test_case_name", "value": "'Partial Keyword'"}, {"name": "config_method", "value": "'get_partial_keyword'"}, {"name": "expectation", "value": "'found'"}], "start": 1766459893570, "stop": 1766459900726, "uuid": "501bff4b-f90e-4219-ac57-579c606d9549", "historyId": "d8bc7a7c2adc209dedacef1c7ead70f1", "testCaseId": "b6f1925b342a25fc69eb5e5702b53c1d", "fullName": "test_cases.test_search.TestSearch#test_search_functionality", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_search"}, {"name": "subSuite", "value": "TestSearch"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_search"}], "titlePath": ["test_cases", "test_search.py", "TestSearch"]}, {"name": "test_search_functionality[Complainant Name-get_complainant_name-found]", "status": "passed", "attachments": [{"name": "log", "source": "81f8f87d-e97d-4759-bff7-df26866ffc88-attachment.txt", "type": "text/plain"}], "parameters": [{"name": "test_case_name", "value": "'Complainant Name'"}, {"name": "config_method", "value": "'get_complainant_name'"}, {"name": "expectation", "value": "'found'"}], "start": 1766459911312, "stop": 1766459918615, "uuid": "1508bc30-16bd-4a14-a8c8-9f3c1c96f776", "historyId": "967d3744a4917bb98f04934cda6d0c2f", "testCaseId": "b6f1925b342a25fc69eb5e5702b53c1d", "fullName": "test_cases.test_search.TestSearch#test_search_functionality", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_search"}, {"name": "subSuite", "value": "TestSearch"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_search"}], "titlePath": ["test_cases", "test_search.py", "TestSearch"]}, {"name": "test_search_functionality[Description-get_description_keyword-found]", "status": "passed", "attachments": [{"name": "log", "source": "41c5e4d7-b4ac-4b3f-9a5a-12752f7312c8-attachment.txt", "type": "text/plain"}], "parameters": [{"name": "test_case_name", "value": "'Description'"}, {"name": "config_method", "value": "'get_description_keyword'"}, {"name": "expectation", "value": "'found'"}], "start": 1766459929331, "stop": 1766459937405, "uuid": "e2a01bc1-89c4-40ee-8daf-b6c216291e40", "historyId": "48ffe26770d46689b029b5847773aea1", "testCaseId": "b6f1925b342a25fc69eb5e5702b53c1d", "fullName": "test_cases.test_search.TestSearch#test_search_functionality", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_search"}, {"name": "subSuite", "value": "TestSearch"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_search"}], "titlePath": ["test_cases", "test_search.py", "TestSearch"]}, {"name": "test_search_functionality[Title-get_title_keyword-found]", "status": "passed", "attachments": [{"name": "log", "source": "694b0412-6114-4029-85f9-09c4dad2ee0a-attachment.txt", "type": "text/plain"}], "parameters": [{"name": "test_case_name", "value": "'Title'"}, {"name": "config_method", "value": "'get_title_keyword'"}, {"name": "expectation", "value": "'found'"}], "start": 1766459947934, "stop": 1766459956599, "uuid": "bfa60249-99e8-4264-bf0f-84061f1ced35", "historyId": "864a6b14f24f98354416991a984ab8bc", "testCaseId": "b6f1925b342a25fc69eb5e5702b53c1d", "fullName": "test_cases.test_search.TestSearch#test_search_functionality", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_search"}, {"name": "subSuite", "value": "TestSearch"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_search"}], "titlePath": ["test_cases", "test_search.py", "TestSearch"]}, {"name": "test_search_functionality[Special Characters-get_special_characters-empty]", "status": "passed", "attachments": [{"name": "log", "source": "e4f9a6ed-a5d5-4e18-862c-517b4d1dc798-attachment.txt", "type": "text/plain"}], "parameters": [{"name": "test_case_name", "value": "'Special Characters'"}, {"name": "config_method", "value": "'get_special_characters'"}, {"name": "expectation", "value": "'empty'"}], "start": 1766459966369, "stop": 1766459971701, "uuid": "20f9514e-dca9-495d-aec6-8a83ec6bc465", "historyId": "9eb2203c0fc286603a1750094ac97c44", "testCaseId": "b6f1925b342a25fc69eb5e5702b53c1d", "fullName": "test_cases.test_search.TestSearch#test_search_functionality", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_search"}, {"name": "subSuite", "value": "TestSearch"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_search"}], "titlePath": ["test_cases", "test_search.py", "TestSearch"]}, {"name": "test_all_complaints_page_title_verification", "status": "passed", "attachments": [{"name": "log", "source": "dfb37b4b-6b4b-4ae6-a29e-757133ca03e7-attachment.txt", "type": "text/plain"}], "start": 1766459975353, "stop": 1766459982958, "uuid": "1d26ee5f-0ebc-4ae0-849d-1cb949251e42", "historyId": "18125ab750860147810f5f128ee55be4", "testCaseId": "18125ab750860147810f5f128ee55be4", "fullName": "test_cases.test_update_status.TestUpdateStatus#test_all_complaints_page_title_verification", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_update_status"}, {"name": "subSuite", "value": "TestUpdateStatus"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_update_status"}], "titlePath": ["test_cases", "test_update_status.py", "TestUpdateStatus"]}, {"name": "test_update_status_with_required_fields", "status": "passed", "attachments": [{"name": "log", "source": "e9c12aa8-4f0a-402c-8932-083fea8710b1-attachment.txt", "type": "text/plain"}], "start": 1766459986389, "stop": 1766460006028, "uuid": "c61a2597-b2bf-47e4-896e-1ac55146f011", "historyId": "4f44842d18f98a97b58be8b9539d5310", "testCaseId": "4f44842d18f98a97b58be8b9539d5310", "fullName": "test_cases.test_update_status.TestUpdateStatus#test_update_status_with_required_fields", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_update_status"}, {"name": "subSuite", "value": "TestUpdateStatus"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_update_status"}], "titlePath": ["test_cases", "test_update_status.py", "TestUpdateStatus"]}, {"name": "test_cancel_button_functionality", "status": "passed", "attachments": [{"name": "log", "source": "527f74cc-7529-49e9-99f5-4001bc8337c9-attachment.txt", "type": "text/plain"}], "start": 1766460009456, "stop": 1766460029943, "uuid": "677699de-69d1-4b0f-a799-59babe1f177e", "historyId": "0f1a27be620ef850f82cbf46e94d61ff", "testCaseId": "0f1a27be620ef850f82cbf46e94d61ff", "fullName": "test_cases.test_update_status.TestUpdateStatus#test_cancel_button_functionality", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_update_status"}, {"name": "subSuite", "value": "TestUpdateStatus"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_update_status"}], "titlePath": ["test_cases", "test_update_status.py", "TestUpdateStatus"]}, {"name": "test_empty_field_handling", "status": "passed", "attachments": [{"name": "log", "source": "258701f3-5d72-4b3d-a692-e9f705b6c93d-attachment.txt", "type": "text/plain"}], "start": 1766460033398, "stop": 1766460051852, "uuid": "b83c991f-f10e-4eb4-9657-422a29c8158a", "historyId": "7adfbc2a279b76913bdf12e6c53452db", "testCaseId": "7adfbc2a279b76913bdf12e6c53452db", "fullName": "test_cases.test_update_status.TestUpdateStatus#test_empty_field_handling", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_update_status"}, {"name": "subSuite", "value": "TestUpdateStatus"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_update_status"}], "titlePath": ["test_cases", "test_update_status.py", "TestUpdateStatus"]}, {"name": "test_view_complaint_details", "status": "passed", "attachments": [{"name": "log", "source": "7f8034d2-7293-45d0-905b-f954900b9472-attachment.txt", "type": "text/plain"}], "start": 1766460055297, "stop": 1766460074362, "uuid": "83e5f909-02a6-4080-8c10-09dea66bbbdd", "historyId": "34ed5b029360108f780ea283783f0201", "testCaseId": "34ed5b029360108f780ea283783f0201", "fullName": "test_cases.test_view.TestView#test_view_complaint_details", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_view"}, {"name": "subSuite", "value": "TestView"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_view"}], "titlePath": ["test_cases", "test_view.py", "TestView"]}, {"name": "test_back_arrow_navigation", "status": "passed", "attachments": [{"name": "log", "source": "7f65f170-e975-4a50-82c7-ee9acabf378c-attachment.txt", "type": "text/plain"}], "start": 1766460077808, "stop": 1766460103400, "uuid": "c7868a72-9939-495e-9c36-11d225aa1879", "historyId": "2a6720cc46b27f9a95d650207348c77f", "testCaseId": "2a6720cc46b27f9a95d650207348c77f", "fullName": "test_cases.test_view.TestView#test_back_arrow_navigation", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_view"}, {"name": "subSuite", "value": "TestView"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_view"}], "titlePath": ["test_cases", "test_view.py", "TestView"]}, {"name": "test_attachment_view", "status": "passed", "attachments": [{"name": "log", "source": "0cd96d82-5ce1-48bc-8346-521a91b73f9a-attachment.txt", "type": "text/plain"}], "start": 1766460106965, "stop": 1766460135705, "uuid": "e1217576-3fff-4108-8467-cecbfb66337f", "historyId": "bb76f2fb3184600ff99a0fb83eb08171", "testCaseId": "bb76f2fb3184600ff99a0fb83eb08171", "fullName": "test_cases.test_view.TestView#test_attachment_view", "labels": [{"name": "parentSuite", "value": "test_cases"}, {"name": "suite", "value": "test_view"}, {"name": "subSuite", "value": "TestView"}, {"name": "host", "value": "DESKTOP-4IO7O9T"}, {"name": "thread", "value": "688-MainThread"}, {"name": "framework", "value": "pytest"}, {"name": "language", "value": "cpython3"}, {"name": "package", "value": "test_cases.test_view"}], "titlePath": ["test_cases", "test_view.py", "TestView"]}],
+                    filter: 'all',
+                    activeTest: null,
+                    
+                    // Calculate statistics
+                    get stats() {
+                        const total = this.tests.length;
+                        const passed = this.tests.filter(t => t.status === 'passed').length;
+                        const failed = this.tests.filter(t => [ 'failed', 'broken' ].includes(t.status)).length;
+                        return { total, passed, failed };
+                    },
+                    
+                    // Calculate pass rate percentage
+                    get passRate() {
+                         if (this.stats.total === 0) return 0;
+                         return Math.round((this.stats.passed / this.stats.total) * 100);
+                    },
+
+                    // Filter tests based on status
+                    get filteredTests() {
+                        return this.tests.filter(t => {
+                            const isFailed = ['failed', 'broken'].includes(t.status);
+                            return this.filter === 'all' || (this.filter === 'failed' && isFailed);
+                        });
+                    },
+                    
+                    // Open modal details
+                    openModal(test) {
+                        if (['passed', 'skipped'].includes(test.status)) return;
+                        this.activeTest = test;
+                    },
+                    
+                    closeModal() {
+                        this.activeTest = null;
+                    },
+                    
+                    // Format duration nicely
+                    formatDuration(ms) {
+                        if (ms < 1000) return ms + 'ms';
+                        return (ms / 1000).toFixed(2) + 's';
+                    }
+                }
             }
-            return {
-                ...test,
-                id,
-                collapsed,
-            }
-        })
-        const dataBlob = { ...data, tests }
-        this.data = { ...dataBlob }
-        this.renderData = { ...dataBlob }
-        setCollapsedIds(collapsedIds)
-    }
-
-    get allData() {
-        return { ...this.data }
-    }
-
-    resetRender() {
-        this.renderData = { ...this.data }
-    }
-
-    setRender(data) {
-        this.renderData.tests = [...data]
-    }
-
-    toggleCollapsedItem(id) {
-        this.renderData.tests = this.renderData.tests.map((test) =>
-            test.id === id ? { ...test, collapsed: !test.collapsed } : test,
-        )
-    }
-
-    set allCollapsed(collapsed) {
-        this.renderData = { ...this.renderData, tests: [...this.renderData.tests.map((test) => (
-            { ...test, collapsed }
-        ))] }
-    }
-
-    get testSubset() {
-        return [...this.renderData.tests]
-    }
-
-    get environment() {
-        return this.renderData.environment
-    }
-
-    get initialSort() {
-        return this.data.initialSort
-    }
-}
-
-module.exports = {
-    manager: new DataManager(),
-}
-
-},{"./storage.js":8}],2:[function(require,module,exports){
-const mediaViewer = require('./mediaviewer.js')
-const templateEnvRow = document.getElementById('template_environment_row')
-const templateResult = document.getElementById('template_results-table__tbody')
-
-function htmlToElements(html) {
-    const temp = document.createElement('template')
-    temp.innerHTML = html
-    return temp.content.childNodes
-}
-
-const find = (selector, elem) => {
-    if (!elem) {
-        elem = document
-    }
-    return elem.querySelector(selector)
-}
-
-const findAll = (selector, elem) => {
-    if (!elem) {
-        elem = document
-    }
-    return [...elem.querySelectorAll(selector)]
-}
-
-const dom = {
-    getStaticRow: (key, value) => {
-        const envRow = templateEnvRow.content.cloneNode(true)
-        const isObj = typeof value === 'object' && value !== null
-        const values = isObj ? Object.keys(value).map((k) => `${k}: ${value[k]}`) : null
-
-        const valuesElement = htmlToElements(
-            values ? `<ul>${values.map((val) => `<li>${val}</li>`).join('')}<ul>` : `<div>${value}</div>`)[0]
-        const td = findAll('td', envRow)
-        td[0].textContent = key
-        td[1].appendChild(valuesElement)
-
-        return envRow
-    },
-    getResultTBody: ({ testId, id, log, extras, resultsTableRow, tableHtml, result, collapsed }) => {
-        const resultBody = templateResult.content.cloneNode(true)
-        resultBody.querySelector('tbody').classList.add(result.toLowerCase())
-        resultBody.querySelector('tbody').id = testId
-        resultBody.querySelector('.collapsible').dataset.id = id
-
-        resultsTableRow.forEach((html) => {
-            const t = document.createElement('template')
-            t.innerHTML = html
-            resultBody.querySelector('.collapsible').appendChild(t.content)
-        })
-
-        if (log) {
-            // Wrap lines starting with "E" with span.error to color those lines red
-            const wrappedLog = log.replace(/^E.*$/gm, (match) => `<span class="error">${match}</span>`)
-            resultBody.querySelector('.log').innerHTML = wrappedLog
-        } else {
-            resultBody.querySelector('.log').remove()
-        }
-
-        if (collapsed) {
-            resultBody.querySelector('.collapsible > td')?.classList.add('collapsed')
-            resultBody.querySelector('.extras-row').classList.add('hidden')
-        } else {
-            resultBody.querySelector('.collapsible > td')?.classList.remove('collapsed')
-        }
-
-        const media = []
-        extras?.forEach(({ name, format_type, content }) => {
-            if (['image', 'video'].includes(format_type)) {
-                media.push({ path: content, name, format_type })
-            }
-
-            if (format_type === 'html') {
-                resultBody.querySelector('.extraHTML').insertAdjacentHTML('beforeend', `<div>${content}</div>`)
-            }
-        })
-        mediaViewer.setup(resultBody, media)
-
-        // Add custom html from the pytest_html_results_table_html hook
-        tableHtml?.forEach((item) => {
-            resultBody.querySelector('td[class="extra"]').insertAdjacentHTML('beforeend', item)
-        })
-
-        return resultBody
-    },
-}
-
-module.exports = {
-    dom,
-    htmlToElements,
-    find,
-    findAll,
-}
-
-},{"./mediaviewer.js":6}],3:[function(require,module,exports){
-const { manager } = require('./datamanager.js')
-const { doSort } = require('./sort.js')
-const storageModule = require('./storage.js')
-
-const getFilteredSubSet = (filter) =>
-    manager.allData.tests.filter(({ result }) => filter.includes(result.toLowerCase()))
-
-const doInitFilter = () => {
-    const currentFilter = storageModule.getVisible()
-    const filteredSubset = getFilteredSubSet(currentFilter)
-    manager.setRender(filteredSubset)
-}
-
-const doFilter = (type, show) => {
-    if (show) {
-        storageModule.showCategory(type)
-    } else {
-        storageModule.hideCategory(type)
-    }
-
-    const currentFilter = storageModule.getVisible()
-    const filteredSubset = getFilteredSubSet(currentFilter)
-    manager.setRender(filteredSubset)
-
-    const sortColumn = storageModule.getSort()
-    doSort(sortColumn, true)
-}
-
-module.exports = {
-    doFilter,
-    doInitFilter,
-}
-
-},{"./datamanager.js":1,"./sort.js":7,"./storage.js":8}],4:[function(require,module,exports){
-const { redraw, bindEvents, renderStatic } = require('./main.js')
-const { doInitFilter } = require('./filter.js')
-const { doInitSort } = require('./sort.js')
-const { manager } = require('./datamanager.js')
-const data = JSON.parse(document.getElementById('data-container').dataset.jsonblob)
-
-function init() {
-    manager.setManager(data)
-    doInitFilter()
-    doInitSort()
-    renderStatic()
-    redraw()
-    bindEvents()
-}
-
-init()
-
-},{"./datamanager.js":1,"./filter.js":3,"./main.js":5,"./sort.js":7}],5:[function(require,module,exports){
-const { dom, find, findAll } = require('./dom.js')
-const { manager } = require('./datamanager.js')
-const { doSort } = require('./sort.js')
-const { doFilter } = require('./filter.js')
-const {
-    getVisible,
-    getCollapsedIds,
-    setCollapsedIds,
-    getSort,
-    getSortDirection,
-    possibleFilters,
-} = require('./storage.js')
-
-const removeChildren = (node) => {
-    while (node.firstChild) {
-        node.removeChild(node.firstChild)
-    }
-}
-
-const renderStatic = () => {
-    const renderEnvironmentTable = () => {
-        const environment = manager.environment
-        const rows = Object.keys(environment).map((key) => dom.getStaticRow(key, environment[key]))
-        const table = document.getElementById('environment')
-        removeChildren(table)
-        rows.forEach((row) => table.appendChild(row))
-    }
-    renderEnvironmentTable()
-}
-
-const addItemToggleListener = (elem) => {
-    elem.addEventListener('click', ({ target }) => {
-        const id = target.parentElement.dataset.id
-        manager.toggleCollapsedItem(id)
-
-        const collapsedIds = getCollapsedIds()
-        if (collapsedIds.includes(id)) {
-            const updated = collapsedIds.filter((item) => item !== id)
-            setCollapsedIds(updated)
-        } else {
-            collapsedIds.push(id)
-            setCollapsedIds(collapsedIds)
-        }
-        redraw()
-    })
-}
-
-const renderContent = (tests) => {
-    const sortAttr = getSort(manager.initialSort)
-    const sortAsc = JSON.parse(getSortDirection())
-    const rows = tests.map(dom.getResultTBody)
-    const table = document.getElementById('results-table')
-    const tableHeader = document.getElementById('results-table-head')
-
-    const newTable = document.createElement('table')
-    newTable.id = 'results-table'
-
-    // remove all sorting classes and set the relevant
-    findAll('.sortable', tableHeader).forEach((elem) => elem.classList.remove('asc', 'desc'))
-    tableHeader.querySelector(`.sortable[data-column-type="${sortAttr}"]`)?.classList.add(sortAsc ? 'desc' : 'asc')
-    newTable.appendChild(tableHeader)
-
-    if (!rows.length) {
-        const emptyTable = document.getElementById('template_results-table__body--empty').content.cloneNode(true)
-        newTable.appendChild(emptyTable)
-    } else {
-        rows.forEach((row) => {
-            if (!!row) {
-                findAll('.collapsible td:not(.col-links', row).forEach(addItemToggleListener)
-                find('.logexpander', row).addEventListener('click',
-                    (evt) => evt.target.parentNode.classList.toggle('expanded'),
-                )
-                newTable.appendChild(row)
-            }
-        })
-    }
-
-    table.replaceWith(newTable)
-}
-
-const renderDerived = () => {
-    const currentFilter = getVisible()
-    possibleFilters.forEach((result) => {
-        const input = document.querySelector(`input[data-test-result="${result}"]`)
-        input.checked = currentFilter.includes(result)
-    })
-}
-
-const bindEvents = () => {
-    const filterColumn = (evt) => {
-        const { target: element } = evt
-        const { testResult } = element.dataset
-
-        doFilter(testResult, element.checked)
-        const collapsedIds = getCollapsedIds()
-        const updated = manager.renderData.tests.map((test) => {
-            return {
-                ...test,
-                collapsed: collapsedIds.includes(test.id),
-            }
-        })
-        manager.setRender(updated)
-        redraw()
-    }
-
-    const header = document.getElementById('environment-header')
-    header.addEventListener('click', () => {
-        const table = document.getElementById('environment')
-        table.classList.toggle('hidden')
-        header.classList.toggle('collapsed')
-    })
-
-    findAll('input[name="filter_checkbox"]').forEach((elem) => {
-        elem.addEventListener('click', filterColumn)
-    })
-
-    findAll('.sortable').forEach((elem) => {
-        elem.addEventListener('click', (evt) => {
-            const { target: element } = evt
-            const { columnType } = element.dataset
-            doSort(columnType)
-            redraw()
-        })
-    })
-
-    document.getElementById('show_all_details').addEventListener('click', () => {
-        manager.allCollapsed = false
-        setCollapsedIds([])
-        redraw()
-    })
-    document.getElementById('hide_all_details').addEventListener('click', () => {
-        manager.allCollapsed = true
-        const allIds = manager.renderData.tests.map((test) => test.id)
-        setCollapsedIds(allIds)
-        redraw()
-    })
-}
-
-const redraw = () => {
-    const { testSubset } = manager
-
-    renderContent(testSubset)
-    renderDerived()
-}
-
-module.exports = {
-    redraw,
-    bindEvents,
-    renderStatic,
-}
-
-},{"./datamanager.js":1,"./dom.js":2,"./filter.js":3,"./sort.js":7,"./storage.js":8}],6:[function(require,module,exports){
-class MediaViewer {
-    constructor(assets) {
-        this.assets = assets
-        this.index = 0
-    }
-
-    nextActive() {
-        this.index = this.index === this.assets.length - 1 ? 0 : this.index + 1
-        return [this.activeFile, this.index]
-    }
-
-    prevActive() {
-        this.index = this.index === 0 ? this.assets.length - 1 : this.index -1
-        return [this.activeFile, this.index]
-    }
-
-    get currentIndex() {
-        return this.index
-    }
-
-    get activeFile() {
-        return this.assets[this.index]
-    }
-}
-
-
-const setup = (resultBody, assets) => {
-    if (!assets.length) {
-        resultBody.querySelector('.media').classList.add('hidden')
-        return
-    }
-
-    const mediaViewer = new MediaViewer(assets)
-    const container = resultBody.querySelector('.media-container')
-    const leftArrow = resultBody.querySelector('.media-container__nav--left')
-    const rightArrow = resultBody.querySelector('.media-container__nav--right')
-    const mediaName = resultBody.querySelector('.media__name')
-    const counter = resultBody.querySelector('.media__counter')
-    const imageEl = resultBody.querySelector('img')
-    const sourceEl = resultBody.querySelector('source')
-    const videoEl = resultBody.querySelector('video')
-
-    const setImg = (media, index) => {
-        if (media?.format_type === 'image') {
-            imageEl.src = media.path
-
-            imageEl.classList.remove('hidden')
-            videoEl.classList.add('hidden')
-        } else if (media?.format_type === 'video') {
-            sourceEl.src = media.path
-
-            videoEl.classList.remove('hidden')
-            imageEl.classList.add('hidden')
-        }
-
-        mediaName.innerText = media?.name
-        counter.innerText = `${index + 1} / ${assets.length}`
-    }
-    setImg(mediaViewer.activeFile, mediaViewer.currentIndex)
-
-    const moveLeft = () => {
-        const [media, index] = mediaViewer.prevActive()
-        setImg(media, index)
-    }
-    const doRight = () => {
-        const [media, index] = mediaViewer.nextActive()
-        setImg(media, index)
-    }
-    const openImg = () => {
-        window.open(mediaViewer.activeFile.path, '_blank')
-    }
-    if (assets.length === 1) {
-        container.classList.add('media-container--fullscreen')
-    } else {
-        leftArrow.addEventListener('click', moveLeft)
-        rightArrow.addEventListener('click', doRight)
-    }
-    imageEl.addEventListener('click', openImg)
-}
-
-module.exports = {
-    setup,
-}
-
-},{}],7:[function(require,module,exports){
-const { manager } = require('./datamanager.js')
-const storageModule = require('./storage.js')
-
-const genericSort = (list, key, ascending, customOrder) => {
-    let sorted
-    if (customOrder) {
-        sorted = list.sort((a, b) => {
-            const aValue = a.result.toLowerCase()
-            const bValue = b.result.toLowerCase()
-
-            const aIndex = customOrder.findIndex((item) => item.toLowerCase() === aValue)
-            const bIndex = customOrder.findIndex((item) => item.toLowerCase() === bValue)
-
-            // Compare the indices to determine the sort order
-            return aIndex - bIndex
-        })
-    } else {
-        sorted = list.sort((a, b) => a[key] === b[key] ? 0 : a[key] > b[key] ? 1 : -1)
-    }
-
-    if (ascending) {
-        sorted.reverse()
-    }
-    return sorted
-}
-
-const durationSort = (list, ascending) => {
-    const parseDuration = (duration) => {
-        if (duration.includes(':')) {
-            // If it's in the format "HH:mm:ss"
-            const [hours, minutes, seconds] = duration.split(':').map(Number)
-            return (hours * 3600 + minutes * 60 + seconds) * 1000
-        } else {
-            // If it's in the format "nnn ms"
-            return parseInt(duration)
-        }
-    }
-    const sorted = list.sort((a, b) => parseDuration(a['duration']) - parseDuration(b['duration']))
-    if (ascending) {
-        sorted.reverse()
-    }
-    return sorted
-}
-
-const doInitSort = () => {
-    const type = storageModule.getSort(manager.initialSort)
-    const ascending = storageModule.getSortDirection()
-    const list = manager.testSubset
-    const initialOrder = ['Error', 'Failed', 'Rerun', 'XFailed', 'XPassed', 'Skipped', 'Passed']
-
-    storageModule.setSort(type)
-    storageModule.setSortDirection(ascending)
-
-    if (type?.toLowerCase() === 'original') {
-        manager.setRender(list)
-    } else {
-        let sortedList
-        switch (type) {
-        case 'duration':
-            sortedList = durationSort(list, ascending)
-            break
-        case 'result':
-            sortedList = genericSort(list, type, ascending, initialOrder)
-            break
-        default:
-            sortedList = genericSort(list, type, ascending)
-            break
-        }
-        manager.setRender(sortedList)
-    }
-}
-
-const doSort = (type, skipDirection) => {
-    const newSortType = storageModule.getSort(manager.initialSort) !== type
-    const currentAsc = storageModule.getSortDirection()
-    let ascending
-    if (skipDirection) {
-        ascending = currentAsc
-    } else {
-        ascending = newSortType ? false : !currentAsc
-    }
-    storageModule.setSort(type)
-    storageModule.setSortDirection(ascending)
-
-    const list = manager.testSubset
-    const sortedList = type === 'duration' ? durationSort(list, ascending) : genericSort(list, type, ascending)
-    manager.setRender(sortedList)
-}
-
-module.exports = {
-    doInitSort,
-    doSort,
-}
-
-},{"./datamanager.js":1,"./storage.js":8}],8:[function(require,module,exports){
-const possibleFilters = [
-    'passed',
-    'skipped',
-    'failed',
-    'error',
-    'xfailed',
-    'xpassed',
-    'rerun',
-]
-
-const getVisible = () => {
-    const url = new URL(window.location.href)
-    const settings = new URLSearchParams(url.search).get('visible')
-    const lower = (item) => {
-        const lowerItem = item.toLowerCase()
-        if (possibleFilters.includes(lowerItem)) {
-            return lowerItem
-        }
-        return null
-    }
-    return settings === null ?
-        possibleFilters :
-        [...new Set(settings?.split(',').map(lower).filter((item) => item))]
-}
-
-const hideCategory = (categoryToHide) => {
-    const url = new URL(window.location.href)
-    const visibleParams = new URLSearchParams(url.search).get('visible')
-    const currentVisible = visibleParams ? visibleParams.split(',') : [...possibleFilters]
-    const settings = [...new Set(currentVisible)].filter((f) => f !== categoryToHide).join(',')
-
-    url.searchParams.set('visible', settings)
-    window.history.pushState({}, null, unescape(url.href))
-}
-
-const showCategory = (categoryToShow) => {
-    if (typeof window === 'undefined') {
-        return
-    }
-    const url = new URL(window.location.href)
-    const currentVisible = new URLSearchParams(url.search).get('visible')?.split(',').filter(Boolean) ||
-        [...possibleFilters]
-    const settings = [...new Set([categoryToShow, ...currentVisible])]
-    const noFilter = possibleFilters.length === settings.length || !settings.length
-
-    noFilter ? url.searchParams.delete('visible') : url.searchParams.set('visible', settings.join(','))
-    window.history.pushState({}, null, unescape(url.href))
-}
-
-const getSort = (initialSort) => {
-    const url = new URL(window.location.href)
-    let sort = new URLSearchParams(url.search).get('sort')
-    if (!sort) {
-        sort = initialSort || 'result'
-    }
-    return sort
-}
-
-const setSort = (type) => {
-    const url = new URL(window.location.href)
-    url.searchParams.set('sort', type)
-    window.history.pushState({}, null, unescape(url.href))
-}
-
-const getCollapsedCategory = (renderCollapsed) => {
-    let categories
-    if (typeof window !== 'undefined') {
-        const url = new URL(window.location.href)
-        const collapsedItems = new URLSearchParams(url.search).get('collapsed')
-        switch (true) {
-        case !renderCollapsed && collapsedItems === null:
-            categories = ['passed']
-            break
-        case collapsedItems?.length === 0 || /^["']{2}$/.test(collapsedItems):
-            categories = []
-            break
-        case /^all$/.test(collapsedItems) || collapsedItems === null && /^all$/.test(renderCollapsed):
-            categories = [...possibleFilters]
-            break
-        default:
-            categories = collapsedItems?.split(',').map((item) => item.toLowerCase()) || renderCollapsed
-            break
-        }
-    } else {
-        categories = []
-    }
-    return categories
-}
-
-const getSortDirection = () => JSON.parse(sessionStorage.getItem('sortAsc')) || false
-const setSortDirection = (ascending) => sessionStorage.setItem('sortAsc', ascending)
-
-const getCollapsedIds = () => JSON.parse(sessionStorage.getItem('collapsedIds')) || []
-const setCollapsedIds = (list) => sessionStorage.setItem('collapsedIds', JSON.stringify(list))
-
-module.exports = {
-    getVisible,
-    hideCategory,
-    showCategory,
-    getCollapsedIds,
-    setCollapsedIds,
-    getSort,
-    setSort,
-    getSortDirection,
-    setSortDirection,
-    getCollapsedCategory,
-    possibleFilters,
-}
-
-},{}]},{},[4]);
-    </script>
-  </footer>
-</html>
+        </script>
+    </body>
+    </html>
+    

@@ -1,0 +1,3 @@
+[32mINFO    [0m root:test_update_status.py:169 ********** Cancel Button Functionality Test Started **********
+[32mINFO    [0m root:test_update_status.py:206 ********** Update Status Modal Displayed **********
+[32mINFO    [0m root:test_update_status.py:225 ********** Update Status Modal Closed Successfully **********

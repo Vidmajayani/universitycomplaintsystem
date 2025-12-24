@@ -1,0 +1,5 @@
+[32mINFO    [0m root:test_search.py:71 ********** Special Characters Search Test Started **********
+[32mINFO    [0m root:test_search.py:77 Searching for: @#$%^&*
+[32mINFO    [0m root:test_search.py:117 Using search term: @#$%^&*
+[32mINFO    [0m root:test_search.py:123 Results found: 0
+[32mINFO    [0m root:test_search.py:141 ********** Special Characters Search Passed (No Results as Expected) **********

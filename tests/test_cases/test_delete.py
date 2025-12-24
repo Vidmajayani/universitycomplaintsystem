@@ -74,107 +74,107 @@ class TestDelete:
             assert False
 
     # delete complaint with required fields
-    @pytest.mark.skip(reason="DISABLED: This test deletes real complaints from production database. Only run against test environment.")
-    def test_delete_complaint_with_required_fields(self, setup):
-        self.logger.info(
-            "********** Delete Complaint With Required Fields Test Started **********"
-        )
-        # launch the chrome browser
-        driver = setup
-        # open the login page
-        driver.get(self.login_page_url)
-        # object for LoginPage class
-        self.login_page = LoginPage(driver)
-        # pass the email
-        self.login_page.enter_email(self.email)
-        # pass the password
-        self.login_page.enter_password(self.password)
-        # perform click action
-        self.login_page.click_login()
-
-        # wait for the admin dashboard page to load
-        time.sleep(3)
-
-        # open the all complaints page
-        driver.get(self.all_complaints_page_url)
-
-        # wait for the page to load
-        time.sleep(3)
-
-        # object for DeletePage class
-        self.delete_page = DeletePage(driver)
-        
-        # Dynamically get a complaint to delete
-        from tests.base_pages.search_page import SearchPage
-        search_helper = SearchPage(driver)
-        complaint_data = search_helper.get_first_complaint_data()
-        dynamic_keyword = complaint_data["title"]
-        self.logger.info(f"Dynamically selected complaint to delete: {dynamic_keyword}")
-
-        # search for specific complaint and click delete button
-        self.delete_page.search_and_delete_complaint(dynamic_keyword)
-
-        # wait for the modal to appear
-        time.sleep(2)
-
-        # verify that the modal is displayed
-        modal_displayed = self.delete_page.is_modal_displayed()
-
-        if modal_displayed:
-            self.logger.info("********** Delete Complaint Modal Displayed **********")
-
-            # enter the reason
-            self.delete_page.enter_reason(self.deletion_reason)
-            # click the confirm delete button
-            self.delete_page.click_confirm_delete()
-
-            # wait for the alert to appear
-            time.sleep(3)
-
-            # switch to alert
-            alert = Alert(driver)
-
-            # fetch the alert message
-            actual_alert_message = alert.text
-            expected_alert_message = "Complaint deleted and user notified."
-
-            # compare the actual and the expected alert message
-            # if actual and expected message matches, the test passes
-
-            if actual_alert_message == expected_alert_message:
-                self.logger.info("********** Complaint Deleted Successfully **********")
-                assert True
-                # accept the alert
-                alert.accept()
-                # close the browser
-                driver.close()
-
-            # however, if the message does not match, the test fails
-            else:
-                self.logger.info(
-                    f"********** Complaint Deletion Failed. Expected: '{expected_alert_message}', Got: '{actual_alert_message}' **********"
-                )
-                # accept the alert
-                alert.accept()
-                # capture the screenshot
-                # save the screenshot in the screenshots folder
-                driver.save_screenshot(
-                    ".\\tests\\screenshots\\test_delete_complaint_with_required_fields.png"
-                )
-                # close the browser
-                driver.close()
-                assert False
-        else:
-            self.logger.info(
-                "********** Delete Complaint Modal Not Displayed **********"
-            )
-            # capture the screenshot
-            driver.save_screenshot(
-                ".\\tests\\screenshots\\test_delete_complaint_with_required_fields.png"
-            )
-            # close the browser
-            driver.close()
-            assert False
+    # @pytest.mark.skip(reason="DISABLED: This test deletes real complaints from production database. Only run against test environment.")
+    # def test_delete_complaint_with_required_fields(self, setup):
+    #     self.logger.info(
+    #         "********** Delete Complaint With Required Fields Test Started **********"
+    #     )
+    #     # launch the chrome browser
+    #     driver = setup
+    #     # open the login page
+    #     driver.get(self.login_page_url)
+    #     # object for LoginPage class
+    #     self.login_page = LoginPage(driver)
+    #     # pass the email
+    #     self.login_page.enter_email(self.email)
+    #     # pass the password
+    #     self.login_page.enter_password(self.password)
+    #     # perform click action
+    #     self.login_page.click_login()
+    # 
+    #     # wait for the admin dashboard page to load
+    #     time.sleep(3)
+    # 
+    #     # open the all complaints page
+    #     driver.get(self.all_complaints_page_url)
+    # 
+    #     # wait for the page to load
+    #     time.sleep(3)
+    # 
+    #     # object for DeletePage class
+    #     self.delete_page = DeletePage(driver)
+    #     
+    #     # Dynamically get a complaint to delete
+    #     from tests.base_pages.search_page import SearchPage
+    #     search_helper = SearchPage(driver)
+    #     complaint_data = search_helper.get_first_complaint_data()
+    #     dynamic_keyword = complaint_data["title"]
+    #     self.logger.info(f"Dynamically selected complaint to delete: {dynamic_keyword}")
+    # 
+    #     # search for specific complaint and click delete button
+    #     self.delete_page.search_and_delete_complaint(dynamic_keyword)
+    # 
+    #     # wait for the modal to appear
+    #     time.sleep(2)
+    # 
+    #     # verify that the modal is displayed
+    #     modal_displayed = self.delete_page.is_modal_displayed()
+    # 
+    #     if modal_displayed:
+    #         self.logger.info("********** Delete Complaint Modal Displayed **********")
+    # 
+    #         # enter the reason
+    #         self.delete_page.enter_reason(self.deletion_reason)
+    #         # click the confirm delete button
+    #         self.delete_page.click_confirm_delete()
+    # 
+    #         # wait for the alert to appear
+    #         time.sleep(3)
+    # 
+    #         # switch to alert
+    #         alert = Alert(driver)
+    # 
+    #         # fetch the alert message
+    #         actual_alert_message = alert.text
+    #         expected_alert_message = "Complaint deleted and user notified."
+    # 
+    #         # compare the actual and the expected alert message
+    #         # if actual and expected message matches, the test passes
+    # 
+    #         if actual_alert_message == expected_alert_message:
+    #             self.logger.info("********** Complaint Deleted Successfully **********")
+    #             assert True
+    #             # accept the alert
+    #             alert.accept()
+    #             # close the browser
+    #             driver.close()
+    # 
+    #         # however, if the message does not match, the test fails
+    #         else:
+    #             self.logger.info(
+    #                 f"********** Complaint Deletion Failed. Expected: '{expected_alert_message}', Got: '{actual_alert_message}' **********"
+    #             )
+    #             # accept the alert
+    #             alert.accept()
+    #             # capture the screenshot
+    #             # save the screenshot in the screenshots folder
+    #             driver.save_screenshot(
+    #                 ".\\tests\\screenshots\\test_delete_complaint_with_required_fields.png"
+    #             )
+    #             # close the browser
+    #             driver.close()
+    #             assert False
+    #     else:
+    #         self.logger.info(
+    #             "********** Delete Complaint Modal Not Displayed **********"
+    #         )
+    #         # capture the screenshot
+    #         driver.save_screenshot(
+    #             ".\\tests\\screenshots\\test_delete_complaint_with_required_fields.png"
+    #         )
+    #         # close the browser
+    #         driver.close()
+    #         assert False
 
     # cancel button functionality
     def test_cancel_button_functionality(self, setup):

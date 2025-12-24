@@ -1,0 +1,3 @@
+[32mINFO    [0m root:test_update_status.py:255 ********** Empty Field Handling Test Started **********
+[32mINFO    [0m root:test_update_status.py:290 ********** Update Status Modal Displayed **********
+[32mINFO    [0m root:test_update_status.py:309 ********** Empty Field Error Message Matched **********

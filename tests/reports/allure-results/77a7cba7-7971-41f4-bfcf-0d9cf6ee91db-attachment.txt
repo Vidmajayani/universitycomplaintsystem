@@ -1,0 +1,2 @@
+[32mINFO    [0m root:test_login.py:21 ********** Login Page Title Verification Started **********
+[32mINFO    [0m root:test_login.py:26 ********** Title Matched **********

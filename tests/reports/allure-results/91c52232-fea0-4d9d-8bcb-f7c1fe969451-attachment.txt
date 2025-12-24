@@ -1,0 +1,2 @@
+[32mINFO    [0m root:test_filter.py:50 ********** Filter Clickable Test Started **********
+[32mINFO    [0m root:test_filter.py:55 ********** Filter Clickable **********

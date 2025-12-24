@@ -1,0 +1,3 @@
+[32mINFO    [0m root:test_update_status.py:23 ********** Test 04 Update Status Started **********
+[32mINFO    [0m root:test_update_status.py:24 ********** All Complaints Page Title Verification Test Started **********
+[32mINFO    [0m root:test_update_status.py:57 ********** All Complaints Page Title Matched  **********

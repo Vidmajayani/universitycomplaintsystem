@@ -1,0 +1,2 @@
+[32mINFO    [0m root:test_filter.py:95 ********** Multiple Filters Test Started **********
+[32mINFO    [0m root:test_filter.py:106 ********** Results found: 0 **********

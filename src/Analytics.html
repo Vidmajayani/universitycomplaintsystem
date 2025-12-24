@@ -5,10 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analytics — ComplaNet Admin</title>
-  <script type="module" crossorigin src="../assets/analytics-BhJJVRu9.js"></script>
-  <link rel="modulepreload" crossorigin href="../assets/supabaseClient-C2pcRdcq.js">
-  <link rel="modulepreload" crossorigin href="../assets/darkMode-0pfczJwG.js">
-  <link rel="stylesheet" crossorigin href="../assets/supabaseClient-DdYYvB8s.css">
+  <script type="module" crossorigin src="../assets/analytics-B4NspgP9.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/supabaseClient-DBFBYl3d.js">
+  <link rel="modulepreload" crossorigin href="../assets/darkMode-Bo7vC4BU.js">
+  <link rel="stylesheet" crossorigin href="../assets/supabaseClient-a2wLv86l.css">
 </head>
 
 <body
@@ -26,7 +26,8 @@
         <nav class="hidden md:flex space-x-6 items-center">
             <a href="AdminDashboard.html" class="nav-content">Dashboard</a>
             <a href="AllComplaints.html" class="nav-content">All Complaints</a>
-            <a href="Analytics.html" class="font-semibold text-eco-dark hover:text-eco-dark">Analytics</a>
+            <a href="Analytics.html"
+                class="font-semibold text-eco-dark hover:text-eco-dark dark:text-blue-400 dark:hover:text-blue-300">Analytics</a>
 
             <!-- Profile Menu -->
             <div class="relative">
@@ -59,7 +60,8 @@
             <nav class="mt-6 flex flex-col space-y-2 px-6">
                 <a href="AdminDashboard.html" class="nav-content">Dashboard</a>
                 <a href="AllComplaints.html" class="nav-content">All Complaints</a>
-                <a href="Analytics.html" class="font-semibold text-eco-dark hover:text-eco-dark">Analytics</a>
+                <a href="Analytics.html"
+                    class="font-semibold text-eco-dark hover:text-eco-dark dark:text-blue-400 dark:hover:text-blue-300">Analytics</a>
                 <a href="AdminProfile.html" class="nav-content">Admin Profile</a>
             </nav>
         </div>
@@ -96,11 +98,11 @@
                 <!-- Filter Title & Current Selection -->
                 <div class="w-full xl:w-auto mb-2 xl:mb-0">
                     <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2 flex items-center">
-                        <i class="fas fa-filter text-eco mr-2"></i>
+                        <i class="fas fa-filter text-eco dark:text-blue-400 mr-2"></i>
                         Date Range Filter
                     </h3>
                     <p class="text-sm text-gray-600 dark:text-gray-400" id="currentFilterText">
-                        Showing: <span class="font-semibold text-eco">All Time</span>
+                        Showing: <span class="font-semibold text-eco dark:text-blue-400">All Time</span>
                     </p>
                 </div>
 
@@ -286,7 +288,7 @@
             <div id="activeIssuesContainer"
                 class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border-l-4 border-blue-500">
                 <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200 flex items-center">
-                    <i class="fas fa-layer-group text-blue-500 mr-2"></i> Active Issues by Category
+                    <i class="fas fa-layer-group text-blue-700 mr-2"></i> Active Issues by Category
                 </h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Breakdown of unresolved complaints</p>
 
@@ -366,7 +368,7 @@
 
                     <!-- Empty State Message -->
                     <div id="noActiveComplaintsMsg"
-                        class="hidden flex flex-col items-center justify-center py-6 text-blue-500">
+                        class="hidden flex flex-col items-center justify-center py-6 text-blue-700">
                         <i class="fas fa-clipboard-check text-4xl mb-2"></i>
                         <p class="font-medium">All caught up!</p>
                         <p class="text-sm text-gray-500">No active complaints.</p>
@@ -387,7 +389,7 @@
             <div>
                 <h2 class="text-xl font-semibold mb-4 
                    text-[var(--color-blue-btn)] 
-                   dark:text-[var(--color-eco)]">
+                   dark:text-blue-400">
                     ComplaNet Admin
                 </h2>
                 <p class="text-sm leading-6">
@@ -400,7 +402,7 @@
             <div>
                 <h2 class="text-xl font-semibold mb-4 
                    text-[var(--color-blue-btn)]
-                   dark:text-[var(--color-eco)]">
+                   dark:text-blue-400">
                     Quick Navigation
                 </h2>
                 <ul class="space-y-2 text-sm">
@@ -420,7 +422,7 @@
             <div>
                 <h2 class="text-xl font-semibold mb-4 
                    text-[var(--color-blue-btn)]
-                   dark:text-[var(--color-eco)]">
+                   dark:text-blue-400">
                     Admin Tools
                 </h2>
                 <ul class="space-y-2 text-sm">

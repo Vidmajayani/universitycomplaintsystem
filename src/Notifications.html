@@ -32,7 +32,8 @@
             <!-- Notification Bell (Always Visible) -->
             <div class="relative">
                 <button id="notificationBtn" class="flex items-center space-x-2 focus:outline-none relative">
-                    <i class="fas fa-bell text-gray-500 text-2xl hover:text-eco transition"></i>
+                    <i
+                        class="fas fa-bell text-eco dark:text-blue-400 text-2xl hover:text-eco-dark dark:hover:text-blue-300 transition"></i>
                     <span id="notificationBadge"
                         class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full hidden">0</span>
                 </button>
@@ -195,11 +196,9 @@
                     <li><a href="./UserDashboard.html"
                             class="hover:text-blue-700 dark:hover:text-blue-400">Dashboard</a>
                     </li>
-                    <li><a href="./Newcomplaint.html"
-                            class="hover:text-blue-700 dark:hover:text-blue-400">New
+                    <li><a href="./Newcomplaint.html" class="hover:text-blue-700 dark:hover:text-blue-400">New
                             Complaint</a></li>
-                    <li><a href="./Mycomplaint.html"
-                            class="hover:text-blue-700 dark:hover:text-blue-400">My
+                    <li><a href="./Mycomplaint.html" class="hover:text-blue-700 dark:hover:text-blue-400">My
                             Complaints</a></li>
                 </ul>
             </div>
@@ -214,7 +213,8 @@
 
                 <details class="bg-[var(--color-eco)] dark:bg-[#1A2C36] 
                p-4 rounded-lg cursor-pointer text-sm">
-                    <summary class="font-medium text-white hover:text-blue-200 dark:text-gray-300 dark:hover:text-blue-400">
+                    <summary
+                        class="font-medium text-white hover:text-blue-200 dark:text-gray-300 dark:hover:text-blue-400">
                         Select Complaint Type
                     </summary>
 
@@ -255,6 +255,7 @@
 
     <script type="module" src="./darkMode.js"></script>
     <script type="module" src="./notifications.js"></script>
+
 </body>
 
 </html>

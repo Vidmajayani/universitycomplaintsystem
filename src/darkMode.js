@@ -337,11 +337,6 @@ if (!publicPages.includes(currentPage)) {
 // DARK MODE, MOBILE MENU & PROFILE DROPDOWN
 // ======================
 const darkModeToggles = [document.getElementById('darkModeToggle'), document.getElementById('mobileDarkModeToggle')];
-const mobileMenuButton = document.getElementById('mobileMenuButton');
-const mobileMenu = document.getElementById('mobileMenu');
-const overlay = document.getElementById('overlay');
-const profileButton = document.getElementById('profileButton');
-const profileMenu = document.getElementById('profileMenu');
 
 function toggleDarkMode() {
   document.documentElement.classList.toggle('dark');
@@ -356,34 +351,43 @@ if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && w
   document.documentElement.classList.add('dark');
 }
 
-if (mobileMenuButton && mobileMenu) {
-  mobileMenuButton.addEventListener('click', () => {
-    mobileMenu.classList.toggle('-translate-x-full');
-    if (overlay) {
-      overlay.classList.toggle('hidden');
-    }
-  });
+// Initialize menus after DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  const mobileMenuButton = document.getElementById('mobileMenuButton');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const overlay = document.getElementById('overlay');
+  const profileButton = document.getElementById('profileButton');
+  const profileMenu = document.getElementById('profileMenu');
 
-  if (overlay) {
-    overlay.addEventListener('click', () => {
-      mobileMenu.classList.add('-translate-x-full');
-      overlay.classList.add('hidden');
+  if (mobileMenuButton && mobileMenu) {
+    mobileMenuButton.addEventListener('click', () => {
+      mobileMenu.classList.toggle('-translate-x-full');
+      if (overlay) {
+        overlay.classList.toggle('hidden');
+      }
+    });
+
+    if (overlay) {
+      overlay.addEventListener('click', () => {
+        mobileMenu.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+      });
+    }
+  }
+
+  if (profileButton && profileMenu) {
+    profileButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      profileMenu.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!profileMenu.classList.contains('hidden') && !profileButton.contains(e.target)) {
+        profileMenu.classList.add('hidden');
+      }
     });
   }
-}
-
-if (profileButton && profileMenu) {
-  profileButton.addEventListener('click', (e) => {
-    e.stopPropagation();
-    profileMenu.classList.toggle('hidden');
-  });
-
-  document.addEventListener('click', (e) => {
-    if (!profileMenu.classList.contains('hidden') && !profileButton.contains(e.target)) {
-      profileMenu.classList.add('hidden');
-    }
-  });
-}
+});
 
 // ======================
 // FILTER COMPLAINTS FUNCTION

@@ -14,10 +14,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // 1. Initialize Bell Icon Logic
+    // 2. Initialize Bell Icon Logic
     initNotifications();
 
-    // 2. Initialize Full Page Logic (if on Notifications.html)
+    // 3. Initialize Full Page Logic (if on Notifications.html)
     const notificationContainer = document.getElementById('fullNotificationList');
     if (notificationContainer) {
         initFullNotificationsPage(notificationContainer);
@@ -99,28 +99,6 @@ async function initFullNotificationsPage(container) {
             loadNotifications(); // Update badge
         };
     }
-
-    // Initialize Mobile Menu (Hamburger)
-    const mobileMenuBtn = document.getElementById('mobileMenuButton');
-    const mobileMenu = document.getElementById('mobileMenu');
-    if (mobileMenuBtn && mobileMenu) {
-        mobileMenuBtn.onclick = () => {
-            // Simple toggle for mobile menu
-            const isOpen = !mobileMenu.classList.contains('-translate-x-full');
-            if (isOpen) {
-                mobileMenu.classList.add('-translate-x-full');
-            } else {
-                mobileMenu.classList.remove('-translate-x-full');
-            }
-        };
-        // Close when clicking outside (simple implementation)
-        document.addEventListener('click', (e) => {
-            if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-                mobileMenu.classList.add('-translate-x-full');
-            }
-        });
-    }
-
 
     loadFullList(container);
 }

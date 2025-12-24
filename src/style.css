@@ -10,9 +10,9 @@
   --color-blue-btn: #1d4ed8;
   --color-green-dark: #1e3249;
 
-  --color-eco-light: #E3F2FD;
-  --color-eco: #a6e3ff;
-  --color-eco-dark: #2b88ba;
+  --color-eco-light: #BBDEFB;
+  --color-eco: #1d4ed8;
+  --color-eco-dark: #1565c0;
 
   --color-bg-light: #F5F6F8;
   --color-bg-dark: #1E1E1E;
@@ -136,7 +136,7 @@ body {
 }
 
 .nav-content {
-  @apply font-semibold text-gray-700 dark:text-gray-200 hover:text-eco-dark
+  @apply font-semibold text-gray-700 dark:text-gray-200 hover:text-eco-dark dark:hover:text-blue-400
 }
 
 .darkmode-btn {

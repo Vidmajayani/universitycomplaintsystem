@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComplaNet — Item Details</title>
+  <script type="module" crossorigin src="../assets/adminLostFoundDetails-BfcZGJiP.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/darkMode-BCgXZOzb.js">
+  <link rel="stylesheet" crossorigin href="../assets/darkMode-DXUT5QhE.css">
+</head>
+
+<body
+    class="flex flex-col min-h-screen bg-[var(--color-bg-light)] text-[var(--color-text-light)] dark:bg-[var(--color-bg-dark)] dark:text-[var(--color-text-dark)] transition-all duration-300 font-sans">
+
+    <!-- Header -->
+    <header class="flex items-center justify-between px-3 md:px-6 py-4 bg-pink dark:bg-gray-800 shadow-md">
+        <div class="flex items-center">
+            <img src="../images/BGlessLogoDark.png" alt="ComplaNet Logo" class="h-16 block dark:hidden">
+            <img src="../images/BGlessLogo.png" alt="ComplaNet Logo Dark" class="h-16 hidden dark:block">
+        </div>
+
+        <nav class="hidden md:flex space-x-6 items-center">
+            <a href="AdminLostFoundDashboard.html" class="nav-content">Dashboard</a>
+            <a href="AdminLostFound.html" class="font-semibold text-eco-dark hover:text-eco-dark">Lost Items</a>
+
+            <div class="relative">
+                <button id="profileButton" class="flex items-center space-x-2 focus:outline-none">
+                    <i class="fas fa-user-shield text-gray-500 text-2xl"></i>
+                </button>
+                <div id="profileMenu"
+                    class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 hidden z-50">
+                    <a href="AdminProfile.html"
+                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">Profile</a>
+                    <button id="headerLogoutBtn" class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-500">Log
+                        Out</button>
+                </div>
+            </div>
+        </nav>
+        <button id="mobileMenuButton" class="md:hidden text-gray-800 dark:text-gray-200 focus:outline-none">
+            &#9776;
+        </button>
+    </header>
+
+    <!-- Mobile Side Menu -->
+    <aside id="mobileMenu"
+        class="fixed top-0 left-0 w-64 h-full bg-white dark:bg-gray-800 shadow-lg transform -translate-x-full transition-transform duration-300 z-50 flex flex-col justify-between">
+        <div>
+            <div class="flex items-center px-6 py-4 border-b dark:border-gray-700">
+                <img src="../images/BGlessLogoDark.png" alt="Logo" class="h-10">
+            </div>
+            <nav class="mt-6 flex flex-col space-y-2 px-6">
+                <a href="AdminLostFoundDashboard.html" class="nav-content">Dashboard</a>
+                <a href="AdminLostFound.html" class="font-semibold text-eco-dark hover:text-eco-dark">Lost Items</a>
+                <a href="AdminProfile.html" class="nav-content">Profile</a>
+            </nav>
+        </div>
+        <div class="px-6 py-4 border-t dark:border-gray-700 flex flex-col space-y-2">
+            <a href="AdminDashboard.html" class="block py-2 hover:text-blue-500 transition">Main Admin</a>
+            <a href="Login.html" class="block py-2 hover:text-red-500 transition">Log Out</a>
+        </div>
+    </aside>
+
+    <!-- Overlay -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40"></div>
+
+
+    <main class="flex-1 px-4 py-8 md:px-10 max-w-7xl mx-auto w-full">
+        <!-- Back Link -->
+        <a href="AdminLostFound.html"
+            class="flex items-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 mb-6 transition">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Lost Items
+        </a>
+
+        <div class="grid grid-cols-1 lg:grid-cols-9 gap-8 items-start">
+
+            <!-- Left Column: Item Details (Main + Attributes) -->
+            <div class="lg:col-span-5 space-y-6">
+
+                <!-- Main Card -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 border-t-8 border-blue-500"
+                    id="statusHeaderBorder">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-box-open text-blue-500 text-xl"></i>
+                                <h1 class="text-2xl font-bold text-gray-800 dark:text-white" id="itemName">Loading...
+                                </h1>
+                            </div>
+                            <span class="text-sm text-gray-600 dark:text-gray-400 font-medium"
+                                id="itemTypeDisplay">...</span>
+                        </div>
+                        <span id="statusBadge"
+                            class="px-4 py-1.5 rounded-full text-sm font-bold bg-gray-100 text-gray-600 shadow-md">
+                            Loading...
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div class="bg-blue-50 dark:bg-blue-900/10 p-3 rounded-lg border-l-4 border-blue-500">
+                            <span
+                                class="block text-blue-600 dark:text-blue-400 text-xs uppercase tracking-wider font-bold mb-1">
+                                <i class="fas fa-calendar-alt mr-1"></i>Reported Date
+                            </span>
+                            <span class="font-semibold text-gray-800 dark:text-gray-200" id="reportedDate">--</span>
+                        </div>
+                        <div class="bg-red-50 dark:bg-red-900/10 p-3 rounded-lg border-l-4 border-red-500">
+                            <span
+                                class="block text-red-600 dark:text-red-400 text-xs uppercase tracking-wider font-bold mb-1">
+                                <i class="fas fa-map-marker-alt mr-1"></i>Location Lost
+                            </span>
+                            <span class="font-semibold text-gray-800 dark:text-gray-200" id="locationLost">--</span>
+                        </div>
+                        <div class="bg-purple-50 dark:bg-purple-900/10 p-3 rounded-lg border-l-4 border-purple-500">
+                            <span
+                                class="block text-purple-600 dark:text-purple-400 text-xs uppercase tracking-wider font-bold mb-1">
+                                <i class="fas fa-calendar-day mr-1"></i>Date Lost
+                            </span>
+                            <span class="font-semibold text-gray-800 dark:text-gray-200" id="dateLost">--</span>
+                        </div>
+                        <div class="bg-green-50 dark:bg-green-900/10 p-3 rounded-lg border-l-4 border-green-500">
+                            <span
+                                class="block text-green-600 dark:text-green-400 text-xs uppercase tracking-wider font-bold mb-1">
+                                <i class="fas fa-clock mr-1"></i>Approx Time
+                            </span>
+                            <span class="font-semibold text-gray-800 dark:text-gray-200" id="timeLost">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attributes Card -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 border-t-4 border-purple-500">
+                    <h3 class="text-lg font-bold mb-4 pb-2 flex items-center gap-2 text-gray-800 dark:text-white">
+                        <i class="fas fa-info-circle text-purple-500"></i>
+                        <span>Item Specifications</span>
+                    </h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+                        <div>
+                            <span class="block text-gray-400 text-xs uppercase">Brand</span>
+                            <span class="font-semibold" id="brand">--</span>
+                        </div>
+                        <div>
+                            <span class="block text-gray-400 text-xs uppercase">Model</span>
+                            <span class="font-semibold" id="model">--</span>
+                        </div>
+                        <div>
+                            <span class="block text-gray-400 text-xs uppercase">Serial Number</span>
+                            <span class="font-semibold" id="serialNumber">--</span>
+                        </div>
+                        <div>
+                            <span class="block text-gray-400 text-xs uppercase">Primary Color</span>
+                            <span class="font-semibold" id="primaryColor">--</span>
+                        </div>
+                        <div>
+                            <span class="block text-gray-400 text-xs uppercase">Secondary Color</span>
+                            <span class="font-semibold" id="secondaryColor">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: User Info & Admin Info -->
+            <div class="lg:col-span-4 space-y-6">
+
+                <!-- User Info Card -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 border-t-4 border-indigo-500">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-gray-800 dark:text-white">
+                        <i class="fas fa-user text-indigo-500 text-xl"></i>
+                        <span>Reporter Details</span>
+                    </h3>
+                    <div class="flex items-center gap-4 mb-4">
+                        <!-- Initials (Default) -->
+                        <div class="w-14 h-14 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-xl"
+                            id="userInitials">U</div>
+                        <!-- Image (Hidden default) -->
+                        <img id="userProfilePic" src="" alt="Profile"
+                            class="w-14 h-14 rounded-full object-cover border-2 border-indigo-50 dark:border-indigo-900 hidden">
+
+                        <div class="overflow-hidden">
+                            <h4 class="font-bold text-gray-800 dark:text-white truncate" id="userName">Loading...
+                            </h4>
+                            <p class="text-sm text-gray-500 truncate" id="userEmail">...</p>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-400">User ID</span>
+                            <span
+                                class="font-mono bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded text-gray-600 dark:text-gray-300"
+                                id="userId">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Management / Info -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 border-t-4 border-green-500">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-gray-800 dark:text-white">
+                        <i class="fas fa-user-shield text-green-500 text-xl"></i>
+                        <span>Admin Info</span>
+                    </h3>
+
+                    <!-- Assigned Admin -->
+                    <div class="flex items-center gap-3 mb-4 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                        <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-gray-500 dark:text-gray-300 font-bold"
+                            id="adminInitials">--</div>
+                        <img id="adminProfilePic" src="" alt="Admin" class="w-10 h-10 rounded-full object-cover hidden">
+
+                        <div>
+                            <p class="text-xs text-gray-400 uppercase font-semibold">Managed By</p>
+                            <p class="text-sm font-bold text-gray-800 dark:text-white" id="adminName">Unassigned</p>
+                        </div>
+                    </div>
+
+                    <!-- Feedback Display -->
+                    <div class="mt-4">
+                        <h4 class="text-xs text-gray-400 uppercase font-semibold mb-2">Latest Feedback / Note</h4>
+                        <div
+                            class="bg-yellow-50 dark:bg-yellow-900/10 p-4 rounded-lg border border-yellow-100 dark:border-yellow-800/30">
+                            <p class="text-sm text-yellow-800 dark:text-yellow-200 italic" id="adminFeedbackDisplay">No
+                                notices sent.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Description & Evidence - Full Width Section Below -->
+        <div class="mt-8">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 border-t-4 border-orange-500">
+                <h3 class="text-lg font-bold mb-6 pb-2 flex items-center gap-2 text-gray-800 dark:text-white">
+                    <i class="fas fa-file-alt text-orange-500 text-xl"></i>
+                    <span>Description & Evidence</span>
+                </h3>
+
+                <div class="mb-6">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-star text-yellow-500"></i>
+                        <span
+                            class="block text-orange-600 dark:text-orange-400 text-sm font-bold uppercase tracking-wide">Distinguishing
+                            Features</span>
+                    </div>
+                    <p class="text-gray-700 dark:text-gray-300 bg-orange-50 dark:bg-orange-900/10 p-4 rounded-lg border-l-4 border-yellow-500"
+                        id="distFeatures">--</p>
+                </div>
+
+                <div class="mb-6">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-align-left text-blue-500"></i>
+                        <span
+                            class="block text-orange-600 dark:text-orange-400 text-sm font-bold uppercase tracking-wide">General
+                            Description</span>
+                    </div>
+                    <p class="text-gray-700 dark:text-gray-300 bg-orange-50 dark:bg-orange-900/10 p-4 rounded-lg border-l-4 border-blue-500"
+                        id="description">--</p>
+                </div>
+
+                <!-- Images -->
+                <div>
+                    <div class="flex items-center gap-2 mb-3">
+                        <i class="fas fa-images text-pink-500"></i>
+                        <span
+                            class="block text-orange-600 dark:text-orange-400 text-sm font-bold uppercase tracking-wide">Attached
+                            Images</span>
+                    </div>
+                    <div id="imageContainer" class="flex gap-4 overflow-x-auto pb-2">
+                        <!-- Images injected here -->
+                        <span class="text-gray-400 text-sm italic">No images attached.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer
+        class="w-full py-10 mt-10 bg-[var(--color-eco-light)] text-[var(--color-text-light)] dark:bg-[#0F1A24] dark:text-gray-200">
+
+        <div class="max-w-4xl mx-auto px-6">
+
+            <!-- ComplaNet Lost & Found Admin Title -->
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-heading font-bold mb-3 text-[var(--color-blue-btn)] dark:text-blue-400">
+                    ComplaNet Lost & Found
+                </h2>
+                <p class="text-sm leading-6 opacity-80 max-w-2xl mx-auto">
+                    Administrative portal for managing university lost and found items. Monitor, verify, and resolve
+                    reports
+                    efficiently.
+                </p>
+            </div>
+
+            <!-- Quick Navigation - Centered -->
+            <div class="text-center mb-8">
+                <h3 class="text-lg font-semibold mb-4 text-[var(--color-blue-btn)] dark:text-blue-400">
+                    Quick Navigation
+                </h3>
+                <ul class="flex flex-wrap justify-center gap-6 text-sm">
+                    <li>
+                        <a href="./AdminLostFoundDashboard.html"
+                            class="inline-flex items-center gap-2 text-gray-800 hover:text-blue-700 dark:text-gray-300 dark:hover:text-blue-400 transition-all duration-300 hover:-translate-y-1">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="AdminLostFound.html"
+                            class="inline-flex items-center gap-2 text-gray-800 hover:text-blue-700 dark:text-gray-300 dark:hover:text-blue-400 transition-all duration-300 hover:-translate-y-1">
+                            <i class="fas fa-search"></i>
+                            <span>Lost Items</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="text-center text-sm mt-10 text-gray-700 dark:text-gray-400">
+                © 2025 ComplaNet. All rights reserved.
+            </div>
+
+        </div>
+    </footer>
+
+    <!-- Logout Modal -->
+    <div id="logoutModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60] hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-11/12 max-w-sm">
+            <h3 class="text-xl font-bold mb-4">Confirm Logout</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-6">Are you sure you want to log out?</p>
+            <div class="flex justify-end space-x-3">
+                <button id="cancelLogoutBtn"
+                    class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600">Cancel</button>
+                <button id="confirmLogoutBtn" class="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700">Log
+                    Out</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EmailJS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function () {
+            emailjs.init("08jWWt0PNjZJ4BcQw");
+        })();
+    </script>
+
+</body>
+
+</html>

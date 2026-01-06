@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComplaNet — Lost & Found Admin</title>
+
+  <script type="module" crossorigin src="../assets/adminLostFound-B-ZphHoa.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/darkMode-BCgXZOzb.js">
+  <link rel="stylesheet" crossorigin href="../assets/darkMode-DXUT5QhE.css">
+</head>
+
+<body
+    class="flex flex-col min-h-screen bg-[var(--color-bg-light)] text-[var(--color-text-light)] dark:bg-[var(--color-bg-dark)] dark:text-[var(--color-text-dark)] transition-all duration-300 font-sans">
+
+    <!-- Header -->
+    <header class="flex items-center justify-between px-3 md:px-6 py-4 bg-pink dark:bg-gray-800 shadow-md">
+        <div class="flex items-center">
+            <img src="../images/BGlessLogoDark.png" alt="ComplaNet Logo" class="h-16 block dark:hidden">
+            <img src="../images/BGlessLogo.png" alt="ComplaNet Logo Dark" class="h-16 hidden dark:block">
+        </div>
+
+        <nav class="hidden md:flex space-x-6 items-center">
+            <a href="AdminLostFoundDashboard.html" class="nav-content">Dashboard</a>
+            <a href="AdminLostFound.html" class="font-semibold text-eco-dark hover:text-eco-dark">Lost Items</a>
+
+            <div class="relative">
+                <button id="profileButton" class="flex items-center space-x-2 focus:outline-none">
+                    <i class="fas fa-user-shield text-gray-500 text-2xl"></i>
+                </button>
+                <div id="profileMenu"
+                    class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 hidden z-50">
+                    <a href="AdminProfile.html"
+                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">Profile</a>
+                    <button id="headerLogoutBtn" class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-500">Log
+                        Out</button>
+                </div>
+            </div>
+        </nav>
+
+        <button id="mobileMenuButton" class="md:hidden text-gray-800 dark:text-gray-200 focus:outline-none">
+            &#9776;
+        </button>
+    </header>
+
+    <!-- Mobile Menu -->
+    <aside id="mobileMenu"
+        class="fixed top-0 left-0 w-64 h-full bg-white dark:bg-gray-800 shadow-lg transform -translate-x-full transition-transform duration-300 z-50 flex flex-col justify-between">
+        <div>
+            <div class="flex items-center px-6 py-4 border-b dark:border-gray-700">
+                <img src="../images/BGlessLogoDark.png" alt="Logo" class="h-10">
+            </div>
+            <nav class="mt-6 flex flex-col space-y-2 px-6">
+                <a href="AdminLostFoundDashboard.html" class="nav-content">Dashboard</a>
+                <a href="AdminLostFound.html" class="font-semibold text-eco-dark hover:text-eco-dark">Lost Items</a>
+                <a href="AdminProfile.html" class="nav-content">Profile</a>
+            </nav>
+        </div>
+        <div class="px-6 py-4 border-t dark:border-gray-700">
+            <a href="Login.html" class="block py-2 hover:text-red-500 transition">Log Out</a>
+        </div>
+    </aside>
+
+    <main class="flex-1 px-6 py-8 md:px-10">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h1 class="text-3xl font-bold">Lost & Found Items</h1>
+                <p class="text-gray-600 dark:text-gray-300">
+                    Total Items: <span id="totalItemsCount" class="font-bold text-eco-dark">0</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Controls: Search & Filters -->
+        <div class="flex flex-col lg:flex-row justify-between items-stretch gap-4 mb-6">
+            <!-- Search -->
+            <div class="relative w-full lg:w-1/2">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                    <i class="fas fa-search text-gray-400"></i>
+                </span>
+                <input type="text" id="searchInput"
+                    class="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-eco dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    placeholder="Search for items (name, id, description)...">
+            </div>
+
+            <!-- Filters -->
+            <div class="flex flex-col sm:flex-row gap-3">
+                <div class="flex gap-2">
+                    <input type="date" id="filterDateFrom"
+                        class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-eco dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:[color-scheme:dark]"
+                        placeholder="From Date" title="From Date">
+                    <span class="self-center text-gray-500">-</span>
+                    <input type="date" id="filterDateTo"
+                        class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-eco dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:[color-scheme:dark]"
+                        placeholder="To Date" title="To Date">
+                </div>
+                <select id="statusFilter"
+                    class="border rounded px-3 py-2 bg-white dark:bg-gray-800 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-eco">
+                    <option value="all">All Status</option>
+                    <option value="Lost">Lost</option>
+                    <option value="Claim">Claim (Match Found)</option>
+                    <option value="Found">Found (Returned)</option>
+
+                </select>
+            </div>
+        </div>
+
+        <!-- Desktop Table View -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden hidden xl:block">
+            <div class="overflow-x-auto">
+                <table class="min-w-full leading-normal">
+                    <thead>
+                        <tr class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-200 uppercase text-xs">
+                            <th class="px-5 py-3 text-left">Item Name</th>
+                            <th class="px-5 py-3 text-left">Type</th>
+                            <th class="px-5 py-3 text-left">Location</th>
+                            <th class="px-5 py-3 text-left">Reported Date</th>
+                            <th class="px-5 py-3 text-left">Attributes</th>
+                            <th class="px-5 py-3 text-center">Status</th>
+                            <th class="px-5 py-3 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="itemsTableBody">
+                        <tr>
+                            <td colspan="7" class="text-center py-6 text-gray-500">Loading items...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Mobile/Tablet Cards View -->
+        <div id="itemsCardsView" class="grid grid-cols-1 sm:grid-cols-2 gap-4 xl:hidden">
+            <!-- Cards will be populated by JS -->
+            <p class="text-center text-gray-500 py-4 col-span-full">Loading items...</p>
+        </div>
+
+        <!-- Template for Item Card (Mobile) -->
+        <template id="itemCardTemplate">
+            <div
+                class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 flex flex-col items-center text-center border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow">
+                <div class="mb-3">
+                    <span
+                        class="card-type px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"></span>
+                </div>
+
+                <h3 class="card-title text-lg font-bold text-gray-800 dark:text-white mb-1 line-clamp-2 leading-tight">
+                </h3>
+                <p
+                    class="card-location text-sm text-gray-500 dark:text-gray-400 mb-4 flex items-center justify-center gap-1">
+                    <i class="fas fa-map-marker-alt text-red-400"></i> <span></span>
+                </p>
+
+                <!-- Details Grid -->
+                <div
+                    class="grid grid-cols-2 gap-x-4 gap-y-2 w-full text-sm mb-4 border-t border-b border-gray-100 dark:border-gray-700 py-3">
+                    <div class="text-right text-gray-500 dark:text-gray-400">Date:</div>
+                    <div class="card-date text-left font-medium text-gray-700 dark:text-gray-300 text-xs mt-0.5"></div>
+
+                    <div class="text-right text-gray-500 dark:text-gray-400">Status:</div>
+                    <div class="text-left">
+                        <span class="card-status px-2 py-0.5 rounded text-[10px] font-bold uppercase"></span>
+                    </div>
+                </div>
+
+                <p class="card-attr text-sm text-gray-600 dark:text-gray-300 line-clamp-2 mb-6 px-2"></p>
+
+                <!-- Actions Footer -->
+                <div class="flex items-center justify-center space-x-4 w-full mt-auto mb-1">
+                    <button
+                        class="btn-edit text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transform hover:scale-110 transition p-2"
+                        title="Update Status">
+                        <i class="fas fa-edit text-xl"></i>
+                    </button>
+                    <a href="#"
+                        class="btn-preview Link-preview text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transform hover:scale-110 transition p-2"
+                        title="View Details">
+                        <i class="fas fa-eye text-xl"></i>
+                    </a>
+                    <button
+                        class="btn-delete text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transform hover:scale-110 transition p-2"
+                        title="Delete">
+                        <i class="fas fa-trash-alt text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </template>
+
+        <!-- Template for Item Table Row -->
+        <template id="itemRowTemplate">
+            <tr class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+                <td class="px-5 py-4 text-sm font-semibold text-gray-900 dark:text-white item-name"></td>
+                <td class="px-5 py-4 text-sm text-gray-700 dark:text-gray-300 item-type"></td>
+                <td class="px-5 py-4 text-sm text-gray-500 dark:text-gray-400">
+                    <div><i class="fas fa-map-marker-alt mr-1 text-red-500 dark:text-red-400"></i> <span
+                            class="item-location"></span></div>
+                </td>
+                <td class="px-5 py-4 text-sm text-gray-500 dark:text-gray-400">
+                    <div class="text-xs font-semibold"><i
+                            class="fas fa-calendar mr-1 text-blue-500 dark:text-blue-400"></i> <span
+                            class="item-date"></span></div>
+                </td>
+                <td class="px-5 py-4 text-sm text-gray-500 dark:text-gray-400 item-attributes"></td>
+                <td class="px-5 py-4 text-center">
+                    <span class="item-status px-3 py-1 rounded-full text-xs font-bold"></span>
+                </td>
+                <td class="px-5 py-4 text-center">
+                    <div class="flex item-center justify-center space-x-2">
+                        <button
+                            class="btn-edit flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-md transition shadow-sm">
+                            <i class="fas fa-edit mr-1.5"></i> Edit
+                        </button>
+                        <a href="#"
+                            class="btn-preview flex items-center px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 text-xs font-medium rounded-md transition shadow-sm">
+                            <i class="fas fa-eye mr-1.5"></i> Preview
+                        </a>
+                        <button
+                            class="btn-delete flex items-center px-3 py-1.5 bg-white dark:bg-gray-800 border border-red-200 dark:border-red-900 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 text-xs font-medium rounded-md transition shadow-sm">
+                            <i class="fas fa-trash-alt mr-1.5"></i> Delete
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </template>
+
+        <!-- Template for Empty State (Table) -->
+        <template id="emptyTableStateTemplate">
+            <tr>
+                <td colspan="7" class="text-center py-10">
+                    <div class="flex flex-col items-center justify-center text-gray-500 dark:text-gray-400">
+                        <div
+                            class="h-16 w-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-box-open text-3xl"></i>
+                        </div>
+                        <p class="text-lg font-medium">No items found</p>
+                        <p class="text-sm">Try adjusting your filters or search.</p>
+                    </div>
+                </td>
+            </tr>
+        </template>
+
+        <!-- Template for Empty State (Cards) -->
+        <template id="emptyCardStateTemplate">
+            <div class="flex flex-col items-center justify-center text-gray-500 dark:text-gray-400 py-10 col-span-full">
+                <div class="h-16 w-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
+                    <i class="fas fa-box-open text-3xl"></i>
+                </div>
+                <p class="text-lg font-medium">No items found</p>
+                <p class="text-sm">Try adjusting your filters or search.</p>
+            </div>
+        </template>
+
+        <!-- Template for Error State (Table) -->
+        <template id="errorTableStateTemplate">
+            <tr>
+                <td colspan="7" class="text-center py-6 text-red-500 font-medium">
+                    <i class="fas fa-exclamation-circle mr-2"></i> Error loading items. Please try again later.
+                </td>
+            </tr>
+        </template>
+
+        <!-- Pagination -->
+        <div class="flex flex-col md:flex-row justify-between items-center mt-6">
+            <div class="text-sm text-gray-600 dark:text-gray-400 mb-4 md:mb-0">
+                Showing <span id="startRange">0</span>-<span id="endRange">0</span> of <span id="totalEntries">0</span>
+            </div>
+
+            <div class="flex items-center space-x-1">
+                <button id="prevPage"
+                    class="px-3 py-1 border rounded hover:bg-gray-100 dark:hover:bg-gray-700 dark:border-gray-600 dark:text-white disabled:opacity-50">
+                    &lt;
+                </button>
+                <div id="paginationNumbers" class="flex space-x-1">
+                    <!-- Page numbers will be injected here -->
+                </div>
+                <button id="nextPage"
+                    class="px-3 py-1 border rounded hover:bg-gray-100 dark:hover:bg-gray-700 dark:border-gray-600 dark:text-white disabled:opacity-50">
+                    &gt;
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- ============================ -->
+    <!-- STATUS CHANGE MODAL -->
+    <!-- ============================ -->
+    <div id="statusModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog"
+        aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Background overlay -->
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+
+            <!-- Modal Panel -->
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div
+                class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div
+                            class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900 sm:mx-0 sm:h-10 sm:w-10">
+                            <i class="fas fa-sync-alt text-blue-600 dark:text-blue-300"></i>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white" id="modal-title">
+                                Update Item Status
+                            </h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                                    Change the status of this item and provide feedback/instructions for the user.
+                                </p>
+
+                                <!-- Status Dropdown -->
+                                <label for="modalStatusSelect"
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">New
+                                    Status</label>
+                                <select id="modalStatusSelect"
+                                    class="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm">
+                                    <option value="Lost">Lost (Open)</option>
+                                    <option value="Claim">Claim (Potential Match)</option>
+                                    <option value="Found">Found (Returned to Owner)</option>
+                                </select>
+
+                                <!-- Reason Textarea -->
+                                <label for="modalStatusReason"
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mt-4 mb-1">Admin
+                                    Feedback / Message (Required)</label>
+                                <textarea id="modalStatusReason" rows="3"
+                                    class="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm"
+                                    placeholder="e.g., 'A matching item has been found. Please visit the admin office.'"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" id="confirmStatusBtn"
+                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Update Status
+                    </button>
+                    <button type="button" id="cancelStatusBtn"
+                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-500 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================ -->
+    <!-- DELETE CONFIRM MODAL -->
+    <!-- ============================ -->
+    <div id="deleteModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog"
+        aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div
+                class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div
+                            class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900 sm:mx-0 sm:h-10 sm:w-10">
+                            <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-300"></i>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white" id="modal-title">
+                                Delete Item Report
+                            </h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                                    Are you sure you want to delete this specific lost item report? This action is
+                                    irreversible.
+                                </p>
+
+                                <!-- Reason Textarea -->
+                                <label for="modalDeleteReason"
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Reason for
+                                    Deletion (Required)</label>
+                                <textarea id="modalDeleteReason" rows="3"
+                                    class="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm"
+                                    placeholder="e.g., 'Duplicate report', 'Inappropriate content'"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" id="confirmDeleteBtn"
+                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Delete
+                    </button>
+                    <button type="button" id="cancelDeleteBtn"
+                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-500 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer
+        class="w-full py-10 mt-10 bg-[var(--color-eco-light)] text-[var(--color-text-light)] dark:bg-[#0F1A24] dark:text-gray-200">
+
+        <div class="max-w-4xl mx-auto px-6">
+
+            <!-- ComplaNet Lost & Found Admin Title -->
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-heading font-bold mb-3 text-[var(--color-blue-btn)] dark:text-blue-400">
+                    ComplaNet Lost & Found
+                </h2>
+                <p class="text-sm leading-6 opacity-80 max-w-2xl mx-auto">
+                    Administrative portal for managing university lost and found items. Monitor, verify, and resolve
+                    reports
+                    efficiently.
+                </p>
+            </div>
+
+            <!-- Quick Navigation - Centered -->
+            <div class="text-center mb-8">
+                <h3 class="text-lg font-semibold mb-4 text-[var(--color-blue-btn)] dark:text-blue-400">
+                    Quick Navigation
+                </h3>
+                <ul class="flex flex-wrap justify-center gap-6 text-sm">
+                    <li>
+                        <a href="./AdminLostFoundDashboard.html"
+                            class="inline-flex items-center gap-2 text-gray-800 hover:text-blue-700 dark:text-gray-300 dark:hover:text-blue-400 transition-all duration-300 hover:-translate-y-1">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="AdminLostFound.html"
+                            class="inline-flex items-center gap-2 text-gray-800 hover:text-blue-700 dark:text-gray-300 dark:hover:text-blue-400 transition-all duration-300 hover:-translate-y-1">
+                            <i class="fas fa-search"></i>
+                            <span>Lost Items</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="text-center text-sm mt-10 text-gray-700 dark:text-gray-400">
+                © 2025 ComplaNet. All rights reserved.
+            </div>
+
+        </div>
+    </footer>
+
+    <!-- Logout Modal -->
+    <div id="logoutModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60] hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-11/12 max-w-sm">
+            <h3 class="text-xl font-bold mb-4">Confirm Logout</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-6">Are you sure you want to log out?</p>
+            <div class="flex justify-end space-x-3">
+                <button id="cancelLogoutBtn"
+                    class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600">Cancel</button>
+                <button id="confirmLogoutBtn" class="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700">Log
+                    Out</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EmailJS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function () {
+            emailjs.init("08jWWt0PNjZJ4BcQw");
+        })();
+    </script>
+
+</body>
+
+</html>

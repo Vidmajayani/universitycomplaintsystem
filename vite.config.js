@@ -24,12 +24,18 @@ export default defineConfig({
                 technicalForm: resolve(__dirname, 'src/TechnicalForm.html'),
                 otherForm: resolve(__dirname, 'src/OtherForm.html'),
 
+                // Lost & Found Pages
+                lostAndFound: resolve(__dirname, 'src/LostAndFound.html'),
+
                 // Admin Pages
                 adminDashboard: resolve(__dirname, 'src/AdminDashboard.html'),
                 allComplaints: resolve(__dirname, 'src/AllComplaints.html'),
                 adminComplaintDetails: resolve(__dirname, 'src/AdminComplaintDetails.html'),
                 analytics: resolve(__dirname, 'src/Analytics.html'),
                 adminProfile: resolve(__dirname, 'src/AdminProfile.html'),
+                adminLostFound: resolve(__dirname, 'src/AdminLostFound.html'),
+                adminLostFoundDashboard: resolve(__dirname, 'src/AdminLostFoundDashboard.html'),
+                adminLostFoundDetails: resolve(__dirname, 'src/AdminLostFoundDetails.html'),
             },
         },
     },

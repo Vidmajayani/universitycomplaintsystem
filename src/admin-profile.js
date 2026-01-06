@@ -81,6 +81,73 @@ async function checkAdminSession() {
 
     // Load Stats
     loadStats(adminData.id, adminData.adminrole);
+
+    // --- ROLE-BASED ACCESS CONTROL (NAVIGATION) ---
+    const profileNavDashboard = document.getElementById('profileNavDashboard');
+    const profileNavAllComplaints = document.getElementById('profileNavAllComplaints');
+    const profileNavAnalytics = document.getElementById('profileNavAnalytics');
+
+    const mobileProfileNavDashboard = document.getElementById('mobileProfileNavDashboard');
+    const mobileProfileNavAllComplaints = document.getElementById('mobileProfileNavAllComplaints');
+    const mobileProfileNavAnalytics = document.getElementById('mobileProfileNavAnalytics');
+
+    const footerNavDashboard = document.getElementById('footerNavDashboard');
+    const footerNavAllComplaints = document.getElementById('footerNavAllComplaints');
+    const footerNavAnalytics = document.getElementById('footerNavAnalytics');
+    const adminFooterTitle = document.querySelector('footer h2');
+    const adminFooterDesc = document.querySelector('footer p');
+
+    if (adminData.adminrole === 'LostAndFound Admin') {
+        // Update Dashboard Link
+        if (profileNavDashboard) {
+            profileNavDashboard.href = 'AdminLostFoundDashboard.html';
+        }
+        if (mobileProfileNavDashboard) {
+            mobileProfileNavDashboard.href = 'AdminLostFoundDashboard.html';
+        }
+
+        // Update "All Complaints" to "Lost Items"
+        if (profileNavAllComplaints) {
+            profileNavAllComplaints.innerHTML = 'Lost Items';
+            profileNavAllComplaints.href = 'AdminLostFound.html';
+        }
+        if (mobileProfileNavAllComplaints) {
+            mobileProfileNavAllComplaints.textContent = 'Lost Items';
+            mobileProfileNavAllComplaints.href = 'AdminLostFound.html';
+        }
+
+        // Update Footer Navigation
+        if (footerNavDashboard) {
+            footerNavDashboard.href = 'AdminLostFoundDashboard.html';
+        }
+        if (footerNavAllComplaints) {
+            const span = footerNavAllComplaints.querySelector('span');
+            const icon = footerNavAllComplaints.querySelector('i');
+            if (span) span.textContent = 'Lost Items';
+            if (icon) icon.className = 'fas fa-search';
+            footerNavAllComplaints.href = 'AdminLostFound.html';
+        }
+
+        // Hide Analytics Links
+        if (profileNavAnalytics) {
+            profileNavAnalytics.style.display = 'none';
+        }
+        if (mobileProfileNavAnalytics) {
+            mobileProfileNavAnalytics.style.display = 'none';
+        }
+        if (footerNavAnalytics) {
+            footerNavAnalytics.style.display = 'none';
+        }
+
+        // Update Footer Title and Description
+        if (adminFooterTitle) {
+            adminFooterTitle.textContent = 'ComplaNet Lost & Found';
+            adminFooterTitle.className = 'text-2xl font-heading font-bold mb-3 text-[var(--color-blue-btn)] dark:text-blue-400';
+        }
+        if (adminFooterDesc) {
+            adminFooterDesc.textContent = 'Administrative portal for managing university lost and found items. Monitor, verify, and resolve reports efficiently.';
+        }
+    }
 }
 
 // ------------------------

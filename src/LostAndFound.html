@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComplaNet — Lost & Found</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body
+    class="flex flex-col min-h-screen bg-[var(--color-bg-light)] text-[var(--color-text-light)] dark:bg-[var(--color-bg-dark)] dark:text-[var(--color-text-dark)] transition-all duration-300 font-sans">
+
+    <!-- Header -->
+    <header class="flex items-center justify-between px-6 py-4 bg-pink dark:bg-gray-800 shadow-md">
+        <div class="flex items-center">
+            <img src="../images/BGlessLogoDark.png" alt="ComplaNet Logo" class="h-16 block dark:hidden">
+            <img src="../images/BGlessLogo.png" alt="ComplaNet Logo Dark" class="h-16 hidden dark:block">
+        </div>
+
+        <!-- Desktop Nav -->
+        <nav class="hidden md:flex space-x-6 items-center">
+            <a href="UserDashboard.html" class="nav-content">Dashboard</a>
+            <a href="Newcomplaint.html" class="nav-content">New Complaint</a>
+            <a href="Mycomplaint.html" class="nav-content">My Complaints</a>
+            <a href="LostAndFound.html" class="font-semibold text-eco hover:text-eco-dark dark:text-blue-400 dark:hover:text-blue-300">Report Lost</a>
+
+            <div class="relative">
+                <button id="profileButton" class="flex items-center space-x-2 focus:outline-none">
+                    <i class="fas fa-user text-gray-500 text-2xl"></i>
+                </button>
+                <div id="profileMenu"
+                    class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 z-50">
+                    <a href="Profile.html"
+                        class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">View
+                        Profile</a>
+                    <a href="javascript:void(0)" id="headerLogoutBtn"
+                        class="block px-4 py-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700">Log Out</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Mobile Hamburger -->
+        <button id="mobileMenuButton"
+            class="md:hidden text-gray-800 dark:text-gray-200 focus:outline-none">&#9776;</button>
+    </header>
+
+    <!-- Mobile Side Menu -->
+    <aside id="mobileMenu"
+        class="fixed top-0 left-0 w-64 h-full bg-white dark:bg-gray-800 shadow-lg transform -translate-x-full transition-transform duration-300 z-50 flex flex-col justify-between">
+        <div>
+            <div class="flex items-center px-6 py-4 border-b dark:border-gray-700">
+                <img src="../images/BGlessLogoDark.png" alt="Logo" class="h-10">
+            </div>
+            <nav class="mt-6 flex flex-col space-y-2 px-6">
+                <a href="UserDashboard.html" class="nav-content">Dashboard</a>
+                <a href="Newcomplaint.html" class="nav-content">New Complaint</a>
+                <a href="Mycomplaint.html" class="nav-content">My Complaints</a>
+                <a href="LostAndFound.html" class="font-semibold text-eco hover:text-eco-dark dark:text-blue-400 dark:hover:text-blue-300">Report Lost</a>
+                <a href="Profile.html" class="nav-content">View Profile</a>
+            </nav>
+        </div>
+        <div class="px-6 py-4 border-t dark:border-gray-700 flex flex-col space-y-2">
+            <a href="javascript:void(0)" id="mobileLogoutBtn" class="block py-2 hover:text-red-500 transition">Log
+                Out</a>
+        </div>
+    </aside>
+
+    <!-- Overlay -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1 px-6 py-10 md:px-12">
+
+        <!-- Hero Section -->
+        <div class="max-w-5xl mx-auto text-center mb-12">
+            <div class="inline-block p-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-4">
+                <i class="fas fa-search text-4xl text-white"></i>
+            </div>
+            <h1
+                class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400">
+                Lost & Found Service
+            </h1>
+            <p class="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
+                Lost something on campus? We're here to help you recover your belongings. Report your lost items and our
+                dedicated team will assist in reuniting you with them.
+            </p>
+        </div>
+
+        <!-- Info Cards -->
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+
+            <!-- Card 1: How It Works -->
+            <div
+                class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow border-t-4 border-blue-500">
+                <div class="flex items-center justify-center w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full mb-4">
+                    <i class="fas fa-clipboard-list text-blue-600 dark:text-blue-400 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-3 text-gray-900 dark:text-white">Report Your Item</h3>
+                <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+                    Fill out a simple form with details about your lost item including description, location, and time
+                    lost.
+                </p>
+            </div>
+
+            <!-- Card 2: We Search -->
+            <div
+                class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow border-t-4 border-purple-500">
+                <div
+                    class="flex items-center justify-center w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-full mb-4">
+                    <i class="fas fa-search-location text-purple-600 dark:text-purple-400 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-3 text-gray-900 dark:text-white">We Search</h3>
+                <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+                    Our Lost & Found team reviews your report and searches our collection of found items for matches.
+                </p>
+            </div>
+
+            <!-- Card 3: Get Notified -->
+            <div
+                class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow border-t-4 border-green-500">
+                <div
+                    class="flex items-center justify-center w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full mb-4">
+                    <i class="fas fa-bell text-green-600 dark:text-green-400 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-3 text-gray-900 dark:text-white">Get Notified</h3>
+                <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+                    Receive updates on your report status. We'll contact you when your item is found or needs
+                    verification.
+                </p>
+            </div>
+
+        </div>
+
+
+        <!-- Lost Item Report Form -->
+        <div class="max-w-4xl mx-auto">
+            <form id="lostItemForm" class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 md:p-12">
+
+                <h2
+                    class="text-3xl font-bold text-center mb-8 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400">
+                    Report Lost Item</h2>
+
+                <!-- Section: Item Details -->
+                <div>
+                    <h3 class="text-xl font-semibold mb-4 border-b pb-2 dark:border-gray-700">Item Details</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Item Name -->
+                        <div>
+                            <label class="block mb-1 font-medium">Item Name *</label>
+                            <input type="text" id="itemName" class="form-textbox"
+                                placeholder="e.g., iPhone 13, Blue Geometry Box" required>
+                        </div>
+
+                        <!-- Item Type -->
+                        <div>
+                            <label class="block mb-1 font-medium">Item Type *</label>
+                            <select id="itemType" class="form-textbox" required>
+                                <option value="">Select Type</option>
+                                <option value="Electronics">Electronics</option>
+                                <option value="Clothing">Clothing</option>
+                                <option value="Keys">Keys</option>
+                                <option value="Documents">Documents</option>
+                                <option value="Wallet/Purse">Wallet/Purse</option>
+                                <option value="Stationery">Stationery</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <!-- Brand -->
+                        <div>
+                            <label class="block mb-1 font-medium">Brand (Optional)</label>
+                            <input type="text" id="brand" class="form-textbox" placeholder="e.g., Apple, Nike">
+                        </div>
+
+                        <!-- Model -->
+                        <div>
+                            <label class="block mb-1 font-medium">Model (Optional)</label>
+                            <input type="text" id="model" class="form-textbox" placeholder="e.g., Pro Max, Air Force 1">
+                        </div>
+
+                        <!-- Colors -->
+                        <div class="grid grid-cols-2 gap-4 col-span-1 md:col-span-2 lg:col-span-2 xl:col-span-2">
+                            <div class="md:col-span-1">
+                                <label class="block mb-1 font-medium">Primary Color</label>
+                                <input type="text" id="primaryColor" class="form-textbox" placeholder="e.g., Black">
+                            </div>
+                            <div class="md:col-span-1">
+                                <label class="block mb-1 font-medium">Secondary Color</label>
+                                <input type="text" id="secondaryColor" class="form-textbox"
+                                    placeholder="e.g., Red Stripes">
+                            </div>
+                        </div>
+
+                        <!-- Serial Number -->
+                        <div class="md:col-span-2">
+                            <label class="block mb-1 font-medium">Serial Number (Optional)</label>
+                            <input type="text" id="serialNumber" class="form-textbox"
+                                placeholder="Unique ID if applicable">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: When & Where -->
+                <div class="mt-6">
+                    <h3 class="text-xl font-semibold mb-4 border-b pb-2 dark:border-gray-700">When & Where</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Location -->
+                        <div class="md:col-span-2">
+                            <label class="block mb-1 font-medium">Location Lost *</label>
+                            <input type="text" id="locationLost" class="form-textbox"
+                                placeholder="e.g., Library 2nd Floor, Canteen" required>
+                        </div>
+
+                        <!-- Date Lost -->
+                        <div>
+                            <label class="block mb-1 font-medium">Date Lost *</label>
+                            <input type="date" id="dateLost" class="form-textbox" required>
+                        </div>
+
+                        <!-- Time Lost -->
+                        <div>
+                            <label class="block mb-1 font-medium">Approx. Time (Optional)</label>
+                            <input type="time" id="timeLost" class="form-textbox">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Description & Evidence -->
+                <div class="mt-6">
+                    <h3 class="text-xl font-semibold mb-4 border-b pb-2 dark:border-gray-700">Description & Evidence
+                    </h3>
+
+                    <div class="space-y-4">
+                        <!-- Distinguishing Features -->
+                        <div>
+                            <label class="block mb-1 font-medium">Distinguishing Features</label>
+                            <textarea id="distinguishingFeatures" rows="2" class="form-textbox"
+                                placeholder="e.g., Sticker on the back, scratch on the screen"></textarea>
+                        </div>
+
+                        <!-- General Description -->
+                        <div>
+                            <label class="block mb-1 font-medium">Description</label>
+                            <textarea id="description" rows="3" class="form-textbox"
+                                placeholder="Any other details..."></textarea>
+                        </div>
+
+                        <!-- Image Upload -->
+                        <div>
+                            <label class="block mb-1 font-medium">Upload Image (Optional)</label>
+                            <input type="file" id="itemImage" accept="image/*"
+                                class="w-full text-gray-700 dark:text-gray-200" />
+                            <p class="text-xs text-gray-400 mt-1">PNG, JPG, JPEG up to 5MB</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-6">
+                    <button type="submit"
+                        class="w-full px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-lg rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        Submit Lost Item Report
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+
+    </main>
+
+    <!-- Footer -->
+    <footer
+        class="w-full py-10 mt-10 bg-[var(--color-eco-light)] text-[var(--color-text-light)] dark:bg-[#0F1A24] dark:text-gray-200">
+        <div
+            class="max-w-7xl mx-auto flex flex-col space-y-10 md:grid md:grid-cols-3 md:gap-10 text-center md:text-left">
+
+            <div>
+                <h2 class="text-xl font-semibold mb-4 text-[var(--color-blue-btn)] dark:text-blue-400">ComplaNet</h2>
+                <p class="text-sm leading-6">
+                    Your unified university complaint management and lost & found system.<br>
+                    Submit, track, and manage everything easily and securely.
+                </p>
+            </div>
+
+            <div>
+                <h2 class="text-xl font-semibold mb-4 text-[var(--color-blue-btn)] dark:text-blue-400">Quick Navigation
+                </h2>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="./UserDashboard.html"
+                            class="hover:text-blue-700 dark:hover:text-blue-400">Dashboard</a></li>
+                    <li><a href="./Newcomplaint.html" class="hover:text-blue-700 dark:hover:text-blue-400">New
+                            Complaint</a></li>
+                    <li><a href="./Mycomplaint.html" class="hover:text-blue-700 dark:hover:text-blue-400">My
+                            Complaints</a></li>
+                    <li><a href="./LostAndFound.html" class="hover:text-blue-700 dark:hover:text-blue-400">Lost &
+                            Found</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h2 class="text-xl font-semibold mb-4 text-[var(--color-blue-btn)] dark:text-blue-400">Resources</h2>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="./ReportLostItem.html" class="hover:text-blue-700 dark:hover:text-blue-400">Report Lost
+                            Item</a></li>
+                    <li><a href="./Profile.html" class="hover:text-blue-700 dark:hover:text-blue-400">My Profile</a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="text-center text-sm mt-10 text-gray-700 dark:text-gray-400">
+            © 2025 ComplaNet. All rights reserved.
+        </div>
+    </footer>
+
+    <script type="module" src="./darkMode.js"></script>
+    <script type="module" src="./reportLostItem.js"></script>
+</body>
+
+</html>

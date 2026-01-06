@@ -163,4 +163,5 @@ async function loadRecentComplaints() {
   });
 }
 
+// Start loading complaints
 loadRecentComplaints();

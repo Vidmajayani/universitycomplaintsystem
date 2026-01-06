@@ -21,9 +21,9 @@
 
         <!-- Desktop Navigation -->
         <nav class="hidden md:flex space-x-6 items-center">
-            <a href="AdminDashboard.html" class="nav-content">Dashboard</a>
-            <a href="AllComplaints.html" class="nav-content">All Complaints</a>
-            <a href="Analytics.html" class="nav-content">Analytics</a>
+            <a href="AdminDashboard.html" id="profileNavDashboard" class="nav-content">Dashboard</a>
+            <a href="AllComplaints.html" id="profileNavAllComplaints" class="nav-content">All Complaints</a>
+            <a href="Analytics.html" id="profileNavAnalytics" class="nav-content">Analytics</a>
 
             <!-- Profile Menu -->
             <div class="relative">
@@ -54,9 +54,9 @@
                 <img src="../images/BGlessLogoDark.png" alt="Logo" class="h-10">
             </div>
             <nav class="mt-6 flex flex-col space-y-2 px-6">
-                <a href="AdminDashboard.html" class="nav-content">Dashboard</a>
-                <a href="AllComplaints.html" class="nav-content">All Complaints</a>
-                <a href="Analytics.html" class="nav-content">Analytics</a>
+                <a href="AdminDashboard.html" id="mobileProfileNavDashboard" class="nav-content">Dashboard</a>
+                <a href="AllComplaints.html" id="mobileProfileNavAllComplaints" class="nav-content">All Complaints</a>
+                <a href="Analytics.html" id="mobileProfileNavAnalytics" class="nav-content">Analytics</a>
                 <a href="AdminProfile.html"
                     class="font-semibold text-eco-dark hover:text-eco-dark dark:text-blue-400 dark:hover:text-blue-300">Admin
                     Profile</a>
@@ -210,21 +210,21 @@
                 </h3>
                 <ul class="flex flex-wrap justify-center gap-6 text-sm">
                     <li>
-                        <a href="./AdminDashboard.html"
+                        <a href="./AdminDashboard.html" id="footerNavDashboard"
                             class="inline-flex items-center gap-2 text-gray-800 hover:text-blue-700 dark:text-gray-300 dark:hover:text-blue-400 transition-all duration-300 hover:-translate-y-1">
                             <i class="fas fa-tachometer-alt"></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
                     <li>
-                        <a href="AllComplaints.html"
+                        <a href="AllComplaints.html" id="footerNavAllComplaints"
                             class="inline-flex items-center gap-2 text-gray-800 hover:text-blue-700 dark:text-gray-300 dark:hover:text-blue-400 transition-all duration-300 hover:-translate-y-1">
                             <i class="fas fa-list-alt"></i>
                             <span>All Complaints</span>
                         </a>
                     </li>
                     <li>
-                        <a href="Analytics.html"
+                        <a href="Analytics.html" id="footerNavAnalytics"
                             class="inline-flex items-center gap-2 text-gray-800 hover:text-blue-700 dark:text-gray-300 dark:hover:text-blue-400 transition-all duration-300 hover:-translate-y-1">
                             <i class="fas fa-chart-line"></i>
                             <span>Analytics</span>

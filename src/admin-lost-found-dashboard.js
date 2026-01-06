@@ -83,18 +83,25 @@ async function checkAdminSession() {
 
     // --- ROLE-BASED ACCESS CONTROL (NAVIGATION) ---
     const navAllComplaints = document.getElementById('navAllComplaints');
+    const navLostFound = document.getElementById('navLostFound');
     const mobileNavAllComplaints = document.getElementById('mobileNavAllComplaints');
+    const mobileNavLostFound = document.getElementById('mobileNavLostFound');
 
     // Default: Show all
     if (navAllComplaints) navAllComplaints.style.display = 'block';
+    if (navLostFound) navLostFound.style.display = 'block';
     if (mobileNavAllComplaints) mobileNavAllComplaints.style.display = 'block';
+    if (mobileNavLostFound) mobileNavLostFound.style.display = 'block';
+
 
     if (adminRole === 'LostAndFound Admin') {
         // LostAndFound Admin: Can only see Lost & Found. CANNOT see All Complaints.
-        // NOTE: This condition might be unreachable if redirections work perfectly, 
-        // strictly handling here just in case.
         if (navAllComplaints) navAllComplaints.style.display = 'none';
         if (mobileNavAllComplaints) mobileNavAllComplaints.style.display = 'none';
+
+        // Ensure Lost & Found is visible
+        if (navLostFound) navLostFound.style.display = 'block';
+        if (mobileNavLostFound) mobileNavLostFound.style.display = 'block';
 
     } else if (adminRole === 'Master Admin') {
         // Master Admin: Can see EVERYTHING.
@@ -102,7 +109,10 @@ async function checkAdminSession() {
 
     } else {
         // Other Admins (Academic, Technical, etc.):
-        // Can see All Complaints.
+        // Can see All Complaints (likely needed for their work or general view).
+        // CANNOT see Lost & Found.
+        if (navLostFound) navLostFound.style.display = 'none';
+        if (mobileNavLostFound) mobileNavLostFound.style.display = 'none';
     }
 
     // Load complaints for this admin
@@ -113,51 +123,38 @@ async function checkAdminSession() {
 // ------------------------
 //  LOAD ONLY ADMIN'S COMPLAINTS
 // ------------------------
+// ------------------------
+//  LOAD LOST ITEMS
+// ------------------------
 async function loadAdminComplaints() {
     try {
-        // Build query based on admin role
+        // Fetch all lost items
         let query = supabase
-            .from('complaint')
+            .from('lost_and_found')
             .select('*');
 
-        // Master Admin sees ALL complaints, others see only assigned
-        if (adminRole !== 'Master Admin') {
-            query = query.eq('adminid', adminId);
-        }
+        // Note: Currently assumes 'LostAndFound Admin' sees ALL lost items. 
+        // If they should only see assigned ones, we'd add .eq('admin_id', adminId), 
+        // but typically Lost & Found is shared or managed by a team.
 
-        const { data: complaints, error } = await query.order('submitteddate', { ascending: false });
+        const { data: items, error } = await query.order('created_at', { ascending: false });
 
         if (error) {
-            console.error('Error fetching complaints:', error);
+            console.error('Error fetching lost items:', error);
             return;
         }
 
-        // Fetch categories to map IDs to Names
-        const { data: categories } = await supabase
-            .from('category')
-            .select('categoryid, categoryname');
+        allComplaints = items || []; // Reuse variable name for simplicity
 
-        const categoryMap = {};
-        if (categories) {
-            categories.forEach(cat => {
-                categoryMap[cat.categoryid] = cat.categoryname;
-            });
-        }
-
-        allComplaints = (complaints || []).map(c => ({
-            ...c,
-            categoryName: categoryMap[c.categoryid] || 'Uncategorized'
-        }));
-
-        // Update summary boxes (still counts deleted ones)
+        // Update summary boxes
         updateStatistics(allComplaints);
 
-        // Render Recent Activity (Top 5 ACTIVE complaints only)
-        const activeComplaints = allComplaints.filter(c => c.complaintstatus !== 'Deleted');
-        renderRecentActivity(activeComplaints.slice(0, 5));
+        // Render Recent Activity (Top 5 ACTIVE items only)
+        const activeItems = allComplaints.filter(c => c.status !== 'Deleted');
+        renderRecentActivity(activeItems.slice(0, 5));
 
     } catch (err) {
-        console.error('Unexpected error loading complaints:', err);
+        console.error('Unexpected error loading lost items:', err);
     }
 }
 
@@ -165,54 +162,50 @@ async function loadAdminComplaints() {
 // ------------------------
 //  STATISTICS CARDS
 // ------------------------
-function updateStatistics(complaints) {
-    const total = complaints.length;
-    const pending = complaints.filter(c => c.complaintstatus === 'Pending').length;
-    const inProgress = complaints.filter(c => c.complaintstatus === 'In-Progress').length;
-    const resolved = complaints.filter(c => c.complaintstatus === 'Resolved').length;
-    const deleted = complaints.filter(c => c.complaintstatus === 'Deleted').length;
+function updateStatistics(items) {
+    const total = items.length;
+    const lost = items.filter(c => c.status === 'Lost').length;
+    const claim = items.filter(c => c.status === 'Claim').length;
+    const found = items.filter(c => c.status === 'Found').length;
+    const deleted = items.filter(c => c.status === 'Deleted').length;
 
     // Update UI
     document.getElementById('totalCount').textContent = total;
-    document.getElementById('pendingCount').textContent = pending;
-    document.getElementById('inProgressCount').textContent = inProgress;
-    document.getElementById('resolvedCount').textContent = resolved;
-    if (document.getElementById('deletedCount')) {
-        document.getElementById('deletedCount').textContent = deleted;
-    }
+    document.getElementById('lostCount').textContent = lost;
+    document.getElementById('claimCount').textContent = claim;
+    document.getElementById('foundCount').textContent = found;
+
     if (document.getElementById('deletedCount')) {
         document.getElementById('deletedCount').textContent = deleted;
     }
 }
 
+
 // ------------------------
 //  RENDER RECENT ACTIVITY
 // ------------------------
-// ------------------------
-//  RENDER RECENT ACTIVITY
-// ------------------------
-function renderRecentActivity(complaints) {
+function renderRecentActivity(items) {
     const tableBody = document.getElementById('recentActivityTable');
     const cardsContainer = document.getElementById('recentActivityCards');
 
     if (tableBody) tableBody.textContent = ''; // Clear table
     if (cardsContainer) cardsContainer.textContent = ''; // Clear cards
 
-    if (complaints.length === 0) {
+    if (items.length === 0) {
         if (tableBody) tableBody.innerHTML = '<tr><td colspan="5" class="py-6 text-center text-gray-500">No recent activity found.</td></tr>';
         if (cardsContainer) cardsContainer.innerHTML = '<p class="text-center text-gray-500 py-4">No recent activity found.</p>';
         return;
     }
 
-    complaints.forEach(complaint => {
-        const date = new Date(complaint.submitteddate).toLocaleDateString();
+    items.forEach(item => {
+        const date = new Date(item.created_at || item.reported_date).toLocaleDateString();
 
         // Status Badge Color
         let statusColor = 'bg-gray-200 text-gray-700';
-        if (complaint.complaintstatus === 'Pending') statusColor = 'bg-yellow-100 text-yellow-700';
-        else if (complaint.complaintstatus === 'In-Progress') statusColor = 'bg-purple-100 text-purple-700';
-        else if (complaint.complaintstatus === 'Resolved') statusColor = 'bg-green-100 text-green-700';
-        else if (complaint.complaintstatus === 'Deleted') statusColor = 'bg-gray-200 text-gray-600'; // Changed Deleted to Gray/Red
+        if (item.status === 'Lost') statusColor = 'bg-red-100 text-red-700';
+        else if (item.status === 'Claim') statusColor = 'bg-yellow-100 text-yellow-700';
+        else if (item.status === 'Found') statusColor = 'bg-green-100 text-green-700';
+        else if (item.status === 'Deleted') statusColor = 'bg-gray-200 text-gray-600';
 
         // 1. Render Table Row (Desktop)
         if (tableBody) {
@@ -221,16 +214,16 @@ function renderRecentActivity(complaints) {
                 const clone = template.content.cloneNode(true);
                 const row = clone.querySelector('tr');
 
-                clone.querySelector('.col-title').textContent = complaint.complainttitle || 'Untitled';
-                clone.querySelector('.col-category').textContent = complaint.categoryName;
+                clone.querySelector('.col-title').textContent = item.item_name || 'Unnamed Item';
+                clone.querySelector('.col-category').textContent = item.item_type || 'Unknown';
                 clone.querySelector('.col-date').textContent = date;
 
                 const statusSpan = clone.querySelector('.col-status');
-                statusSpan.textContent = complaint.complaintstatus;
+                statusSpan.textContent = item.status;
                 statusSpan.className = `col-status py-1 px-3 rounded-full text-xs font-semibold ${statusColor}`;
 
                 const link = clone.querySelector('.col-link');
-                link.href = `AdminComplaintDetails.html?id=${complaint.complaintid}`;
+                link.href = `AdminLostFoundDetails.html?id=${item.item_id}`;
 
                 tableBody.appendChild(clone);
             }
@@ -243,17 +236,17 @@ function renderRecentActivity(complaints) {
                 const cardClone = template.content.cloneNode(true);
                 const card = cardClone.querySelector('div');
 
-                card.querySelector('.card-title').textContent = complaint.complainttitle || 'Untitled';
+                card.querySelector('.card-title').textContent = item.item_name || 'Unnamed Item';
 
                 const statusSpan = card.querySelector('.card-status');
-                statusSpan.textContent = complaint.complaintstatus;
+                statusSpan.textContent = item.status;
                 statusSpan.className = `card-status py-1 px-2 rounded text-[10px] font-bold uppercase tracking-wide whitespace-nowrap ml-2 ${statusColor}`;
 
-                card.querySelector('.card-category').textContent = complaint.categoryName;
+                card.querySelector('.card-category').textContent = item.item_type || 'Unknown';
                 card.querySelector('.card-date').textContent = date;
 
                 const link = card.querySelector('.card-link');
-                link.href = `AdminComplaintDetails.html?id=${complaint.complaintid}`;
+                link.href = `AdminLostFoundDetails.html?id=${item.item_id}`;
 
                 cardsContainer.appendChild(card);
             }

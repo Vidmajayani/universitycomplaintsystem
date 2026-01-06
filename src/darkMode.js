@@ -390,58 +390,104 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ======================
-// FILTER COMPLAINTS FUNCTION
+// LOGOUT FUNCTIONALITY (Centralized)
 // ======================
-function filterComplaints(status) {
-  window.location.href = `my-complaints.html?status=${status}`;
+// Handles logout confirmation for all user pages
+
+// 1. Inject Logout Modal HTML if it doesn't exist
+function injectLogoutModal() {
+  if (document.getElementById('logoutModal')) return;
+
+  const modalHtml = `
+    <div id="logoutModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] hidden">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-11/12 max-w-sm transform transition-all scale-100">
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Confirm Logout</h3>
+        <p class="text-gray-600 dark:text-gray-300 mb-6">Are you sure you want to log out?</p>
+        <div class="flex justify-end space-x-3">
+          <button id="cancelLogoutBtn"
+            class="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition font-medium">
+            Cancel
+          </button>
+          <button id="confirmLogoutBtn"
+            class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition shadow-md font-bold">
+            Log Out
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+  // Setup Modal Listeners
+  const modal = document.getElementById('logoutModal');
+  const cancelBtn = document.getElementById('cancelLogoutBtn');
+  const confirmBtn = document.getElementById('confirmLogoutBtn');
+
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => modal.classList.add('hidden'));
+  }
+
+  if (confirmBtn) {
+    confirmBtn.addEventListener('click', async () => {
+      try {
+        const { error } = await supabase.auth.signOut();
+        if (error) throw error;
+        localStorage.clear();
+        window.location.href = 'Login.html';
+      } catch (err) {
+        console.error('Logout error:', err);
+        alert('Error logging out. Please try again.');
+        modal.classList.add('hidden');
+      }
+    });
+  }
+
+  // Close on outside click
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.classList.add('hidden');
+  });
 }
 
-// ======================
-// LOGOUT FUNCTIONALITY
-// ======================
-// This handles logout for all user pages
-
-// Function to handle logout
-async function handleLogout(e) {
-  e.preventDefault();
-
-  try {
-    // Sign out from Supabase
-    const { error } = await supabase.auth.signOut();
-
-    if (error) {
-      console.error('Error signing out:', error);
-      alert('Error logging out. Please try again.');
-      return;
-    }
-
-    // Clear localStorage
-    localStorage.clear();
-
-    // Redirect to login page
-    window.location.href = 'Login.html';
-  } catch (err) {
-    console.error('Unexpected logout error:', err);
-    alert('Error logging out. Please try again.');
+// 2. Function to show the modal
+function showLogoutModal(e) {
+  if (e) e.preventDefault();
+  const modal = document.getElementById('logoutModal');
+  if (modal) {
+    modal.classList.remove('hidden');
+  } else {
+    // If somehow not injected yet
+    injectLogoutModal();
+    document.getElementById('logoutModal').classList.remove('hidden');
   }
 }
 
-// Attach logout handlers to all logout links
-document.addEventListener('DOMContentLoaded', () => {
-  // Find all logout links (both desktop and mobile)
-  const logoutLinks = document.querySelectorAll('a[href="Login.html"]');
+// 3. Attach logout handlers globally
+function initLogoutHandlers() {
+  injectLogoutModal();
 
-  console.log(`[darkMode.js] Found ${logoutLinks.length} links to Login.html`);
+  // Use event delegation for dynamic "Log Out" links or buttons
+  document.addEventListener('click', (e) => {
+    // Look for link or button with IDs or specific text
+    const target = e.target.closest('a, button');
+    if (!target) return;
 
-  logoutLinks.forEach((link, index) => {
-    // Get text content and normalize whitespace
-    const linkText = link.textContent.replace(/\s+/g, ' ').trim().toLowerCase();
-    console.log(`[darkMode.js] Link ${index}: "${linkText}"`);
+    const isLogoutId = target.id === 'headerLogoutBtn' || target.id === 'mobileLogoutBtn' || target.id === 'profileLogoutBtn';
+    const href = target.getAttribute('href');
+    const isLogoutHref = href === 'Login.html' || (href === 'javascript:void(0)' && target.id?.toLowerCase().includes('logout'));
 
-    // Check if the link text contains "log out" or "logout"
-    if (linkText.includes('log out') || linkText.includes('logout')) {
-      link.addEventListener('click', handleLogout);
-      console.log(`[darkMode.js] ✅ Attached logout handler to link ${index}`);
+    // Normalize text check: replace all whitespace (including newlines) with a single space
+    const text = target.textContent.replace(/\s+/g, ' ').trim().toLowerCase();
+    const isLogoutText = text === 'log out' || text === 'logout';
+
+    if (isLogoutId || (isLogoutText && (isLogoutHref || target.tagName === 'BUTTON' || href === 'javascript:void(0)'))) {
+      showLogoutModal(e);
     }
   });
-});
+}
+
+// Run on load
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initLogoutHandlers);
+} else {
+  initLogoutHandlers();
+}

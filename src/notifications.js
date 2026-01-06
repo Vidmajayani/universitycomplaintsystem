@@ -100,6 +100,29 @@ async function initFullNotificationsPage(container) {
         };
     }
 
+    // Initialize Mobile Menu (Hamburger)
+    const oldMobileBtn = document.getElementById('mobileMenuButton');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    if (oldMobileBtn && mobileMenu) {
+        // Clone button to clear old listeners
+        const mobileMenuBtn = oldMobileBtn.cloneNode(true);
+        oldMobileBtn.parentNode.replaceChild(mobileMenuBtn, oldMobileBtn);
+
+        mobileMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            mobileMenu.classList.toggle('-translate-x-full');
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                mobileMenu.classList.add('-translate-x-full');
+            }
+        });
+    }
+
+
     loadFullList(container);
 }
 
@@ -182,16 +205,26 @@ function createNotificationCard(n) {
     const timelineContainer = clone.querySelector('.notification-timeline');
 
     // Show dropdown for ANY status change that implies history
-    const isStatusUpdate = ['In-Progress', 'Resolved', 'Pending', 'Deleted', 'in-progress', 'resolved', 'pending', 'deleted'].includes(n.type);
+    // Add Lost & Found statuses: 'Lost', 'Claim', 'Found' case-insensitive + Legacy/Current 'LostItemUpdate', 'ItemDeleted'
+    const statusTypes = [
+        'in-progress', 'resolved', 'pending', 'deleted',
+        'lost', 'claim', 'found',
+        'lostitemupdate', 'itemdeleted' // Added these to catch the current notifications
+    ];
+    const isStatusUpdate = statusTypes.includes(n.type.toLowerCase());
 
     if (isStatusUpdate) {
         chevronBtn.classList.remove('hidden');
         timelineContainer.id = timelineId;
 
+        // Context Detection
+        const contextType = n.lost_item_id ? 'lost_item' : 'complaint';
+        const contextId = n.lost_item_id || n.complaint_id;
+
         // Pass the notification's own creation date to filter future events
         chevronBtn.onclick = (e) => {
             e.stopPropagation();
-            toggleTimeline(n.complaint_id, timelineContainer, chevronBtn, n.created_at);
+            toggleTimeline(contextId, contextType, timelineContainer, chevronBtn, n.created_at);
         };
     }
 
@@ -213,7 +246,7 @@ function createNotificationCard(n) {
     return card;
 }
 
-async function toggleTimeline(complaintId, container, btnElement, cutoffDate) {
+async function toggleTimeline(contextId, contextType, container, btnElement, cutoffDate) {
     const isHidden = container.classList.contains('hidden');
 
     if (isHidden) {
@@ -230,35 +263,59 @@ async function toggleTimeline(complaintId, container, btnElement, cutoffDate) {
             }
 
             try {
-                // 1. Fetch Complaint Details (for Submission Date)
-                const { data: complaint, error: compError } = await supabase
-                    .from('complaint')
-                    .select('submitteddate, complainttitle')
-                    .eq('complaintid', complaintId)
-                    .single();
+                let initialEvent = null;
+                let historyFilterColumn = '';
 
-                if (compError) throw compError;
+                // 1. Fetch Details & Determine Initial Event
+                if (contextType === 'lost_item') {
+                    historyFilterColumn = 'lost_item_id';
+                    // Fetch Lost Item Details
+                    const { data: item, error: itemError } = await supabase
+                        .from('lost_and_found')
+                        .select('reported_date, item_name')
+                        .eq('item_id', contextId)
+                        .single();
+
+                    if (itemError) throw itemError;
+
+                    initialEvent = {
+                        type: 'Lost', // Uses orange/standard dot
+                        created_at: item.reported_date,
+                        message: `Item "${item.item_name || 'Reported Item'}" was reported.`
+                    };
+
+                } else {
+                    historyFilterColumn = 'complaint_id';
+                    // Fetch Complaint Details
+                    const { data: complaint, error: compError } = await supabase
+                        .from('complaint')
+                        .select('submitteddate, complainttitle')
+                        .eq('complaintid', contextId)
+                        .single();
+
+                    if (compError) throw compError;
+
+                    initialEvent = {
+                        type: 'Pending', // Uses red dot style
+                        created_at: complaint.submitteddate,
+                        message: `Complaint "${complaint.complainttitle || 'Submitted'}" was received.`
+                    };
+                }
 
                 // 2. Fetch Notification History (Snapshot)
                 const { data: history, error: histError } = await supabase
                     .from('notifications')
                     .select('*')
-                    .eq('complaint_id', complaintId)
+                    .eq(historyFilterColumn, contextId)
                     .lte('created_at', cutoffDate)
                     .order('created_at', { ascending: true });
 
                 if (histError) throw histError;
 
                 // 3. Combine Events
-                const submittedEvent = {
-                    type: 'Pending', // Uses red dot style
-                    created_at: complaint.submitteddate,
-                    message: `Complaint "${complaint.complainttitle || 'Submitted'}" was received.`
-                };
-
-                // Filter out any duplicate "Pending" notifications from the DB to avoid double entry
-                const filteredHistory = history.filter(h => h.type !== 'Pending');
-                const fullTimeline = [submittedEvent, ...filteredHistory];
+                // Filter out any duplicate initial events from DB if they exist as notifications
+                const filteredHistory = history.filter(h => h.type !== initialEvent.type);
+                const fullTimeline = [initialEvent, ...filteredHistory];
 
                 renderTimeline(container, fullTimeline);
                 container.dataset.loaded = "true";
@@ -296,23 +353,43 @@ function renderTimeline(container, events) {
     events.forEach(e => {
         let dotColor = 'bg-gray-400';
         let title = e.type || 'Update';
+        const typeLower = (e.type || '').toLowerCase();
 
         // Styling logic - Use Design Tokens
-        if (e.type === 'Pending') {
-            dotColor = 'bg-red-500'; // Specific red for submission
+        // Complaints
+        if (typeLower === 'pending') {
+            dotColor = 'bg-red-500';
             title = 'Complaint Submitted';
         }
-        else if (e.type === 'In-Progress') {
+        else if (typeLower === 'in-progress') {
             dotColor = 'bg-yellow-500';
             title = 'In Progress';
         }
-        else if (e.type === 'Resolved') {
+        else if (typeLower === 'resolved') {
             dotColor = 'bg-green-500';
             title = 'Resolved';
         }
-        else if (e.type === 'Deleted') {
+        // Lost & Found
+        else if (typeLower === 'lost') {
+            dotColor = 'bg-orange-500';
+            title = 'Item Reported (Lost)';
+        }
+        else if (typeLower === 'claim') {
+            dotColor = 'bg-blue-500';
+            title = 'Potential Match Found';
+        }
+        else if (typeLower === 'found') {
+            dotColor = 'bg-green-500';
+            title = 'Item Returned / Found';
+        }
+        // Common
+        else if (typeLower === 'deleted' || typeLower === 'itemdeleted') {
             dotColor = 'bg-gray-500';
             title = 'Deleted';
+        }
+        else if (typeLower === 'lostitemupdate') {
+            dotColor = 'bg-blue-400';
+            title = 'Status Update';
         }
 
         // Extract clean reason

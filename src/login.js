@@ -13,13 +13,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Check if user is an Admin
         const { data: adminData } = await supabase
             .from('admin')
-            .select('id')
+            .select('id, adminrole')
             .eq('id', userId)
             .single();
 
         if (adminData) {
             // User is already logged in as Admin
-            window.location.href = 'AdminDashboard.html';
+            if (adminData.adminrole === 'LostAndFound Admin') {
+                window.location.href = 'AdminLostFoundDashboard.html';
+            } else {
+                window.location.href = 'AdminDashboard.html';
+            }
             return;
         }
 
@@ -102,7 +106,11 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             localStorage.setItem("adminLastName", adminData.adminlastname);
             localStorage.setItem("adminRole", adminData.adminrole);
 
-            window.location.href = 'AdminDashboard.html';
+            if (adminData.adminrole === 'LostAndFound Admin') {
+                window.location.href = 'AdminLostFoundDashboard.html';
+            } else {
+                window.location.href = 'AdminDashboard.html';
+            }
             return;
         }
 

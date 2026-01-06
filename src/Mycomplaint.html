@@ -30,6 +30,7 @@
       <a href="Newcomplaint.html" class="nav-content">New Complaint</a>
       <a href="Mycomplaint.html"
         class="font-semibold text-eco hover:text-eco-dark dark:text-blue-400 dark:hover:text-blue-300">My Complaints</a>
+      <a href="LostAndFound.html" class="nav-content">Report Lost</a>
 
 
 
@@ -45,7 +46,8 @@
           <a href="Profile.html"
             class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">View
             Profile</a>
-          <a href="Login.html" class="block px-4 py-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700">Log Out</a>
+          <a href="javascript:void(0)" id="headerLogoutBtn"
+            class="block px-4 py-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700">Log Out</a>
         </div>
       </div>
     </nav>
@@ -69,59 +71,155 @@
         <a href="Mycomplaint.html"
           class="font-semibold text-eco hover:text-eco-dark dark:text-blue-400 dark:hover:text-blue-300">My
           Complaints</a>
+        <a href="LostAndFound.html" class="nav-content">Report Lost</a>
         <a href="Profile.html" class="nav-content">View Profile</a>
       </nav>
     </div>
     <div class="px-6 py-4 border-t dark:border-gray-700 flex flex-col space-y-2">
-      <a href="Login.html" class="block py-2 hover:text-red-500 transition">Log Out</a>
+      <a href="javascript:void(0)" id="mobileLogoutBtn" class="block py-2 hover:text-red-500 transition">Log Out</a>
     </div>
   </aside>
 
   <!-- Main Content -->
   <main class="flex-1 px-6 py-8 md:px-10">
-    <h1 class="text-2xl font-bold mb-4">My Complaints</h1>
-
-    <!-- Multi Filter / Sort -->
-    <!-- WILL BE REPLACED WITH REAL LOGIC -->
-    <!-- Filters -->
-    <div class="mb-6 flex flex-wrap gap-4 items-center">
-      <div>
-        <label for="statusFilter" class="block mb-1 font-semibold">Status:</label>
-        <select id="statusFilter"
-          class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200">
-          <option value="all">All</option>
-          <option value="Pending">Pending</option>
-          <option value="In-Progress">In Progress</option>
-          <option value="Resolved">Resolved</option>
-          <option value="Deleted">Deleted</option>
-        </select>
-      </div>
-      <div>
-        <label for="categoryFilter" class="block mb-1 font-semibold">Category:</label>
-        <select id="categoryFilter"
-          class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200">
-          <option value="all">All</option>
-          <option value="Facility">Facility</option>
-          <option value="Academic">Academic</option>
-          <option value="Administrative">Administrative</option>
-          <option value="Student Disciplinary">Student Disciplinary</option>
-          <option value="Technical">Technical</option>
-          <option value="Other">Other</option>
-        </select>
-      </div>
-      <div>
-        <label for="dateSort" class="block mb-1 font-semibold">Sort by Date:</label>
-        <select id="dateSort"
-          class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200">
-          <option value="newest">Newest First</option>
-          <option value="oldest">Oldest First</option>
-        </select>
-      </div>
+    <div class="mb-6">
+      <h1 class="text-2xl font-bold">My Dashboard</h1>
     </div>
 
-    <!-- Complaint List -->
-    <!-- WILL BE AUTO FILLED USING SUPABASE -->
-    <div id="complaintList" class="space-y-3"></div>
+    <!-- Tabs -->
+    <div class="flex space-x-6 mb-6 border-b border-gray-200 dark:border-gray-700">
+      <button id="tabComplaints"
+        class="pb-3 px-2 border-b-2 border-[var(--color-eco)] text-eco-dark dark:text-blue-400 font-semibold focus:outline-none transition-colors">
+        My Complaints
+      </button>
+      <button id="tabLostFound"
+        class="pb-3 px-2 border-b-2 border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 font-medium focus:outline-none transition-colors">
+        Lost & Found
+      </button>
+    </div>
+
+    <!-- COMPLAINTS SECTION -->
+    <div id="sectionComplaints">
+      <!-- Filters -->
+      <div class="mb-6 flex flex-wrap gap-4 items-center">
+        <div>
+          <label for="statusFilter" class="block mb-1 font-semibold">Status:</label>
+          <select id="statusFilter"
+            class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200">
+            <option value="all">All</option>
+            <option value="Pending">Pending</option>
+            <option value="In-Progress">In Progress</option>
+            <option value="Resolved">Resolved</option>
+            <option value="Deleted">Deleted</option>
+          </select>
+        </div>
+        <div>
+          <label for="categoryFilter" class="block mb-1 font-semibold">Category:</label>
+          <select id="categoryFilter"
+            class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200">
+            <option value="all">All</option>
+            <option value="Facility">Facility</option>
+            <option value="Academic">Academic</option>
+            <option value="Administrative">Administrative</option>
+            <option value="Student Disciplinary">Student Disciplinary</option>
+            <option value="Technical">Technical</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div>
+          <label for="dateSort" class="block mb-1 font-semibold">Sort by Date:</label>
+          <select id="dateSort"
+            class="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Complaint List -->
+      <!-- WILL BE AUTO FILLED USING SUPABASE -->
+      <div id="complaintList" class="space-y-3"></div>
+    </div>
+
+    <!-- LOST & FOUND SECTION -->
+    <div id="sectionLostFound" class="hidden">
+
+      <!-- Filters for Lost Items -->
+      <div class="mb-6 flex flex-wrap gap-4 items-center">
+        <div>
+          <label for="lostStatusFilter" class="block mb-1 font-semibold">Status:</label>
+          <select id="lostStatusFilter"
+            class="text-sm border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200">
+            <option value="all">All</option>
+            <option value="Lost">Lost</option>
+            <option value="Claim">Claim (Match Found)</option>
+            <option value="Found">Found (Returned)</option>
+            <option value="Deleted">Deleted</option>
+          </select>
+        </div>
+        <div>
+          <label for="lostDateSort" class="block mb-1 font-semibold">Sort by Date:</label>
+          <select id="lostDateSort"
+            class="text-sm border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Lost Items List -->
+      <div id="lostItemsList" class="space-y-3">
+        <p class="text-center text-gray-500 py-10">Loading lost items...</p>
+      </div>
+
+      <!-- TEMPLATES -->
+      <template id="complaintCardTemplate">
+        <div
+          class="rounded-lg p-4 shadow bg-white dark:bg-gray-800 border dark:border-gray-700 hover:shadow-md transition">
+          <h2 class="title text-lg font-bold text-gray-900 dark:text-white"></h2>
+          <p class="desc text-gray-700 dark:text-gray-300 text-sm mb-2"></p>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="category-badge px-2 py-1 text-xs text-white rounded"></span>
+            <span class="status-badge text-sm font-semibold flex items-center gap-1"></span>
+          </div>
+          <div
+            class="admin-feedback mt-2 bg-gray-50 dark:bg-gray-700 p-2 rounded text-xs border-l-4 border-gray-400 dark:border-gray-500 hidden">
+            <span class="font-bold">Admin:</span> <span class="feedback-text"></span>
+          </div>
+          <p class="submitted-date text-xs text-gray-400 mt-2"></p>
+        </div>
+      </template>
+
+      <template id="lostItemCardTemplate">
+        <div
+          class="rounded-lg p-4 shadow bg-white dark:bg-gray-800 border dark:border-gray-700 hover:shadow-md transition flex flex-col md:flex-row gap-4">
+          <div class="flex-1 w-full">
+            <h2 class="item-name text-lg font-bold text-gray-900 dark:text-white mb-1"></h2>
+
+            <p class="loss-info text-gray-600 dark:text-gray-400 text-sm mb-2">
+              <span class="font-semibold">Lost at:</span> <span class="location"></span> <span class="mx-1">•</span>
+              <span class="date"></span>
+            </p>
+
+            <p class="item-desc text-gray-700 dark:text-gray-300 text-sm mb-3 hidden"></p>
+
+            <div class="flex items-center gap-2 mb-3">
+              <span
+                class="type-badge px-2 py-1 text-xs font-medium rounded bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300"></span>
+              <span class="status-badge text-sm font-semibold flex items-center gap-1"></span>
+            </div>
+
+            <p class="item-details text-xs text-gray-500 mt-1 border-t dark:border-gray-700 pt-2 hidden"></p>
+
+            <div
+              class="admin-feedback mt-3 bg-blue-50 dark:bg-blue-900/20 p-3 rounded text-sm border-l-4 border-blue-400 dark:border-blue-500 hidden">
+              <p class="font-bold text-blue-800 dark:text-blue-200">Admin Message:</p>
+              <p class="feedback-text text-blue-700 dark:text-blue-300"></p>
+            </div>
+          </div>
+        </div>
+      </template>
+    </div>
   </main>
 
   <!--Footer-->
@@ -155,12 +253,9 @@
           Quick Navigation
         </h2>
         <ul class="space-y-2 text-sm">
-          <li><a href="./UserDashboard.html"
-              class="hover:text-blue-700 dark:hover:text-blue-400">Dashboard</a></li>
-          <li><a href="./Newcomplaint.html"
-              class="hover:text-blue-700 dark:hover:text-blue-400">New Complaint</a></li>
-          <li><a href="./Mycomplaint.html"
-              class="hover:text-blue-700 dark:hover:text-blue-400">My Complaints</a></li>
+          <li><a href="./UserDashboard.html" class="hover:text-blue-700 dark:hover:text-blue-400">Dashboard</a></li>
+          <li><a href="./Newcomplaint.html" class="hover:text-blue-700 dark:hover:text-blue-400">New Complaint</a></li>
+          <li><a href="./Mycomplaint.html" class="hover:text-blue-700 dark:hover:text-blue-400">My Complaints</a></li>
         </ul>
       </div>
 
@@ -180,10 +275,12 @@
 
           <ul class="mt-3 space-y-2 pl-3">
             <li><a href="./AcademicForm.html"
-                class="text-white hover:text-blue-200 dark:text-gray-300 dark:hover:text-blue-400">Academic Complaint</a>
+                class="text-white hover:text-blue-200 dark:text-gray-300 dark:hover:text-blue-400">Academic
+                Complaint</a>
             </li>
             <li><a href="./FacilityForm.html"
-                class="text-white hover:text-blue-200 dark:text-gray-300 dark:hover:text-blue-400">Facility Complaint</a>
+                class="text-white hover:text-blue-200 dark:text-gray-300 dark:hover:text-blue-400">Facility
+                Complaint</a>
             </li>
             <li><a href="./AdministrativeForm.html"
                 class="text-white hover:text-blue-200 dark:text-gray-300 dark:hover:text-blue-400">Administrative
@@ -192,10 +289,12 @@
                 class="text-white hover:text-blue-200 dark:text-gray-300 dark:hover:text-blue-400">Student Behavior
                 Complaint</a></li>
             <li><a href="./TechnicalForm.html"
-                class="text-white hover:text-blue-200 dark:text-gray-300 dark:hover:text-blue-400">Technical Complaint</a>
+                class="text-white hover:text-blue-200 dark:text-gray-300 dark:hover:text-blue-400">Technical
+                Complaint</a>
             </li>
             <li><a href="./OtherForm.html"
-                class="text-white hover:text-blue-200 dark:text-gray-300 dark:hover:text-blue-400">Other Complaint</a></li>
+                class="text-white hover:text-blue-200 dark:text-gray-300 dark:hover:text-blue-400">Other Complaint</a>
+            </li>
           </ul>
         </details>
       </div>

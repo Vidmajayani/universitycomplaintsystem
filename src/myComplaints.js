@@ -1,20 +1,34 @@
 import { supabase } from "./supabaseClient.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
-  // 1. Immediate Session Check
+  // 1. Session Check
   const { data: { session } } = await supabase.auth.getSession();
   if (!session) {
     window.location.href = "Login.html";
     return;
   }
+  const user = session.user;
+
+  // Tabs
+  const tabComplaints = document.getElementById("tabComplaints");
+  const tabLostFound = document.getElementById("tabLostFound");
+  const sectionComplaints = document.getElementById("sectionComplaints");
+  const sectionLostFound = document.getElementById("sectionLostFound");
+
+  // Complaint Filters
   const list = document.getElementById("complaintList");
   const statusFilter = document.getElementById("statusFilter");
   const categoryFilter = document.getElementById("categoryFilter");
   const dateSort = document.getElementById("dateSort");
 
-  let allComplaints = [];
+  // Lost Item Filters
+  const lostList = document.getElementById("lostItemsList");
+  const lostStatusFilter = document.getElementById("lostStatusFilter");
 
-  // CATEGORY COLORS
+  let allComplaints = [];
+  let allLostItems = [];
+
+  // Configs
   const categoryColors = {
     "Facility": "#009688",
     "Academic": "#8e44ad",
@@ -24,35 +38,71 @@ document.addEventListener("DOMContentLoaded", async () => {
     "Other": "#607d8b"
   };
 
-  // STATUS COLORS & ICONS
   const statusConfig = {
-    "Pending": { color: "var(--color-pending)", icon: "⏳" },       // red
-    "In-Progress": { color: "var(--color-progress)", icon: "🔧" }, // yellow
-    "Resolved": { color: "var(--color-resolved)", icon: "✅" },     // green
-    "Deleted": { color: "#dc3545", icon: "🗑️" }            // red/danger for deleted
+    "Pending": { color: "var(--color-pending)", icon: "⏳" },
+    "In-Progress": { color: "var(--color-progress)", icon: "🔧" },
+    "Resolved": { color: "var(--color-resolved)", icon: "✅" },
+    "Deleted": { color: "#dc3545", icon: "🗑️" }
+  };
+
+  const lostStatusConfig = {
+    "Lost": { color: "#ff9800", icon: "❓", text: "Lost" }, // Orange
+    "Claim": { color: "#2196f3", icon: "👀", text: "Match Found (Visit Admin)" }, // Blue
+    "Found": { color: "#4caf50", icon: "✅", text: "Returned / Found" }, // Green
+    "Deleted": { color: "#f44336", icon: "🗑️", text: "Deleted" }
   };
 
   // ============================
-  // GET LOGGED-IN USER
+  // TABS LOGIC
   // ============================
-  async function getCurrentUser() {
-    const { data, error } = await supabase.auth.getUser();
-    if (error || !data.user) {
-      showNoResults("Unable to load user.");
-      return null;
+  function switchTab(tab) {
+    if (tab === 'lostfound') {
+      // Active Styles for Lost & Found
+      tabLostFound.classList.add("border-[var(--color-eco)]", "text-eco-dark", "dark:text-blue-400", "font-semibold");
+      tabLostFound.classList.remove("border-transparent", "text-gray-500", "dark:text-gray-400", "font-medium", "hover:text-gray-700", "dark:hover:text-gray-300");
+
+      // Inactive Styles for Complaints
+      tabComplaints.classList.remove("border-[var(--color-eco)]", "text-eco-dark", "dark:text-blue-400", "font-semibold");
+      tabComplaints.classList.add("border-transparent", "text-gray-500", "dark:text-gray-400", "font-medium", "hover:text-gray-700", "dark:hover:text-gray-300");
+
+      // Show/Hide Sections
+      sectionLostFound.classList.remove("hidden");
+      sectionComplaints.classList.add("hidden");
+
+      loadLostItems();
+    } else {
+      // Active Styles for Complaints
+      tabComplaints.classList.add("border-[var(--color-eco)]", "text-eco-dark", "dark:text-blue-400", "font-semibold");
+      tabComplaints.classList.remove("border-transparent", "text-gray-500", "dark:text-gray-400", "font-medium", "hover:text-gray-700", "dark:hover:text-gray-300");
+
+      // Inactive Styles for Lost & Found
+      tabLostFound.classList.remove("border-[var(--color-eco)]", "text-eco-dark", "dark:text-blue-400", "font-semibold");
+      tabLostFound.classList.add("border-transparent", "text-gray-500", "dark:text-gray-400", "font-medium", "hover:text-gray-700", "dark:hover:text-gray-300");
+
+      sectionComplaints.classList.remove("hidden");
+      sectionLostFound.classList.add("hidden");
+
+      loadComplaints();
     }
-    return data.user;
   }
+
+  tabComplaints.addEventListener('click', () => switchTab('complaints'));
+  tabLostFound.addEventListener('click', () => switchTab('lostfound'));
+
+  // Check URL Params
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('tab') === 'lostfound') {
+    switchTab('lostfound');
+  } else {
+    loadComplaints();
+  }
+
 
   // ============================
   // LOAD COMPLAINTS
   // ============================
   async function loadComplaints() {
-    list.replaceChildren();
-
-    const user = await getCurrentUser();
-    if (!user) return;
-
+    // Only load if empty or refresh needed (simplified: just load)
     const { data, error } = await supabase
       .from("complaint")
       .select(`
@@ -69,152 +119,179 @@ document.addEventListener("DOMContentLoaded", async () => {
       .order("submitteddate", { ascending: false });
 
     if (error) {
-      showNoResults("Failed to load complaints.");
+      console.error(error);
+      list.innerHTML = "<p class='text-center text-red-500'>Failed to load complaints.</p>";
       return;
     }
-
     allComplaints = data;
     renderComplaints(allComplaints);
   }
 
-  // ============================
-  // RENDER COMPLAINT CARDS
-  // ============================
   function renderComplaints(complaints) {
     list.replaceChildren();
-
     if (!complaints || complaints.length === 0) {
-      showNoResults("No Complaints Found");
+      list.innerHTML = "<p class='text-center text-gray-500 py-6'>No Complaints Found</p>";
       return;
     }
 
+    const template = document.getElementById('complaintCardTemplate');
+
     complaints.forEach((c) => {
-      const card = document.createElement("div");
-      card.className =
-        "rounded-lg p-4 shadow transition-transform duration-200 hover:scale-[1.02] bg-white dark:bg-gray-800";
+      if (!template) return;
+      const clone = template.content.cloneNode(true);
+      const card = clone.querySelector('div'); // The root div
 
-      // Card border color based on status
       const statusInfo = statusConfig[c.complaintstatus] || { color: "#999", icon: "⚪" };
-      card.style.borderLeft = `6px solid ${statusInfo.color}`;
-      card.style.border = `1px solid var(--color-border-light)`;
-      card.classList.add("dark:border-gray-700");
+      card.style.borderLeft = `5px solid ${statusInfo.color}`;
 
-      // --- TITLE ---
-      const title = document.createElement("h2");
-      title.className = "text-lg font-bold mb-1 text-gray-900 dark:text-white";
-      title.textContent = c.complainttitle;
+      // Populate Data
+      clone.querySelector('.title').textContent = c.complainttitle;
+      clone.querySelector('.desc').textContent = c.complaintdescription;
 
-      // --- DESCRIPTION ---
-      const desc = document.createElement("p");
-      desc.className = "text-gray-700 dark:text-gray-300 mb-2";
-      desc.textContent = c.complaintdescription;
+      const catBadge = clone.querySelector('.category-badge');
+      catBadge.textContent = c.category?.categoryname || "Other";
+      catBadge.style.background = categoryColors[c.category?.categoryname] || '#555';
 
-      // --- CATEGORY TAG ---
-      const categoryTag = document.createElement("span");
-      categoryTag.className = "px-3 py-1 text-white rounded text-sm inline-block mb-2";
-      categoryTag.style.background = categoryColors[c.category?.categoryname] || "#555";
-      categoryTag.textContent = c.category?.categoryname || "Other";
+      const statBadge = clone.querySelector('.status-badge');
+      statBadge.innerHTML = `${statusInfo.icon} ${c.complaintstatus}`; // innerHTML allowed for icon+text, or split if strictly text needed
+      statBadge.style.color = statusInfo.color;
 
-      // --- STATUS ROW ---
-      const statusRow = document.createElement("div");
-      statusRow.className = "flex items-center gap-2 mt-1 mb-2";
-
-      const statusIcon = document.createElement("span");
-      statusIcon.textContent = statusInfo.icon;
-
-      const statusText = document.createElement("span");
-      statusText.textContent = c.complaintstatus;
-      statusText.style.color = statusInfo.color;
-      statusText.className = "font-semibold";
-
-      statusRow.appendChild(statusIcon);
-      statusRow.appendChild(statusText);
-
-      // --- ADMIN FEEDBACK SECTION ---
-      // If there is reasoning/feedback (especially for Deleted or Updated), show it
-      let feedbackDiv = null;
+      const adminDiv = clone.querySelector('.admin-feedback');
       if (c.admin_feedback) {
-        feedbackDiv = document.createElement("div");
-        feedbackDiv.className = "mt-3 bg-gray-50 dark:bg-gray-700 p-3 rounded border-l-4 border-gray-400 dark:border-gray-500 text-sm";
-
-        // Change feedback box color if deleted
-        if (c.complaintstatus === "Deleted") {
-          feedbackDiv.classList.replace("border-gray-400", "border-red-500");
-          feedbackDiv.classList.replace("bg-gray-50", "bg-red-50");
-          feedbackDiv.classList.add("dark:bg-red-900", "dark:text-white");
-        }
-
-        feedbackDiv.innerHTML = `
-            <p class="font-bold text-gray-800 dark:text-gray-200 mb-1">
-                <i class="fas fa-comment-dots mr-1"></i> Admin Message:
-            </p>
-            <p class="text-gray-700 dark:text-gray-300">${c.admin_feedback}</p>
-        `;
+        adminDiv.classList.remove('hidden');
+        adminDiv.querySelector('.feedback-text').textContent = c.admin_feedback;
       }
 
-      // --- DATE ---
-      const date = document.createElement("p");
-      date.className = "text-sm text-gray-500 mt-2";
-      date.textContent =
-        "Submitted: " + new Date(c.submitteddate).toLocaleDateString();
+      clone.querySelector('.submitted-date').textContent = `Submitted: ${new Date(c.submitteddate).toLocaleDateString()}`;
 
-      // --- ADD ALL TO CARD ---
-      card.appendChild(title);
-      card.appendChild(desc);
-      card.appendChild(categoryTag);
-      card.appendChild(statusRow);
-      if (feedbackDiv) card.appendChild(feedbackDiv); // Add feedback
-      card.appendChild(date);
-
-      list.appendChild(card);
+      list.appendChild(clone);
     });
   }
 
   // ============================
-  // NO RESULTS
+  // LOAD LOST ITEMS
   // ============================
-  function showNoResults(message) {
-    // Message
-    list.replaceChildren();
-    const msg = document.createElement("p");
-    msg.className = "text-center text-gray-600 dark:text-gray-300 py-6";
-    msg.textContent = message;
-    list.appendChild(msg);
+  async function loadLostItems() {
+    lostList.innerHTML = "<p class='text-center text-gray-500 py-6'>Loading...</p>";
+
+    const { data, error } = await supabase
+      .from('lost_and_found')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('reported_date', { ascending: false });
+
+    if (error) {
+      console.error(error);
+      lostList.innerHTML = "<p class='text-center text-red-500'>Failed to load items.</p>";
+      return;
+    }
+    allLostItems = data;
+    renderLostItems(allLostItems);
+  }
+
+  function renderLostItems(items) {
+    lostList.replaceChildren();
+    if (!items || items.length === 0) {
+      lostList.innerHTML = "<p class='text-center text-gray-500 py-6'>No Lost Items Reported</p>";
+      return;
+    }
+
+    const template = document.getElementById('lostItemCardTemplate');
+
+    items.forEach(item => {
+      if (!template) return;
+      const clone = template.content.cloneNode(true);
+      const card = clone.querySelector('div');
+
+      const statusInfo = lostStatusConfig[item.status] || lostStatusConfig['Lost'];
+      card.style.borderLeft = `5px solid ${statusInfo.color}`;
+
+      // Date formatting
+      const dateLost = item.date_lost ? new Date(item.date_lost).toLocaleDateString() : 'Unknown Date';
+
+      // Populate Data
+      clone.querySelector('.item-name').textContent = item.item_name;
+      clone.querySelector('.location').textContent = item.location_lost;
+      clone.querySelector('.date').textContent = dateLost;
+
+      const descP = clone.querySelector('.item-desc');
+      if (item.description) {
+        descP.classList.remove('hidden');
+        descP.textContent = item.description;
+      }
+
+      clone.querySelector('.type-badge').textContent = item.item_type;
+
+      const statBadge = clone.querySelector('.status-badge');
+      statBadge.innerHTML = `${statusInfo.icon} ${statusInfo.text}`;
+      statBadge.style.color = statusInfo.color;
+
+
+      // Details (Brand/Color)
+      if (item.brand || item.primary_color) {
+        const detailsP = clone.querySelector('.item-details');
+        detailsP.classList.remove('hidden');
+        const parts = [];
+        if (item.brand) parts.push(`Brand: ${item.brand}`);
+        if (item.primary_color) parts.push(`Color: ${item.primary_color}`);
+        detailsP.textContent = parts.join(' • ');
+      }
+
+      // Admin Feedback
+      if (item.admin_feedback) {
+        const adminDiv = clone.querySelector('.admin-feedback');
+        adminDiv.classList.remove('hidden');
+        adminDiv.querySelector('.feedback-text').textContent = item.admin_feedback;
+      }
+
+      lostList.appendChild(clone);
+    });
   }
 
   // ============================
-  // FILTER + SORT
+  // FILTER HELPERS
   // ============================
-  function applyFilters() {
-    let filtered = [...allComplaints];
-
-    if (statusFilter.value !== "all") {
-      filtered = filtered.filter((c) => c.complaintstatus === statusFilter.value);
-    }
-
-    if (categoryFilter.value !== "all") {
-      filtered = filtered.filter((c) => c.category?.categoryname === categoryFilter.value);
-    }
-
-    filtered.sort((a, b) => {
-      if (dateSort.value === "newest") {
-        return new Date(b.submitteddate) - new Date(a.submitteddate);
-      }
-      return new Date(a.submitteddate) - new Date(b.submitteddate);
-    });
-
+  statusFilter.addEventListener("change", () => {
+    const val = statusFilter.value;
+    const filtered = val === 'all' ? allComplaints : allComplaints.filter(c => c.complaintstatus === val);
     renderComplaints(filtered);
+  });
+
+  categoryFilter.addEventListener("change", () => {
+    const val = categoryFilter.value;
+    const filtered = val === 'all' ? allComplaints : allComplaints.filter(c => c.category?.categoryname === val);
+    renderComplaints(filtered);
+  });
+
+  dateSort.addEventListener("change", () => {
+    const sortVal = dateSort.value;
+    // Sort Complaints Only
+    allComplaints.sort((a, b) => {
+      const dateA = new Date(a.submitteddate);
+      const dateB = new Date(b.submitteddate);
+      return sortVal === 'newest' ? dateB - dateA : dateA - dateB;
+    });
+    renderComplaints(allComplaints);
+  });
+
+  // Lost Item Sort Listener
+  const lostDateSort = document.getElementById("lostDateSort");
+  if (lostDateSort) {
+    lostDateSort.addEventListener("change", () => {
+      const sortVal = lostDateSort.value;
+      allLostItems.sort((a, b) => {
+        const dateA = new Date(a.reported_date);
+        const dateB = new Date(b.reported_date);
+        return sortVal === 'newest' ? dateB - dateA : dateA - dateB;
+      });
+      renderLostItems(allLostItems);
+    });
   }
 
-  // ============================
-  // EVENT LISTENERS
-  // ============================
-  statusFilter.addEventListener("change", applyFilters);
-  categoryFilter.addEventListener("change", applyFilters);
-  dateSort.addEventListener("change", applyFilters);
+  lostStatusFilter.addEventListener("change", () => {
+    const val = lostStatusFilter.value;
+    const filtered = val === 'all' ? allLostItems : allLostItems.filter(i => i.status === val);
+    renderLostItems(filtered);
+  });
 
-  // ============================
-  // INITIAL LOAD
-  // ============================
-  loadComplaints();
 });

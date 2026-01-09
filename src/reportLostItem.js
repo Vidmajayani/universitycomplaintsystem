@@ -48,11 +48,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         try {
-            // 1. Get the Lost & Found admin ID
             const { data: adminData, error: adminError } = await supabase
                 .from('admin')
                 .select('admin_id')
-                .eq('role', 'Lost and Found')
+                .eq('adminrole', 'LostAndFound Admin')
                 .single();
 
             if (adminError || !adminData) {

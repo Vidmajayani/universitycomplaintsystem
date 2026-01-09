@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         try {
             const { data: adminData, error: adminError } = await supabase
                 .from('admin')
-                .select('admin_id')
+                .select('id')
                 .eq('adminrole', 'LostAndFound Admin')
                 .single();
 
@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
 
-            const lostFoundAdminId = adminData.admin_id;
+            const lostFoundAdminId = adminData.id;
 
             // 2. Insert into lost_and_found table with admin_id
             const { data: itemData, error: itemError } = await supabase

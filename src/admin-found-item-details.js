@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Fetch lost item
             const { data: lostItem, error: lostError } = await supabase
                 .from('lost_and_found')
-                .select('item_id, item_name, item_type, location_lost, reported_date, user_id')
+                .select('item_id, item_name, item_type, location_lost, reported_date, claim_date, user_id')
                 .eq('item_id', lostItemId)
                 .single();
 
@@ -191,6 +191,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             document.getElementById('matchedReportedDate').textContent = lostItem.reported_date
                 ? new Date(lostItem.reported_date).toLocaleDateString()
+                : 'N/A';
+
+            document.getElementById('matchedDateReceived').textContent = lostItem.claim_date
+                ? new Date(lostItem.claim_date).toLocaleDateString()
                 : 'N/A';
 
         } catch (err) {

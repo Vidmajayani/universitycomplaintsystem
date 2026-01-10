@@ -97,6 +97,28 @@ function openStatusModal() {
         textarea.value = '';
     }
 
+    // Add change listener for status select to show/hide Found Item ID field
+    const foundItemIdContainer = document.getElementById('foundItemIdContainer');
+    const foundItemIdInput = document.getElementById('modalFoundItemId');
+    const errorMsg = document.getElementById('foundItemIdError');
+
+    // Remove old listener if exists
+    const newSelect = select.cloneNode(true);
+    select.parentNode.replaceChild(newSelect, select);
+
+    newSelect.addEventListener('change', function () {
+        if (this.value === 'Found') {
+            foundItemIdContainer.classList.remove('hidden');
+        } else {
+            foundItemIdContainer.classList.add('hidden');
+            foundItemIdInput.value = '';
+            errorMsg.classList.add('hidden');
+        }
+    });
+
+    // Trigger change event to set initial state
+    newSelect.dispatchEvent(new Event('change'));
+
     modal.classList.remove('hidden');
 }
 
@@ -107,14 +129,65 @@ function closeStatusModal() {
 async function confirmStatusUpdate() {
     const newStatus = document.getElementById('modalStatusSelect').value;
     const message = document.getElementById('modalStatusReason').value.trim();
+    const foundItemId = document.getElementById('modalFoundItemId').value.trim();
+    const errorMsg = document.getElementById('foundItemIdError');
 
+    // Clear previous error
+    errorMsg.classList.add('hidden');
+    errorMsg.textContent = '';
+
+    // Validation
     if (!message && newStatus !== 'Lost') {
         alert('Please enter a message for the user.');
         return;
     }
 
+    // If status is 'Found', Found Item ID is required
+    if (newStatus === 'Found') {
+        if (!foundItemId) {
+            errorMsg.textContent = 'Found Item ID is required when marking as Found.';
+            errorMsg.classList.remove('hidden');
+            return;
+        }
+
+        // Validate Found Item ID
+        try {
+            const { data: foundItem, error } = await supabase
+                .from('found_items')
+                .select('found_item_id, status, item_name')
+                .eq('found_item_id', foundItemId)
+                .single();
+
+            if (error || !foundItem) {
+                errorMsg.textContent = 'Found Item ID does not exist in the system.';
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+
+            if (foundItem.status !== 'Unclaimed') {
+                errorMsg.textContent = `This Found Item is already ${foundItem.status}. Please use an Unclaimed item.`;
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+
+            // Validation passed
+        } catch (err) {
+            console.error('Validation error:', err);
+            errorMsg.textContent = 'Error validating Found Item ID. Please try again.';
+            errorMsg.classList.remove('hidden');
+            return;
+        }
+    }
+
+    // If status is 'Claim' and Found Item ID is provided, block it
+    if (newStatus === 'Claim' && foundItemId) {
+        errorMsg.textContent = 'Cannot link Found Item ID when status is Claim. Only use Found Item ID for Found status.';
+        errorMsg.classList.remove('hidden');
+        return;
+    }
+
     closeStatusModal();
-    await handleStatusUpdate(newStatus, message);
+    await handleStatusUpdate(newStatus, message, foundItemId);
 }
 
 function openDeleteModal() {
@@ -247,9 +320,41 @@ function renderDetails(item, user, admin, attachments) {
     } else {
         imgContainer.innerHTML = '<span class="text-gray-400 text-sm italic">No images attached.</span>';
     }
+
+    // Load matched found item if status is 'Found'
+    if (item.status === 'Found' && item.matched_found_item_id) {
+        loadMatchedFoundItem(item.matched_found_item_id);
+    }
 }
 
-async function handleStatusUpdate(newStatus, message = '') {
+async function loadMatchedFoundItem(foundItemId) {
+    try {
+        const { data: foundItem, error } = await supabase
+            .from('found_items')
+            .select('found_item_id, item_name, item_type, location_found, date_found')
+            .eq('found_item_id', foundItemId)
+            .single();
+
+        if (error || !foundItem) {
+            console.error('Error loading matched found item:', error);
+            return;
+        }
+
+        // Show the card
+        document.getElementById('matchedFoundItemCard').classList.remove('hidden');
+
+        // Populate data
+        document.getElementById('matchedFoundId').textContent = foundItem.found_item_id;
+        document.getElementById('matchedFoundItemName').textContent = foundItem.item_name || 'N/A';
+        document.getElementById('matchedFoundItemType').textContent = foundItem.item_type || 'N/A';
+        document.getElementById('matchedFoundLocation').textContent = foundItem.location_found || 'N/A';
+
+    } catch (err) {
+        console.error('Error fetching matched found item:', err);
+    }
+}
+
+async function handleStatusUpdate(newStatus, message = '', foundItemId = '') {
     // If called from old method, prompt for message
     if (!message && newStatus === 'Claim') {
         message = prompt("Please enter a message for the user (e.g., 'A matching item was found at the Security Office. Please visit to verify.'):");
@@ -264,17 +369,42 @@ async function handleStatusUpdate(newStatus, message = '') {
     }
 
     try {
+        const adminId = (await supabase.auth.getUser()).data.user.id;
+
         // 1. Update lost_and_found table
+        const updateData = {
+            status: newStatus,
+            admin_feedback: message,
+            admin_id: adminId
+        };
+
+        // If Found status and Found Item ID provided, store the match
+        if (newStatus === 'Found' && foundItemId) {
+            updateData.matched_found_item_id = foundItemId;
+        }
+
         const { error: updateError } = await supabase
             .from('lost_and_found')
-            .update({
-                status: newStatus,
-                admin_feedback: message,
-                admin_id: (await supabase.auth.getUser()).data.user.id // Set Admin ID
-            })
+            .update(updateData)
             .eq('item_id', currentItem.item_id);
 
         if (updateError) throw updateError;
+
+        // 2. If Found status with Found Item ID, update the found item
+        if (newStatus === 'Found' && foundItemId) {
+            const { error: foundUpdateError } = await supabase
+                .from('found_items')
+                .update({
+                    status: 'Claimed',
+                    matched_lost_item_id: currentItem.item_id
+                })
+                .eq('found_item_id', foundItemId);
+
+            if (foundUpdateError) {
+                console.error('Error updating found item:', foundUpdateError);
+                alert('Lost item updated, but failed to update found item status. Please check manually.');
+            }
+        }
 
         // 2. Insert Notification manually
         const { error: notifError } = await supabase

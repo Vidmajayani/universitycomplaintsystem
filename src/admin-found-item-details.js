@@ -127,10 +127,74 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
             }
 
+            // Load matched lost item if status is 'Claimed'
+            if (foundItem.status === 'Claimed' && foundItem.matched_lost_item_id) {
+                await loadMatchedLostItem(foundItem.matched_lost_item_id);
+            }
+
         } catch (error) {
             console.error('Error loading found item:', error);
             alert('Failed to load found item details');
             window.location.href = 'AdminLostFound.html';
+        }
+    }
+
+    async function loadMatchedLostItem(lostItemId) {
+        try {
+            // Fetch lost item
+            const { data: lostItem, error: lostError } = await supabase
+                .from('lost_and_found')
+                .select('item_id, item_name, item_type, location_lost, reported_date, user_id')
+                .eq('item_id', lostItemId)
+                .single();
+
+            if (lostError || !lostItem) {
+                console.error('Error loading matched lost item:', lostError);
+                return;
+            }
+
+            // Fetch reporter/user information
+            const { data: reporter, error: reporterError } = await supabase
+                .from('users')
+                .select('id, first_name, last_name, email')
+                .eq('id', lostItem.user_id)
+                .single();
+
+            if (reporterError) {
+                console.error('Error loading reporter:', reporterError);
+            }
+
+            // Show the card
+            document.getElementById('matchedLostItemCard').classList.remove('hidden');
+
+            // Populate lost item data
+            document.getElementById('matchedLostId').textContent = lostItem.item_id;
+            document.getElementById('matchedLostItemName').textContent = lostItem.item_name || 'N/A';
+            document.getElementById('matchedLostItemType').textContent = lostItem.item_type || 'N/A';
+            document.getElementById('matchedLostLocation').textContent = lostItem.location_lost || 'N/A';
+
+            // Populate reporter data
+            if (reporter) {
+                const fullName = `${reporter.first_name || ''} ${reporter.last_name || ''}`.trim() || 'Unknown User';
+                const initials = `${reporter.first_name?.[0] || 'U'}${reporter.last_name?.[0] || ''}`.toUpperCase();
+
+                document.getElementById('matchedReporterName').textContent = fullName;
+                document.getElementById('matchedReporterEmail').textContent = reporter.email || 'N/A';
+                document.getElementById('matchedReporterId').textContent = reporter.id;
+                document.getElementById('matchedReporterInitials').textContent = initials;
+            } else {
+                document.getElementById('matchedReporterName').textContent = 'Unknown User';
+                document.getElementById('matchedReporterEmail').textContent = 'N/A';
+                document.getElementById('matchedReporterId').textContent = lostItem.user_id;
+                document.getElementById('matchedReporterInitials').textContent = 'U';
+            }
+
+            document.getElementById('matchedReportedDate').textContent = lostItem.reported_date
+                ? new Date(lostItem.reported_date).toLocaleDateString()
+                : 'N/A';
+
+        } catch (err) {
+            console.error('Error fetching matched lost item:', err);
         }
     }
 

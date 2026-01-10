@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ComplaNet — Found Item Details</title>
-  <script type="module" crossorigin src="../assets/adminFoundItemDetails-BytKXPYN.js"></script>
-  <link rel="modulepreload" crossorigin href="../assets/darkMode-C5bWaft0.js">
-  <link rel="stylesheet" crossorigin href="../assets/darkMode-Ckdx90NO.css">
+  <script type="module" crossorigin src="../assets/adminFoundItemDetails-B98fd3WA.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/darkMode-DwWyDh1G.js">
+  <link rel="stylesheet" crossorigin href="../assets/darkMode-BHgsM5Wj.css">
 </head>
 
 <body
@@ -217,6 +217,84 @@
                     <div id="imageContainer" class="flex gap-4 overflow-x-auto pb-2">
                         <!-- Images injected here -->
                         <span class="text-gray-400 text-sm italic">No images attached.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Matched Lost Item & Reporter Card (only shown if status is 'Claimed') -->
+        <div id="matchedLostItemCard" class="mt-8 hidden">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 border-t-4 border-indigo-500">
+                <h3 class="text-lg font-bold mb-4 pb-2 flex items-center gap-2 text-gray-800 dark:text-white">
+                    <i class="fas fa-link text-indigo-500 text-xl"></i>
+                    <span>Matched Lost Item & Reporter</span>
+                </h3>
+
+                <!-- Lost Item Information -->
+                <div class="mb-6">
+                    <h4 class="text-sm font-bold text-gray-600 dark:text-gray-400 uppercase mb-3">Lost Item Details</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-indigo-50 dark:bg-indigo-900/10 p-4 rounded-lg border-l-4 border-indigo-500">
+                            <span
+                                class="block text-indigo-600 dark:text-indigo-400 text-xs uppercase tracking-wider font-bold mb-2">
+                                <i class="fas fa-fingerprint mr-1"></i>Lost Item ID
+                            </span>
+                            <span class="font-mono text-sm text-gray-800 dark:text-gray-200"
+                                id="matchedLostId">--</span>
+                        </div>
+                        <div class="bg-blue-50 dark:bg-blue-900/10 p-4 rounded-lg border-l-4 border-blue-500">
+                            <span
+                                class="block text-blue-600 dark:text-blue-400 text-xs uppercase tracking-wider font-bold mb-2">
+                                <i class="fas fa-box mr-1"></i>Item Name
+                            </span>
+                            <span class="font-semibold text-gray-800 dark:text-gray-200"
+                                id="matchedLostItemName">--</span>
+                        </div>
+                        <div class="bg-purple-50 dark:bg-purple-900/10 p-4 rounded-lg border-l-4 border-purple-500">
+                            <span
+                                class="block text-purple-600 dark:text-purple-400 text-xs uppercase tracking-wider font-bold mb-2">
+                                <i class="fas fa-tag mr-1"></i>Item Type
+                            </span>
+                            <span class="font-semibold text-gray-800 dark:text-gray-200"
+                                id="matchedLostItemType">--</span>
+                        </div>
+                        <div class="bg-red-50 dark:bg-red-900/10 p-4 rounded-lg border-l-4 border-red-500">
+                            <span
+                                class="block text-red-600 dark:text-red-400 text-xs uppercase tracking-wider font-bold mb-2">
+                                <i class="fas fa-map-marker-alt mr-1"></i>Location Lost
+                            </span>
+                            <span class="font-semibold text-gray-800 dark:text-gray-200"
+                                id="matchedLostLocation">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reporter Information -->
+                <div>
+                    <h4 class="text-sm font-bold text-gray-600 dark:text-gray-400 uppercase mb-3">Reporter Information
+                    </h4>
+                    <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
+                        <div class="flex items-center gap-4 mb-3">
+                            <div class="w-12 h-12 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold text-lg"
+                                id="matchedReporterInitials">U</div>
+                            <div>
+                                <p class="font-bold text-gray-800 dark:text-white" id="matchedReporterName">Loading...
+                                </p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400" id="matchedReporterEmail">...</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+                            <div>
+                                <span class="block text-xs text-gray-400 uppercase">User ID</span>
+                                <span class="font-mono text-sm text-gray-800 dark:text-gray-200"
+                                    id="matchedReporterId">--</span>
+                            </div>
+                            <div>
+                                <span class="block text-xs text-gray-400 uppercase">Reported Date</span>
+                                <span class="text-sm text-gray-800 dark:text-gray-200"
+                                    id="matchedReportedDate">--</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

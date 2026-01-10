@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ComplaNet — Found Item Details</title>
-  <script type="module" crossorigin src="../assets/adminFoundItemDetails-AIcndLTr.js"></script>
+  <script type="module" crossorigin src="../assets/adminFoundItemDetails-BytKXPYN.js"></script>
   <link rel="modulepreload" crossorigin href="../assets/darkMode-C5bWaft0.js">
   <link rel="stylesheet" crossorigin href="../assets/darkMode-Ckdx90NO.css">
 </head>
@@ -66,6 +66,14 @@
             class="flex items-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 mb-6 transition">
             <i class="fas fa-arrow-left mr-2"></i> Back to Found Items
         </a>
+
+        <!-- Database ID Display -->
+        <div class="flex items-center gap-2 mb-6">
+            <span class="text-xs text-gray-400 uppercase font-semibold">Found Item ID:</span>
+            <span
+                class="font-mono text-sm bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded text-gray-600 dark:text-gray-300"
+                id="databaseId">Loading...</span>
+        </div>
 
         <div class="space-y-6">
 

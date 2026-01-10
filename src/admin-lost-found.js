@@ -838,7 +838,31 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 if (foundUpdateError) {
                     console.error('Error updating found item:', foundUpdateError);
-                    alert('Lost item updated, but failed to update found item status. Please check manually.');
+
+                    // ROLLBACK: Revert the lost item update
+                    console.log('Rolling back lost item update...');
+
+                    // Get the original item data to restore
+                    const originalItem = allItems.find(i => i.item_id === currentItemId);
+
+                    const { error: rollbackError } = await supabase
+                        .from('lost_and_found')
+                        .update({
+                            status: originalItem.status, // Restore original status
+                            admin_feedback: originalItem.admin_feedback, // Restore original feedback
+                            matched_found_item_id: null // Remove the match
+                        })
+                        .eq('item_id', currentItemId);
+
+                    if (rollbackError) {
+                        console.error('Rollback failed:', rollbackError);
+                        alert('CRITICAL ERROR: Update failed and rollback also failed. Please contact system administrator immediately.');
+                        throw new Error('Transaction failed with rollback error');
+                    }
+
+                    // Rollback successful
+                    alert('Update failed: Could not update found item status. All changes have been rolled back. Please try again or contact support if the issue persists.');
+                    throw new Error('Found item update failed, transaction rolled back');
                 }
             }
 

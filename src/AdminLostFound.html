@@ -546,6 +546,22 @@
                                     <option value="Found">Found (Returned to Owner)</option>
                                 </select>
 
+                                <!-- Found Item ID Field (only for 'Found' status) -->
+                                <div id="foundItemIdContainer" class="mt-4 hidden">
+                                    <label for="modalFoundItemId"
+                                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        Found Item ID <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="text" id="modalFoundItemId"
+                                        class="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white font-mono text-sm"
+                                        placeholder="Enter the Found Item ID to match...">
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                        This ID must be from an unclaimed found item in the system.
+                                    </p>
+                                    <p id="foundItemIdError" class="mt-1 text-xs text-red-600 dark:text-red-400 hidden">
+                                    </p>
+                                </div>
+
                                 <!-- Reason Textarea -->
                                 <label for="modalStatusReason"
                                     class="block text-sm font-medium text-gray-700 dark:text-gray-300 mt-4 mb-1">Admin

@@ -709,6 +709,32 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         modalStatusSelect.value = status;
         modalStatusReason.value = '';
+
+        // Show/hide Found Item ID field based on status
+        const foundItemIdContainer = document.getElementById('foundItemIdContainer');
+        const foundItemIdInput = document.getElementById('modalFoundItemId');
+        const foundItemIdError = document.getElementById('foundItemIdError');
+
+        // Add change listener to status select
+        modalStatusSelect.addEventListener('change', function () {
+            if (this.value === 'Found' && currentItemSource !== 'found') {
+                foundItemIdContainer.classList.remove('hidden');
+            } else {
+                foundItemIdContainer.classList.add('hidden');
+                foundItemIdInput.value = '';
+                foundItemIdError.classList.add('hidden');
+            }
+        });
+
+        // Trigger initial state
+        if (status === 'Found' && currentItemSource !== 'found') {
+            foundItemIdContainer.classList.remove('hidden');
+        } else {
+            foundItemIdContainer.classList.add('hidden');
+            foundItemIdInput.value = '';
+            foundItemIdError.classList.add('hidden');
+        }
+
         statusModal.classList.remove('hidden');
     };
 
@@ -727,9 +753,57 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('confirmStatusBtn').addEventListener('click', async () => {
         const newStatus = modalStatusSelect.value;
         const reason = modalStatusReason.value.trim();
+        const foundItemId = document.getElementById('modalFoundItemId').value.trim();
+        const foundItemIdError = document.getElementById('foundItemIdError');
+
+        // Clear previous error
+        foundItemIdError.classList.add('hidden');
+        foundItemIdError.textContent = '';
 
         if (!reason) {
             alert('Please provide a feedback message/reason.');
+            return;
+        }
+
+        // Validate Found Item ID if status is 'Found' and source is 'lost'
+        if (newStatus === 'Found' && currentItemSource !== 'found') {
+            if (!foundItemId) {
+                foundItemIdError.textContent = 'Found Item ID is required when marking as Found.';
+                foundItemIdError.classList.remove('hidden');
+                return;
+            }
+
+            // Validate Found Item ID exists and is unclaimed
+            try {
+                const { data: foundItem, error: validationError } = await supabase
+                    .from('found_items')
+                    .select('found_item_id, status')
+                    .eq('found_item_id', foundItemId)
+                    .single();
+
+                if (validationError || !foundItem) {
+                    foundItemIdError.textContent = 'Found Item ID does not exist in the system.';
+                    foundItemIdError.classList.remove('hidden');
+                    return;
+                }
+
+                if (foundItem.status !== 'Unclaimed') {
+                    foundItemIdError.textContent = `This Found Item is already ${foundItem.status}. Please use an Unclaimed item.`;
+                    foundItemIdError.classList.remove('hidden');
+                    return;
+                }
+            } catch (err) {
+                console.error('Validation error:', err);
+                foundItemIdError.textContent = 'Error validating Found Item ID. Please try again.';
+                foundItemIdError.classList.remove('hidden');
+                return;
+            }
+        }
+
+        // Block Found Item ID for Claim status
+        if (newStatus === 'Claim' && foundItemId) {
+            foundItemIdError.textContent = 'Cannot link Found Item ID when status is Claim. Only use Found Item ID for Found status.';
+            foundItemIdError.classList.remove('hidden');
             return;
         }
 
@@ -738,12 +812,35 @@ document.addEventListener('DOMContentLoaded', async () => {
             const targetTable = currentItemSource === 'found' ? 'found_items' : 'lost_and_found';
             const idField = currentItemSource === 'found' ? 'found_item_id' : 'item_id';
 
+            const updateData = { status: newStatus, admin_feedback: reason };
+
+            // If Found status with Found Item ID, store the match
+            if (newStatus === 'Found' && foundItemId && currentItemSource !== 'found') {
+                updateData.matched_found_item_id = foundItemId;
+            }
+
             const { error } = await supabase
                 .from(targetTable)
-                .update({ status: newStatus, admin_feedback: reason })
+                .update(updateData)
                 .eq(idField, currentItemId);
 
             if (error) throw error;
+
+            // If Found status with Found Item ID, update the found item
+            if (newStatus === 'Found' && foundItemId && currentItemSource !== 'found') {
+                const { error: foundUpdateError } = await supabase
+                    .from('found_items')
+                    .update({
+                        status: 'Claimed',
+                        matched_lost_item_id: currentItemId
+                    })
+                    .eq('found_item_id', foundItemId);
+
+                if (foundUpdateError) {
+                    console.error('Error updating found item:', foundUpdateError);
+                    alert('Lost item updated, but failed to update found item status. Please check manually.');
+                }
+            }
 
             // Notify User (DB + Email)
             const item = allItems.find(i => i.item_id === currentItemId);

@@ -66,6 +66,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             // Populate UI
+            // Display Database ID
+            document.getElementById('databaseId').textContent = foundItem.found_item_id;
+
             document.getElementById('itemName').textContent = foundItem.item_name || 'N/A';
             document.getElementById('itemTypeDisplay').textContent = foundItem.item_type || 'N/A';
 

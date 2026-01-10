@@ -30,6 +30,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Expose functions to window for HTML onClick
     window.updateStatus = (newStatus) => handleStatusUpdate(newStatus);
     window.deleteItem = () => handleDelete();
+    window.openStatusModal = openStatusModal;
+    window.closeStatusModal = closeStatusModal;
+    window.confirmStatusUpdate = confirmStatusUpdate;
+    window.openDeleteModal = openDeleteModal;
+    window.closeDeleteModal = closeDeleteModal;
+    window.confirmDelete = confirmDelete;
 });
 
 async function loadItemDetails(id) {
@@ -80,7 +86,64 @@ async function loadItemDetails(id) {
     renderDetails(item, user, adminData, attachments);
 }
 
+// Modal Functions
+function openStatusModal() {
+    const modal = document.getElementById('statusModal');
+    const select = document.getElementById('modalStatusSelect');
+    const textarea = document.getElementById('modalStatusReason');
+
+    if (currentItem) {
+        select.value = currentItem.status;
+        textarea.value = '';
+    }
+
+    modal.classList.remove('hidden');
+}
+
+function closeStatusModal() {
+    document.getElementById('statusModal').classList.add('hidden');
+}
+
+async function confirmStatusUpdate() {
+    const newStatus = document.getElementById('modalStatusSelect').value;
+    const message = document.getElementById('modalStatusReason').value.trim();
+
+    if (!message && newStatus !== 'Lost') {
+        alert('Please enter a message for the user.');
+        return;
+    }
+
+    closeStatusModal();
+    await handleStatusUpdate(newStatus, message);
+}
+
+function openDeleteModal() {
+    const modal = document.getElementById('deleteModal');
+    const textarea = document.getElementById('modalDeleteReason');
+    textarea.value = '';
+    modal.classList.remove('hidden');
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.add('hidden');
+}
+
+async function confirmDelete() {
+    const reason = document.getElementById('modalDeleteReason').value.trim();
+
+    if (!reason) {
+        alert('Please enter a reason for deletion.');
+        return;
+    }
+
+    closeDeleteModal();
+    await handleDelete(reason);
+}
+
 function renderDetails(item, user, admin, attachments) {
+    // Display Database ID
+    document.getElementById('databaseId').textContent = item.item_id;
+
     // Header Info
     document.getElementById('itemName').textContent = item.item_name;
     document.getElementById('itemTypeDisplay').textContent = item.item_type;
@@ -186,17 +249,18 @@ function renderDetails(item, user, admin, attachments) {
     }
 }
 
-async function handleStatusUpdate(newStatus) {
-    let message = "";
-
-    if (newStatus === 'Claim') {
+async function handleStatusUpdate(newStatus, message = '') {
+    // If called from old method, prompt for message
+    if (!message && newStatus === 'Claim') {
         message = prompt("Please enter a message for the user (e.g., 'A matching item was found at the Security Office. Please visit to verify.'):");
         if (message === null) return; // Cancelled
         if (!message) message = "A potential match has been found. Please visit the admin office.";
-    } else if (newStatus === 'Found') {
+    } else if (!message && newStatus === 'Found') {
         const confirmFound = confirm("Mark this item as Returned/Found? This indicates the owner has retrieved the item.");
         if (!confirmFound) return;
         message = "Item has been successfully returned to the owner.";
+    } else if (!message) {
+        message = "Status updated by administrator.";
     }
 
     try {
@@ -246,9 +310,12 @@ async function handleStatusUpdate(newStatus) {
     }
 }
 
-async function handleDelete() {
-    const reason = prompt("Reason for deletion?");
-    if (reason === null) return;
+async function handleDelete(reason = '') {
+    // If called from old method, prompt for reason
+    if (!reason) {
+        reason = prompt("Reason for deletion?");
+        if (reason === null) return;
+    }
 
     try {
         const { error } = await supabase

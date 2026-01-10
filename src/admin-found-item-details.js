@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             // Load matched lost item if status is 'Claimed'
             if (foundItem.status === 'Claimed' && foundItem.matched_lost_item_id) {
-                await loadMatchedLostItem(foundItem.matched_lost_item_id);
+                await loadMatchedLostItem(foundItem.matched_lost_item_id, foundItem.claim_date);
             }
 
         } catch (error) {
@@ -139,12 +139,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    async function loadMatchedLostItem(lostItemId) {
+    async function loadMatchedLostItem(lostItemId, claimDate) {
         try {
             // Fetch lost item
             const { data: lostItem, error: lostError } = await supabase
                 .from('lost_and_found')
-                .select('item_id, item_name, item_type, location_lost, reported_date, claim_date, user_id')
+                .select('item_id, item_name, item_type, location_lost, reported_date, user_id')
                 .eq('item_id', lostItemId)
                 .single();
 
@@ -165,40 +165,71 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             // Show the card
-            document.getElementById('matchedLostItemCard').classList.remove('hidden');
+            const matchedCard = document.getElementById('matchedLostItemCard');
+            if (matchedCard) {
+                matchedCard.classList.remove('hidden');
+            }
 
-            // Populate lost item data
-            document.getElementById('matchedLostId').textContent = lostItem.item_id;
-            document.getElementById('matchedLostItemName').textContent = lostItem.item_name || 'N/A';
-            document.getElementById('matchedLostItemType').textContent = lostItem.item_type || 'N/A';
-            document.getElementById('matchedLostLocation').textContent = lostItem.location_lost || 'N/A';
+            // Populate lost item data - with null checks
+            const matchedLostId = document.getElementById('matchedLostId');
+            if (matchedLostId) matchedLostId.textContent = lostItem.item_id;
+
+            const matchedLostItemName = document.getElementById('matchedLostItemName');
+            if (matchedLostItemName) matchedLostItemName.textContent = lostItem.item_name || 'N/A';
+
+            const matchedLostItemType = document.getElementById('matchedLostItemType');
+            if (matchedLostItemType) matchedLostItemType.textContent = lostItem.item_type || 'N/A';
+
+            const matchedLostLocation = document.getElementById('matchedLostLocation');
+            if (matchedLostLocation) matchedLostLocation.textContent = lostItem.location_lost || 'N/A';
 
             // Populate reporter data
             if (reporter) {
                 const fullName = `${reporter.first_name || ''} ${reporter.last_name || ''}`.trim() || 'Unknown User';
                 const initials = `${reporter.first_name?.[0] || 'U'}${reporter.last_name?.[0] || ''}`.toUpperCase();
 
-                document.getElementById('matchedReporterName').textContent = fullName;
-                document.getElementById('matchedReporterEmail').textContent = reporter.email || 'N/A';
-                document.getElementById('matchedReporterId').textContent = reporter.id;
-                document.getElementById('matchedReporterInitials').textContent = initials;
+                const matchedReporterName = document.getElementById('matchedReporterName');
+                if (matchedReporterName) matchedReporterName.textContent = fullName;
+
+                const matchedReporterEmail = document.getElementById('matchedReporterEmail');
+                if (matchedReporterEmail) matchedReporterEmail.textContent = reporter.email || 'N/A';
+
+                const matchedReporterId = document.getElementById('matchedReporterId');
+                if (matchedReporterId) matchedReporterId.textContent = reporter.id;
+
+                const matchedReporterInitials = document.getElementById('matchedReporterInitials');
+                if (matchedReporterInitials) matchedReporterInitials.textContent = initials;
             } else {
-                document.getElementById('matchedReporterName').textContent = 'Unknown User';
-                document.getElementById('matchedReporterEmail').textContent = 'N/A';
-                document.getElementById('matchedReporterId').textContent = lostItem.user_id;
-                document.getElementById('matchedReporterInitials').textContent = 'U';
+                const matchedReporterName = document.getElementById('matchedReporterName');
+                if (matchedReporterName) matchedReporterName.textContent = 'Unknown User';
+
+                const matchedReporterEmail = document.getElementById('matchedReporterEmail');
+                if (matchedReporterEmail) matchedReporterEmail.textContent = 'N/A';
+
+                const matchedReporterId = document.getElementById('matchedReporterId');
+                if (matchedReporterId) matchedReporterId.textContent = lostItem.user_id;
+
+                const matchedReporterInitials = document.getElementById('matchedReporterInitials');
+                if (matchedReporterInitials) matchedReporterInitials.textContent = 'U';
             }
 
-            document.getElementById('matchedReportedDate').textContent = lostItem.reported_date
-                ? new Date(lostItem.reported_date).toLocaleDateString()
-                : 'N/A';
+            const matchedReportedDate = document.getElementById('matchedReportedDate');
+            if (matchedReportedDate) {
+                matchedReportedDate.textContent = lostItem.reported_date
+                    ? new Date(lostItem.reported_date).toLocaleDateString()
+                    : 'N/A';
+            }
 
-            document.getElementById('matchedDateReceived').textContent = lostItem.claim_date
-                ? new Date(lostItem.claim_date).toLocaleDateString()
-                : 'N/A';
+            const matchedDateReceived = document.getElementById('matchedDateReceived');
+            if (matchedDateReceived) {
+                matchedDateReceived.textContent = claimDate
+                    ? new Date(claimDate).toLocaleDateString()
+                    : 'N/A';
+            }
 
         } catch (err) {
             console.error('Error fetching matched lost item:', err);
+            // Don't hide the card, just show N/A values
         }
     }
 

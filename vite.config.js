@@ -36,6 +36,7 @@ export default defineConfig({
                 adminLostFound: resolve(__dirname, 'src/AdminLostFound.html'),
                 adminLostFoundDashboard: resolve(__dirname, 'src/AdminLostFoundDashboard.html'),
                 adminLostFoundDetails: resolve(__dirname, 'src/AdminLostFoundDetails.html'),
+                adminFoundItemDetails: resolve(__dirname, 'src/AdminFoundItemDetails.html'),
             },
         },
     },

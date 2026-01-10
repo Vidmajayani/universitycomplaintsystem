@@ -139,6 +139,10 @@ body {
   @apply font-semibold text-gray-700 dark:text-gray-200 hover:text-eco-dark dark:hover:text-blue-400
 }
 
+.tab-button.active {
+  @apply border-eco text-eco dark:text-blue-400;
+}
+
 .darkmode-btn {
   @apply px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition
 }

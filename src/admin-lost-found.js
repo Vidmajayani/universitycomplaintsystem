@@ -538,9 +538,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             let statusText = item.status || 'N/A';
 
             if (isFoundItem) {
-                // Found item statuses
-                if (item.status === 'Unclaimed') statusClass = 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300';
-                if (item.status === 'Claimed') statusClass = 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300';
+                // Hide status for Found items as requested
+                statusClass = 'hidden';
+                statusText = '';
             } else {
                 // Lost item statuses
                 if (item.status === 'Lost') statusClass = 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300';
@@ -571,15 +571,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             rowClone.querySelector('.item-attributes').textContent = attributes;
 
             const statusSpan = rowClone.querySelector('.item-status');
-            statusSpan.textContent = item.status;
+            statusSpan.textContent = statusText;
             statusSpan.className = `item-status px-3 py-1 rounded-full text-xs font-bold ${statusClass}`;
 
             // Buttons
-            rowClone.querySelector('.btn-edit').onclick = () => window.openStatusModal(itemId, item.status, item.itemSource);
+            if (isFoundItem) {
+                // Found items: only preview (manual status/delete disabled as it's automatic)
+                rowClone.querySelector('.btn-edit').style.display = 'none';
+                rowClone.querySelector('.btn-delete').style.display = 'none';
+            } else {
+                // Lost items: full manual control
+                rowClone.querySelector('.btn-edit').onclick = () => window.openStatusModal(itemId, item.status, item.itemSource);
+                rowClone.querySelector('.btn-delete').onclick = () => window.openDeleteModal(itemId, item.itemSource);
+            }
             rowClone.querySelector('.btn-preview').href = isFoundItem
                 ? `AdminFoundItemDetails.html?id=${itemId}`
                 : `AdminLostFoundDetails.html?id=${itemId}`;
-            rowClone.querySelector('.btn-delete').onclick = () => window.openDeleteModal(itemId, item.itemSource);
 
             tableBody.appendChild(rowClone);
 
@@ -591,17 +598,24 @@ document.addEventListener('DOMContentLoaded', async () => {
             cardClone.querySelector('.card-date').textContent = reportedDate; // Fixed: Use reported_date
 
             const cardStatus = cardClone.querySelector('.card-status');
-            cardStatus.textContent = item.status;
+            cardStatus.textContent = statusText;
             cardStatus.className = `card-status px-2 py-0.5 rounded text-[10px] font-bold uppercase ${statusClass}`;
 
             cardClone.querySelector('.card-attr').textContent = attributes;
 
             // Buttons
-            cardClone.querySelector('.btn-edit').onclick = () => window.openStatusModal(itemId, item.status, item.itemSource);
+            if (isFoundItem) {
+                // Found items: only preview
+                cardClone.querySelector('.btn-edit').style.display = 'none';
+                cardClone.querySelector('.btn-delete').style.display = 'none';
+            } else {
+                // Lost items: full manual control
+                cardClone.querySelector('.btn-edit').onclick = () => window.openStatusModal(itemId, item.status, item.itemSource);
+                cardClone.querySelector('.btn-delete').onclick = () => window.openDeleteModal(itemId, item.itemSource);
+            }
             cardClone.querySelector('.Link-preview').href = isFoundItem
                 ? `AdminFoundItemDetails.html?id=${itemId}`
                 : `AdminLostFoundDetails.html?id=${itemId}`;
-            cardClone.querySelector('.btn-delete').onclick = () => window.openDeleteModal(itemId, item.itemSource);
 
             cardsView.appendChild(cardClone);
         });

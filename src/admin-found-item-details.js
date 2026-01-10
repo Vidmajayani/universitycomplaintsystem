@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Fetch reporter/user information
             const { data: reporter, error: reporterError } = await supabase
                 .from('users')
-                .select('id, first_name, last_name, email')
+                .select('id, first_name, last_name, email, profile_image_url')
                 .eq('id', lostItem.user_id)
                 .single();
 
@@ -199,6 +199,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 const matchedReporterInitials = document.getElementById('matchedReporterInitials');
                 if (matchedReporterInitials) matchedReporterInitials.textContent = initials;
+
+                // Profile Picture Logic
+                const reporterImg = document.getElementById('matchedReporterProfilePic');
+                const reporterInitialsDiv = document.getElementById('matchedReporterInitials');
+
+                if (reporter.profile_image_url && reporterImg && reporterInitialsDiv) {
+                    reporterImg.src = reporter.profile_image_url;
+                    reporterImg.classList.remove('hidden');
+                    reporterInitialsDiv.classList.add('hidden');
+                } else if (reporterInitialsDiv) {
+                    reporterInitialsDiv.classList.remove('hidden');
+                    if (reporterImg) reporterImg.classList.add('hidden');
+                }
             } else {
                 const matchedReporterName = document.getElementById('matchedReporterName');
                 if (matchedReporterName) matchedReporterName.textContent = 'Unknown User';

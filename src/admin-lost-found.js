@@ -538,9 +538,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             let statusText = item.status || 'N/A';
 
             if (isFoundItem) {
-                // Hide status for Found items as requested
-                statusClass = 'hidden';
-                statusText = '';
+                // Found item statuses (Read-only display)
+                if (item.status === 'Unclaimed') statusClass = 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300';
+                if (item.status === 'Claimed') statusClass = 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300';
             } else {
                 // Lost item statuses
                 if (item.status === 'Lost') statusClass = 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300';
@@ -559,10 +559,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             const sourceSpan = rowClone.querySelector('.item-source');
             if (isFoundItem) {
                 sourceSpan.textContent = 'Found Item';
-                sourceSpan.className = 'item-source px-2 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300';
+                sourceSpan.className = 'item-source px-2 py-1 rounded-full text-xs font-bold whitespace-nowrap bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300';
             } else {
                 sourceSpan.textContent = 'Lost Item';
-                sourceSpan.className = 'item-source px-2 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300';
+                sourceSpan.className = 'item-source px-2 py-1 rounded-full text-xs font-bold whitespace-nowrap bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300';
             }
 
             rowClone.querySelector('.item-type').textContent = item.item_type;
@@ -572,7 +572,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const statusSpan = rowClone.querySelector('.item-status');
             statusSpan.textContent = statusText;
-            statusSpan.className = `item-status px-3 py-1 rounded-full text-xs font-bold ${statusClass}`;
+            statusSpan.className = `item-status px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap ${statusClass}`;
 
             // Buttons
             if (isFoundItem) {

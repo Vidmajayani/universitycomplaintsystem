@@ -93,39 +93,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         uploadFoundItemBtn.classList.remove('hidden');
     }
 
-    // Upload Found Item Modal
-    const uploadFoundModal = document.getElementById('uploadFoundModal');
-    const uploadFoundItemForm = document.getElementById('uploadFoundItemForm');
-    const foundItemImageInput = document.getElementById('foundItemImage');
-    const imagePreview = document.getElementById('imagePreview');
-    const previewImg = document.getElementById('previewImg');
-
+    // Upload Found Item Navigation
     uploadFoundItemBtn.addEventListener('click', () => {
-        uploadFoundModal.classList.remove('hidden');
-    });
-
-    document.getElementById('cancelUploadFoundBtn').addEventListener('click', () => {
-        uploadFoundModal.classList.add('hidden');
-        uploadFoundItemForm.reset();
-        imagePreview.classList.add('hidden');
-    });
-
-    // Image preview
-    foundItemImageInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                previewImg.src = e.target.result;
-                imagePreview.classList.remove('hidden');
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-
-    // Upload found item
-    document.getElementById('confirmUploadFoundBtn').addEventListener('click', async () => {
-        await handleUploadFoundItem();
+        window.location.href = 'AdminUploadFoundItem.html';
     });
 
     // Filter Modal Elements
@@ -336,8 +306,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
 
-    // Check URL params for filter
+    // Check URL params for tab or filter
     const urlParams = new URLSearchParams(window.location.search);
+    const paramTab = urlParams.get('tab');
+    if (paramTab && ['all', 'lost', 'found'].includes(paramTab)) {
+        switchTab(paramTab);
+    }
+
     const paramStatus = urlParams.get('status');
     if (paramStatus) {
         // Ensure the value exists in the dropdown to avoid invalid selection
@@ -971,122 +946,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    async function handleUploadFoundItem() {
-        // Validate form
-        const imageFile = foundItemImageInput.files[0];
-        if (!imageFile) {
-            alert('Please upload an image. Image is required for found items.');
-            return;
-        }
-
-        const itemName = document.getElementById('foundItemName').value.trim();
-        const itemType = document.getElementById('foundItemType').value;
-        const locationFound = document.getElementById('foundLocationFound').value.trim();
-        const dateFound = document.getElementById('foundDateFound').value;
-
-        if (!itemName || !itemType || !locationFound || !dateFound) {
-            alert('Please fill in all required fields (Item Name, Type, Location Found, Date Found).');
-            return;
-        }
-
-        // Validate image size (5MB max)
-        if (imageFile.size > 5 * 1024 * 1024) {
-            alert('Image size must be less than 5MB.');
-            return;
-        }
-
-        let insertedItemId = null; // Track for rollback
-
-        try {
-            // Get current admin
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) {
-                alert('Session expired. Please login again.');
-                return;
-            }
-
-            // 1. Upload image to Supabase Storage FIRST
-            const fileExt = imageFile.name.split('.').pop();
-            const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
-            const filePath = `found_items/${fileName}`;
-
-            const { data: uploadData, error: uploadError } = await supabase.storage
-                .from('lost_found_images')
-                .upload(filePath, imageFile);
-
-            if (uploadError) {
-                throw new Error(`Image upload failed: ${uploadError.message}`);
-            }
-
-            // Get public URL
-            const { data: { publicUrl } } = supabase.storage
-                .from('lost_found_images')
-                .getPublicUrl(filePath);
-
-            // 2. Insert found item into database
-            const foundItemData = {
-                admin_id: session.user.id,
-                item_name: itemName,
-                item_type: itemType,
-                brand: document.getElementById('foundBrand').value.trim() || null,
-                model: document.getElementById('foundModel').value.trim() || null,
-                primary_color: document.getElementById('foundPrimaryColor').value.trim() || null,
-                secondary_color: document.getElementById('foundSecondaryColor').value.trim() || null,
-                serial_number: document.getElementById('foundSerialNumber').value.trim() || null,
-                distinguishing_features: document.getElementById('foundDistinguishingFeatures').value.trim() || null,
-                description: document.getElementById('foundDescription').value.trim() || null,
-                location_found: locationFound,
-                date_found: dateFound,
-                time_found: document.getElementById('foundTimeFound').value || null,
-                status: 'Unclaimed'
-            };
-
-            const { data: insertedItem, error: insertError } = await supabase
-                .from('found_items')
-                .insert([foundItemData])
-                .select()
-                .single();
-
-            if (insertError) {
-                // Rollback: Delete uploaded image
-                await supabase.storage.from('lost_found_images').remove([filePath]);
-                throw new Error(`Database insert failed: ${insertError.message}`);
-            }
-
-            insertedItemId = insertedItem.found_item_id; // Save for potential rollback
-
-            // 3. Insert attachment record
-            const { error: attachmentError } = await supabase
-                .from('lost_found_attachments')
-                .insert([{
-                    found_item_id: insertedItem.found_item_id,
-                    file_url: publicUrl,
-                    file_type: 'image'
-                }]);
-
-            if (attachmentError) {
-                // ROLLBACK: Delete the found item we just created
-                await supabase.from('found_items').delete().eq('found_item_id', insertedItemId);
-                // Also delete the uploaded image
-                await supabase.storage.from('lost_found_images').remove([filePath]);
-                throw new Error(`Attachment insert failed: ${attachmentError.message}`);
-            }
-
-            // Success!
-            alert('Found item uploaded successfully!');
-            uploadFoundModal.classList.add('hidden');
-            uploadFoundItemForm.reset();
-            imagePreview.classList.add('hidden');
-
-            // Reload found items
-            await loadFoundItems();
-            renderItems();
-
-        } catch (error) {
-            console.error('Error uploading found item:', error);
-            alert(`Failed to upload found item: ${error.message}`);
-        }
-    }
 
 
     function setupMenuListeners() {

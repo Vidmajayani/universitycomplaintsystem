@@ -20,7 +20,7 @@
 
         <nav class="hidden md:flex space-x-6 items-center">
             <a href="AdminLostFoundDashboard.html" class="nav-content">Dashboard</a>
-            <a href="AdminLostFound.html" class="font-semibold text-eco-dark hover:text-eco-dark">Lost Items</a>
+            <a href="AdminLostFound.html" class="font-semibold text-eco-dark hover:text-eco-dark">Manage Items</a>
 
             <div class="relative">
                 <button id="profileButton" class="flex items-center space-x-2 focus:outline-none">
@@ -49,7 +49,7 @@
             </div>
             <nav class="mt-6 flex flex-col space-y-2 px-6">
                 <a href="AdminLostFoundDashboard.html" class="nav-content">Dashboard</a>
-                <a href="AdminLostFound.html" class="font-semibold text-eco-dark hover:text-eco-dark">Lost Items</a>
+                <a href="AdminLostFound.html" class="font-semibold text-eco-dark hover:text-eco-dark">Manage Items</a>
                 <a href="AdminProfile.html" class="nav-content">Profile</a>
             </nav>
         </div>
@@ -322,6 +322,29 @@
                 <p class="text-sm leading-6 opacity-80 max-w-2xl mx-auto">
                     Administrative portal for managing university lost and found items.
                 </p>
+            </div>
+
+            <!-- Quick Navigation - Centered -->
+            <div class="text-center mb-8">
+                <h3 class="text-lg font-semibold mb-4 text-[var(--color-blue-btn)] dark:text-blue-400">
+                    Quick Navigation
+                </h3>
+                <ul class="flex flex-wrap justify-center gap-6 text-sm">
+                    <li>
+                        <a href="./AdminLostFoundDashboard.html"
+                            class="inline-flex items-center gap-2 text-gray-800 hover:text-blue-700 dark:text-gray-300 dark:hover:text-blue-400 transition-all duration-300 hover:-translate-y-1">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="AdminLostFound.html"
+                            class="inline-flex items-center gap-2 text-gray-800 hover:text-blue-700 dark:text-gray-300 dark:hover:text-blue-400 transition-all duration-300 hover:-translate-y-1">
+                            <i class="fas fa-search"></i>
+                            <span>Manage Items</span>
+                        </a>
+                    </li>
+                </ul>
             </div>
 
             <div class="text-center text-sm mt-10 text-gray-700 dark:text-gray-400">

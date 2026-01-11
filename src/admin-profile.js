@@ -108,11 +108,11 @@ async function checkAdminSession() {
 
         // Update "All Complaints" to "Lost Items"
         if (profileNavAllComplaints) {
-            profileNavAllComplaints.innerHTML = 'Lost Items';
+            profileNavAllComplaints.innerHTML = 'Manage Items';
             profileNavAllComplaints.href = 'AdminLostFound.html';
         }
         if (mobileProfileNavAllComplaints) {
-            mobileProfileNavAllComplaints.textContent = 'Lost Items';
+            mobileProfileNavAllComplaints.textContent = 'Manage Items';
             mobileProfileNavAllComplaints.href = 'AdminLostFound.html';
         }
 
@@ -123,7 +123,7 @@ async function checkAdminSession() {
         if (footerNavAllComplaints) {
             const span = footerNavAllComplaints.querySelector('span');
             const icon = footerNavAllComplaints.querySelector('i');
-            if (span) span.textContent = 'Lost Items';
+            if (span) span.textContent = 'Manage Items';
             if (icon) icon.className = 'fas fa-search';
             footerNavAllComplaints.href = 'AdminLostFound.html';
         }
@@ -147,6 +147,12 @@ async function checkAdminSession() {
         if (adminFooterDesc) {
             adminFooterDesc.textContent = 'Administrative portal for managing university lost and found items. Monitor, verify, and resolve reports efficiently.';
         }
+
+        // Update Stats Label for Lost & Found Admin
+        const statsLabel = document.querySelector('.bg-gray-50.dark\\:bg-gray-700\\/50 p');
+        if (statsLabel && statsLabel.textContent === 'Complaints Handled') {
+            statsLabel.textContent = 'Items Handled';
+        }
     }
 }
 
@@ -155,18 +161,44 @@ async function checkAdminSession() {
 // ------------------------
 async function loadStats(adminId, adminRole) {
     try {
-        let query = supabase.from('complaint').select('complaintid', { count: 'exact', head: true });
+        let count = 0;
 
-        // If NOT master admin, only count assigned complaints
-        if (adminRole !== 'Master Admin') {
-            query = query.eq('adminid', adminId);
+        if (adminRole === 'LostAndFound Admin') {
+            // Count lost & found items handled by this admin
+            // Count from lost_and_found table where admin_id matches
+            const { count: lostCount, error: lostError } = await supabase
+                .from('lost_and_found')
+                .select('item_id', { count: 'exact', head: true })
+                .eq('admin_id', adminId);
+
+            if (lostError) throw lostError;
+
+            // Count from found_items table where admin_id matches
+            const { count: foundCount, error: foundError } = await supabase
+                .from('found_items')
+                .select('found_item_id', { count: 'exact', head: true })
+                .eq('admin_id', adminId);
+
+            if (foundError) throw foundError;
+
+            count = (lostCount || 0) + (foundCount || 0);
+        } else {
+            // For other admins, count complaints
+            let query = supabase.from('complaint').select('complaintid', { count: 'exact', head: true });
+
+            // If NOT master admin, only count assigned complaints
+            if (adminRole !== 'Master Admin') {
+                query = query.eq('adminid', adminId);
+            }
+
+            const { count: complaintCount, error } = await query;
+
+            if (error) throw error;
+
+            count = complaintCount || 0;
         }
 
-        const { count, error } = await query;
-
-        if (error) throw error;
-
-        totalHandledEl.textContent = count || 0;
+        totalHandledEl.textContent = count;
 
     } catch (err) {
         console.error('Error loading stats:', err);

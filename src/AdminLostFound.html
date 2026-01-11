@@ -35,7 +35,7 @@
 
         <nav class="hidden md:flex space-x-6 items-center">
             <a href="AdminLostFoundDashboard.html" class="nav-content">Dashboard</a>
-            <a href="AdminLostFound.html" class="font-semibold text-eco-dark hover:text-eco-dark">Lost Items</a>
+            <a href="AdminLostFound.html" class="font-semibold text-eco-dark hover:text-eco-dark">Manage Items</a>
 
             <div class="relative">
                 <button id="profileButton" class="flex items-center space-x-2 focus:outline-none">
@@ -65,7 +65,7 @@
             </div>
             <nav class="mt-6 flex flex-col space-y-2 px-6">
                 <a href="AdminLostFoundDashboard.html" class="nav-content">Dashboard</a>
-                <a href="AdminLostFound.html" class="font-semibold text-eco-dark hover:text-eco-dark">Lost Items</a>
+                <a href="AdminLostFound.html" class="font-semibold text-eco-dark hover:text-eco-dark">Manage Items</a>
                 <a href="AdminProfile.html" class="nav-content">Profile</a>
             </nav>
         </div>
@@ -83,7 +83,7 @@
             <div class="flex items-center gap-2 border-b border-gray-200 dark:border-gray-700 mb-4">
                 <button id="tabAllRequests"
                     class="tab-button px-6 py-3 font-semibold text-sm transition-all border-b-2 border-transparent hover:text-eco-dark dark:hover:text-eco active">
-                    <i class="fas fa-th-list mr-2"></i>All Requests
+                    <i class="fas fa-th-list mr-2"></i>All Items
                 </button>
                 <button id="tabLostItems"
                     class="tab-button px-6 py-3 font-semibold text-sm transition-all border-b-2 border-transparent hover:text-eco-dark dark:hover:text-eco">
@@ -317,7 +317,7 @@
                 class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden transform scale-95 opacity-0 transition-all duration-300 border border-gray-200 dark:border-gray-700">
                 <!-- Header -->
                 <div
-                    class="sticky top-0 bg-gradient-to-r from-eco to-green-600 px-6 py-5 flex items-center justify-between z-10 shadow-lg">
+                    class="sticky top-0 bg-blue-900 dark:bg-blue-950 px-6 py-5 flex items-center justify-between z-10 shadow-lg">
                     <div class="flex items-center gap-3">
                         <div class="bg-white bg-opacity-20 p-2 rounded-lg">
                             <i class="fas fa-filter text-white text-lg"></i>
@@ -334,7 +334,7 @@
                 </div>
 
                 <!-- Filter Content -->
-                <div class="p-6 space-y-5 overflow-y-auto max-h-[calc(90vh-140px)] bg-gray-50 dark:bg-gray-900">
+                <div class="p-6 pb-8 space-y-5 overflow-y-auto max-h-[calc(90vh-140px)] bg-gray-50 dark:bg-gray-900">
 
                     <!-- Item Source Toggle -->
                     <div
@@ -368,37 +368,37 @@
                             <button
                                 class="filter-category-chip px-3 py-1.5 rounded-full border-2 text-sm font-medium transition"
                                 data-category="Electronics">
-                                📱 Electronics
+                                <i class="fas fa-laptop text-blue-500 mr-2"></i>Electronics
                             </button>
                             <button
                                 class="filter-category-chip px-3 py-1.5 rounded-full border-2 text-sm font-medium transition"
                                 data-category="Clothing">
-                                👕 Clothing
+                                <i class="fas fa-tshirt text-green-500 mr-2"></i>Clothing
                             </button>
                             <button
                                 class="filter-category-chip px-3 py-1.5 rounded-full border-2 text-sm font-medium transition"
                                 data-category="Keys">
-                                🔑 Keys
+                                <i class="fas fa-key text-yellow-500 mr-2"></i>Keys
                             </button>
                             <button
                                 class="filter-category-chip px-3 py-1.5 rounded-full border-2 text-sm font-medium transition"
                                 data-category="Documents">
-                                📄 Documents
+                                <i class="fas fa-file-alt text-purple-500 mr-2"></i>Documents
                             </button>
                             <button
                                 class="filter-category-chip px-3 py-1.5 rounded-full border-2 text-sm font-medium transition"
                                 data-category="Wallet/Purse">
-                                👛 Wallet/Purse
+                                <i class="fas fa-wallet text-red-500 mr-2"></i>Wallet/Purse
                             </button>
                             <button
                                 class="filter-category-chip px-3 py-1.5 rounded-full border-2 text-sm font-medium transition"
                                 data-category="Stationery">
-                                🖊️ Stationery
+                                <i class="fas fa-pencil-alt text-orange-500 mr-2"></i>Stationery
                             </button>
                             <button
                                 class="filter-category-chip px-3 py-1.5 rounded-full border-2 text-sm font-medium transition"
                                 data-category="Other">
-                                📍 Other
+                                <i class="fas fa-ellipsis-h text-gray-500 mr-2"></i>Other
                             </button>
                         </div>
                     </div>
@@ -442,7 +442,7 @@
 
                     <!-- Date Range -->
                     <div
-                        class="bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                        class="bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm mb-16">
                         <label class="block text-sm font-bold text-gray-800 dark:text-gray-200 mb-3">
                             <i class="fas fa-calendar-alt text-eco dark:text-green-400 mr-2"></i>Date Range
                         </label>
@@ -490,14 +490,14 @@
 
                 <!-- Footer Actions -->
                 <div
-                    class="sticky bottom-0 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 border-t-2 border-gray-200 dark:border-gray-700 px-6 py-4 flex gap-3 shadow-lg">
+                    class="sticky bottom-0 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 border-t-2 border-gray-200 dark:border-gray-700 px-6 py-4 mt-4 flex gap-3 shadow-lg">
                     <button id="clearFiltersBtn"
                         class="flex-1 px-6 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-white dark:hover:bg-gray-700 hover:border-gray-400 transition-all font-semibold flex items-center justify-center gap-2 shadow-sm">
                         <i class="fas fa-redo text-sm"></i>
                         <span>Clear All</span>
                     </button>
                     <button id="applyFiltersBtn"
-                        class="flex-1 px-6 py-3 bg-gradient-to-r from-eco to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl transition-all font-semibold shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
+                        class="flex-1 px-6 py-3 bg-blue-900 hover:bg-blue-800 dark:bg-blue-950 dark:hover:bg-blue-900 text-white rounded-xl transition-all font-semibold shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
                         <i class="fas fa-check text-sm"></i>
                         <span>Apply Filters</span>
                     </button>
@@ -673,7 +673,7 @@
                         <a href="AdminLostFound.html"
                             class="inline-flex items-center gap-2 text-gray-800 hover:text-blue-700 dark:text-gray-300 dark:hover:text-blue-400 transition-all duration-300 hover:-translate-y-1">
                             <i class="fas fa-search"></i>
-                            <span>Lost Items</span>
+                            <span>Manage Items</span>
                         </a>
                     </li>
                 </ul>

@@ -78,8 +78,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             activeSourceBtn.classList.add('border-blue-600', 'bg-blue-50', 'text-blue-600', 'dark:bg-blue-900/30', 'dark:text-blue-300');
         }
 
-        // Show/hide upload button - visible on 'all' and 'found' tabs
-        if (tab === 'all' || tab === 'found') {
+        // Show/hide upload button - visible only on 'found' tab
+        if (tab === 'found') {
             uploadFoundItemBtn.classList.remove('hidden');
         } else {
             uploadFoundItemBtn.classList.add('hidden');
@@ -88,8 +88,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderItems();
     }
 
-    // Initial button visibility - visible on 'all' tab by default
-    if (currentTab === 'all' || currentTab === 'found') {
+    // Initial button visibility - hidden by default, only visible on 'found' tab
+    if (currentTab === 'found') {
         uploadFoundItemBtn.classList.remove('hidden');
     }
 

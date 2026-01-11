@@ -8,11 +8,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // Role Check
-    const { data: admin } = await supabase.from('admin').select('id, adminrole').eq('id', session.user.id).single();
-    if (!admin) {
+    // Role Check & Profile Pic Load
+    const { data: admin, error: adminError } = await supabase
+        .from('admin')
+        .select('id, adminrole, profile_pic')
+        .eq('id', session.user.id)
+        .single();
+
+    if (adminError || !admin) {
         window.location.href = 'Login.html';
         return;
+    }
+
+    // Update Profile Picture in Header
+    const profileBtn = document.getElementById('profileButton');
+    if (profileBtn && admin.profile_pic) {
+        profileBtn.innerHTML = `
+            <img src="${admin.profile_pic}" alt="Profile" class="h-10 w-10 rounded-full object-cover border-2 border-white dark:border-gray-600 shadow-sm">
+        `;
     }
 
     // Elements
@@ -27,8 +40,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupMenuListeners();
 
     // Prevent future dates in the calendar picker
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('foundDateFound').setAttribute('max', today);
+    const todayLocal = new Date().toLocaleDateString('en-CA');
+    document.getElementById('foundDateFound').setAttribute('max', todayLocal);
 
     // Image preview logic
     foundItemImageInput.addEventListener('change', (e) => {
@@ -72,11 +85,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         // Validate date is not in the future
-        const selectedDate = new Date(dateFound);
-        const todayDate = new Date();
-        todayDate.setHours(0, 0, 0, 0); // Only compare dates, not time
-
-        if (selectedDate > todayDate) {
+        if (dateFound > todayLocal) {
             alert('The found date cannot be in the future.');
             return;
         }
@@ -180,41 +189,43 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function setupMenuListeners() {
-        // Shared Mobile Menu Logic
-        const mobileMenuButton = document.getElementById('mobileMenuButton');
-        const mobileMenu = document.getElementById('mobileMenu');
-        const overlay = document.getElementById('overlay');
         const profileButton = document.getElementById('profileButton');
         const profileMenu = document.getElementById('profileMenu');
+        const logoutModal = document.getElementById('logoutModal');
+        const confirmLogoutBtn = document.getElementById('confirmLogoutBtn');
+        const cancelLogoutBtn = document.getElementById('cancelLogoutBtn');
         const headerLogoutBtn = document.getElementById('headerLogoutBtn');
 
-        if (mobileMenuButton) {
-            mobileMenuButton.addEventListener('click', () => {
-                mobileMenu.classList.toggle('-translate-x-full');
-                overlay.classList.toggle('hidden');
-            });
-        }
-
-        if (overlay) {
-            overlay.addEventListener('click', () => {
-                mobileMenu.classList.add('-translate-x-full');
-                overlay.classList.add('hidden');
-            });
-        }
-
-        if (profileButton) {
-            profileButton.addEventListener('click', (e) => {
+        // Profile Dropdown
+        if (profileButton && profileMenu) {
+            // Clone to remove listeners from darkMode.js if any, 
+            // but actually darkMode.js handles it well. 
+            // If it's not working, let's ensure we have a clean toggle.
+            profileButton.onclick = (e) => {
                 e.stopPropagation();
                 profileMenu.classList.toggle('hidden');
+            };
+
+            document.addEventListener('click', (e) => {
+                if (!profileButton.contains(e.target) && !profileMenu.contains(e.target)) {
+                    profileMenu.classList.add('hidden');
+                }
             });
-            document.addEventListener('click', () => profileMenu.classList.add('hidden'));
         }
 
-        if (headerLogoutBtn) {
-            headerLogoutBtn.addEventListener('click', async () => {
+        // Logout Logic
+        const showLogout = (e) => {
+            if (e) e.preventDefault();
+            if (logoutModal) logoutModal.classList.remove('hidden');
+        };
+
+        if (headerLogoutBtn) headerLogoutBtn.onclick = showLogout;
+        if (cancelLogoutBtn) cancelLogoutBtn.onclick = () => logoutModal.classList.add('hidden');
+        if (confirmLogoutBtn) {
+            confirmLogoutBtn.onclick = async () => {
                 await supabase.auth.signOut();
                 window.location.href = 'Login.html';
-            });
+            };
         }
     }
 });

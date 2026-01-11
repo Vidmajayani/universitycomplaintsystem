@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const profileBtn = document.getElementById('profileButton');
     if (profileBtn && admin.profile_pic) {
         profileBtn.innerHTML = `
-            <img src="${admin.profile_pic}" alt="Profile" class="h-10 w-10 rounded-full object-cover border-2 border-white dark:border-gray-600 shadow-sm">
+            <img src="${admin.profile_pic}" alt="Profile" class="h-10 w-10 rounded-full object-cover border-2 border-white dark:border-gray-600 shadow-sm pointer-events-none">
         `;
     }
 
@@ -189,25 +189,31 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function setupMenuListeners() {
-        const profileButton = document.getElementById('profileButton');
+        const profileBtn = document.getElementById('profileButton');
         const profileMenu = document.getElementById('profileMenu');
         const logoutModal = document.getElementById('logoutModal');
         const confirmLogoutBtn = document.getElementById('confirmLogoutBtn');
         const cancelLogoutBtn = document.getElementById('cancelLogoutBtn');
         const headerLogoutBtn = document.getElementById('headerLogoutBtn');
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const overlay = document.getElementById('overlay');
 
-        // Profile Dropdown
-        if (profileButton && profileMenu) {
-            // Clone to remove listeners from darkMode.js if any, 
-            // but actually darkMode.js handles it well. 
-            // If it's not working, let's ensure we have a clean toggle.
-            profileButton.onclick = (e) => {
+        if (profileBtn && profileMenu) {
+            // CRITICAL: Clone the button to remove all existing listeners (especially from darkMode.js)
+            // This prevents the "double-toggle" issue where the menu opens and closes instantly.
+            const newProfileBtn = profileBtn.cloneNode(true);
+            profileBtn.parentNode.replaceChild(newProfileBtn, profileBtn);
+
+            newProfileBtn.addEventListener('click', (e) => {
+                e.preventDefault();
                 e.stopPropagation();
                 profileMenu.classList.toggle('hidden');
-            };
+            });
 
+            // Global click to close
             document.addEventListener('click', (e) => {
-                if (!profileButton.contains(e.target) && !profileMenu.contains(e.target)) {
+                if (!newProfileBtn.contains(e.target) && !profileMenu.contains(e.target)) {
                     profileMenu.classList.add('hidden');
                 }
             });
@@ -216,15 +222,37 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Logout Logic
         const showLogout = (e) => {
             if (e) e.preventDefault();
+            if (profileMenu) profileMenu.classList.add('hidden');
             if (logoutModal) logoutModal.classList.remove('hidden');
         };
 
-        if (headerLogoutBtn) headerLogoutBtn.onclick = showLogout;
+        if (headerLogoutBtn) {
+            const newLogoutBtn = headerLogoutBtn.cloneNode(true);
+            headerLogoutBtn.parentNode.replaceChild(newLogoutBtn, headerLogoutBtn);
+            newLogoutBtn.addEventListener('click', showLogout);
+        }
+
         if (cancelLogoutBtn) cancelLogoutBtn.onclick = () => logoutModal.classList.add('hidden');
         if (confirmLogoutBtn) {
             confirmLogoutBtn.onclick = async () => {
                 await supabase.auth.signOut();
                 window.location.href = 'Login.html';
+            };
+        }
+
+        // Mobile Menu logic
+        if (mobileMenuButton && mobileMenu && overlay) {
+            const newMobileBtn = mobileMenuButton.cloneNode(true);
+            mobileMenuButton.parentNode.replaceChild(newMobileBtn, mobileMenuButton);
+
+            newMobileBtn.onclick = () => {
+                mobileMenu.classList.toggle('-translate-x-full');
+                overlay.classList.toggle('hidden');
+            };
+
+            overlay.onclick = () => {
+                mobileMenu.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
             };
         }
     }

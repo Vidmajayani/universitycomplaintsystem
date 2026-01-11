@@ -26,6 +26,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Setup Header/Menu listeners
     setupMenuListeners();
 
+    // Prevent future dates in the calendar picker
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('foundDateFound').setAttribute('max', today);
+
     // Image preview logic
     foundItemImageInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
@@ -64,6 +68,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (!itemName || !itemType || !locationFound || !dateFound) {
             alert('Please fill in all required fields (Item Name, Type, Location Found, Date Found).');
+            return;
+        }
+
+        // Validate date is not in the future
+        const selectedDate = new Date(dateFound);
+        const todayDate = new Date();
+        todayDate.setHours(0, 0, 0, 0); // Only compare dates, not time
+
+        if (selectedDate > todayDate) {
+            alert('The found date cannot be in the future.');
             return;
         }
 

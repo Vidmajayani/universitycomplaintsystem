@@ -47,6 +47,16 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
+        // Validate File Type
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+            if (!allowedTypes.includes(file.type)) {
+                alert("Invalid file attachment. Please upload an image.");
+                return;
+            }
+        }
+
         try {
             const { data: adminData, error: adminError } = await supabase
                 .from('admin')

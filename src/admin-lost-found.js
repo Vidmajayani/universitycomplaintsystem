@@ -452,9 +452,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             }
 
-            // Enhanced search filter - searches across multiple fields
+            // Enhanced search filter - searches across multiple fields including IDs
             const location = item.itemSource === 'lost' ? (item.location_lost || '') : (item.location_found || '');
+            const itemId = item.itemSource === 'lost' ? (item.item_id || '') : (item.found_item_id || '');
             const matchesSearch =
+                String(itemId).toLowerCase().includes(query) ||
                 (item.item_name || '').toLowerCase().includes(query) ||
                 (item.item_type || '').toLowerCase().includes(query) ||
                 (item.description || '').toLowerCase().includes(query) ||
@@ -528,6 +530,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             // --- A. Render Table Row ---
             const rowClone = itemRowTemplate.content.cloneNode(true);
+            rowClone.querySelector('.item-id').textContent = itemId;
             rowClone.querySelector('.item-name').textContent = item.item_name;
 
             // Source badge
@@ -567,6 +570,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             // --- B. Render Card (Mobile) ---
             const cardClone = cardTemplate.content.cloneNode(true);
+            cardClone.querySelector('.card-id').textContent = itemId;
             cardClone.querySelector('.card-type').textContent = item.item_type;
             cardClone.querySelector('.card-title').textContent = item.item_name;
             cardClone.querySelector('.card-location span').textContent = location;

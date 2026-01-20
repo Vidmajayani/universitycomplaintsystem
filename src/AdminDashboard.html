@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ComplaNet — Admin Dashboard</title>
-  <script type="module" crossorigin src="../assets/adminDashboard-Dzg0cqQ2.js"></script>
-  <link rel="modulepreload" crossorigin href="../assets/darkMode-COWkRzh6.js">
-  <link rel="stylesheet" crossorigin href="../assets/darkMode-2GmgHpZ0.css">
+  <script type="module" crossorigin src="../assets/adminDashboard-uuqHmR44.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/darkMode-DtyUGJ-S.js">
+  <link rel="stylesheet" crossorigin href="../assets/darkMode-D61GVxt9.css">
 </head>
 
 <body
@@ -156,7 +156,111 @@
             </div>
         </div>
 
-        <!-- Main Content Area: Activity + Notepad -->
+        <!-- Trend Alerts Section -->
+        <div id="trendAlertsSection" class="mb-10">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+                    <i class="fas fa-chart-line text-eco dark:text-blue-400"></i>
+                    Complaint Trends & Alerts
+                </h2>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    Recurring issues requiring your attention
+                </p>
+            </div>
+
+            <!-- Alerts Container -->
+            <div id="trendAlertsContainer" class="grid grid-cols-1 gap-6">
+                <!-- Loading state -->
+                <div class="text-center py-8">
+                    <i class="fas fa-spinner fa-spin text-3xl text-gray-400 mb-3"></i>
+                    <p class="text-gray-500 dark:text-gray-400">Analyzing complaint patterns...</p>
+                </div>
+            </div>
+
+            <!-- Alert Card Template -->
+            <template id="alertCardTemplate">
+                <div
+                    class="alert-card bg-white dark:bg-gray-800 rounded-xl shadow-lg border-l-4 overflow-hidden transition-all duration-300 hover:shadow-xl">
+                    <!-- Alert Header -->
+                    <div class="alert-header p-6 pb-4">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex items-center gap-3">
+                                <span class="alert-icon text-3xl"></span>
+                                <div>
+                                    <span
+                                        class="alert-severity-label text-xs font-bold uppercase tracking-wider px-2 py-1 rounded"></span>
+                                    <h3 class="alert-title text-xl font-bold text-gray-800 dark:text-gray-100 mt-1">
+                                    </h3>
+                                </div>
+                            </div>
+                            <div class="alert-count-badge text-center min-w-[60px]">
+                                <div class="text-3xl font-bold"></div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400 uppercase">Complaints</div>
+                            </div>
+                        </div>
+
+                        <!-- Urgency Message -->
+                        <div class="alert-urgency-message p-4 rounded-lg mb-4"></div>
+
+                        <!-- Detailed Message -->
+                        <p class="alert-detailed-message text-sm text-gray-600 dark:text-gray-300 leading-relaxed"></p>
+                    </div>
+
+                    <!-- Action Items Section -->
+                    <div class="alert-actions bg-gray-50 dark:bg-gray-900 p-6 pt-4">
+                        <h4 class="text-sm font-bold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
+                            <i class="fas fa-lightbulb text-eco dark:text-blue-400"></i>
+                            RECOMMENDATION
+                        </h4>
+                        <div class="alert-action-items space-y-3">
+                            <!-- Action items will be inserted here -->
+                        </div>
+
+                    </div>
+                </div>
+            </template>
+
+            <!-- Action Item Template -->
+            <template id="actionItemTemplate">
+                <div
+                    class="action-item flex items-start gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <div
+                        class="action-priority-badge flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                    </div>
+                    <div class="flex-1">
+                        <p class="action-text text-sm font-medium text-gray-800 dark:text-gray-200 mb-1"></p>
+                        <div class="flex flex-wrap gap-3 text-xs text-gray-500 dark:text-gray-400">
+                            <span class="flex items-center gap-1">
+                                <i class="fas fa-user-tie"></i>
+                                <strong>Responsible:</strong> <span class="action-responsible"></span>
+                            </span>
+                            <span class="flex items-center gap-1">
+                                <i class="fas fa-clock"></i>
+                                <strong>Deadline:</strong> <span class="action-deadline"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Empty State Template -->
+            <template id="noAlertsTemplate">
+                <div class="text-center py-12 bg-white dark:bg-gray-800 rounded-xl shadow">
+                    <div class="inline-block p-4 bg-green-100 dark:bg-green-900 rounded-full mb-4">
+                        <i class="fas fa-check-circle text-4xl text-green-600 dark:text-green-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">No Alerts</h3>
+                    <p class="text-gray-600 dark:text-gray-400 mb-3">
+                        No recurring complaint patterns detected.
+                    </p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                        Alerts appear when any subcategory has <strong>10+ complaints</strong>.
+                    </p>
+                </div>
+            </template>
+        </div>
+
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
 
             <!-- Recent Activity Section (Takes up 2 columns) -->

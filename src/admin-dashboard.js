@@ -1,5 +1,6 @@
 // Admin Dashboard JavaScript - Backend Integration with Supabase
 import { supabase } from './supabaseClient.js';
+import { getTrendingAlerts } from './trend-alerts-api.js';
 
 // Global variables
 let adminId = null;
@@ -19,6 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     checkAdminSession();
     setupEventListeners();
     setupNotepad(); // Initialize Notepad
+    setupTrendAlerts(); // Initialize Trend Alerts
 });
 
 // Make function global for HTML onclick access
@@ -107,6 +109,9 @@ async function checkAdminSession() {
 
     // Load complaints for this admin
     loadAdminComplaints();
+
+    // Load trend alerts for this admin
+    loadTrendAlerts();
 }
 
 
@@ -358,3 +363,152 @@ function setupNotepad() {
     });
 }
 
+// ------------------------
+//  TREND ALERTS SYSTEM
+// ------------------------
+function setupTrendAlerts() {
+    // No time period selector - analyzing all complaints
+}
+
+async function loadTrendAlerts() {
+    if (!adminRole) {
+        console.log('Admin role not yet loaded, skipping trend alerts');
+        return;
+    }
+
+    // Hide trend alerts for General Admin (Other category has no subcategories)
+    if (adminRole === 'General Admin') {
+        const trendAlertsSection = document.getElementById('trendAlertsSection');
+        if (trendAlertsSection) {
+            trendAlertsSection.style.display = 'none';
+        }
+        return;
+    }
+
+    const container = document.getElementById('trendAlertsContainer');
+
+    if (!container) return;
+
+    // Show loading state
+    container.innerHTML = `
+        <div class="text-center py-8">
+            <i class="fas fa-spinner fa-spin text-3xl text-gray-400 mb-3"></i>
+            <p class="text-gray-500 dark:text-gray-400">Analyzing complaint patterns...</p>
+        </div>
+    `;
+
+
+    const days = 36500; // Analyze ALL complaints (100 years)
+    const threshold = 10; // Minimum complaints to trigger alert
+
+    console.log(`🔍 Loading trend alerts for ${adminRole}, last ${days} days, threshold: ${threshold}`);
+
+    try {
+        const alerts = await getTrendingAlerts(adminRole, days, threshold);
+
+        console.log(`✅ Got ${alerts.length} alerts:`, alerts);
+
+        if (alerts.length === 0) {
+            // Show "All Clear" message
+            const noAlertsTemplate = document.getElementById('noAlertsTemplate');
+            if (noAlertsTemplate) {
+                container.innerHTML = '';
+                const clone = noAlertsTemplate.content.cloneNode(true);
+                container.appendChild(clone);
+            }
+        } else {
+            // Render alert cards
+            container.innerHTML = '';
+            alerts.forEach(alert => {
+                renderAlertCard(alert, container);
+            });
+        }
+    } catch (error) {
+        console.error('Error loading trend alerts:', error);
+        container.innerHTML = `
+            <div class="text-center py-8 bg-red-50 dark:bg-red-900/20 rounded-xl">
+                <i class="fas fa-exclamation-triangle text-3xl text-red-500 mb-3"></i>
+                <p class="text-red-600 dark:text-red-400">Error loading trend alerts. Please try again later.</p>
+            </div>
+        `;
+    }
+}
+
+function renderAlertCard(alert, container) {
+    const template = document.getElementById('alertCardTemplate');
+    if (!template) return;
+
+    const clone = template.content.cloneNode(true);
+    const card = clone.querySelector('.alert-card');
+
+    // Set severity border color
+    const borderColors = {
+        'critical': 'border-red-500',
+        'high': 'border-orange-500',
+        'warning': 'border-yellow-500'
+    };
+    card.classList.add(borderColors[alert.severity] || 'border-yellow-500');
+
+    // Set icon
+    clone.querySelector('.alert-icon').textContent = alert.severityIcon;
+
+    // Set severity label
+    const severityLabel = clone.querySelector('.alert-severity-label');
+    const severityColors = {
+        'critical': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+        'high': 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
+        'warning': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+    };
+    severityLabel.textContent = alert.severityIcon + ' ' + (alert.severity === 'critical' ? 'CRITICAL' : alert.severity === 'high' ? 'HIGH PRIORITY' : 'ATTENTION NEEDED');
+    severityLabel.className = `alert-severity-label text-xs font-bold uppercase tracking-wider px-2 py-1 rounded ${severityColors[alert.severity]}`;
+
+    // Set title
+    const title = alert.location
+        ? `${alert.subcategory} - ${alert.location}${alert.floor ? ' (' + alert.floor + ')' : ''}`
+        : alert.subcategory;
+    clone.querySelector('.alert-title').textContent = title;
+
+    // Set count badge
+    const countBadge = clone.querySelector('.alert-count-badge div:first-child');
+    const countColors = {
+        'critical': 'text-red-600 dark:text-red-400',
+        'high': 'text-orange-600 dark:text-orange-400',
+        'warning': 'text-yellow-600 dark:text-yellow-400'
+    };
+    countBadge.textContent = alert.count;
+    countBadge.className = `text-3xl font-bold ${countColors[alert.severity]}`;
+
+    // Set urgency message
+    const urgencyMessage = clone.querySelector('.alert-urgency-message');
+    const urgencyBgColors = {
+        'critical': 'bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800',
+        'high': 'bg-orange-50 dark:bg-orange-900/30 border border-orange-200 dark:border-orange-800',
+        'warning': 'bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800'
+    };
+    urgencyMessage.innerHTML = alert.urgencyMessage;
+    urgencyMessage.className = `alert-urgency-message p-4 rounded-lg mb-4 ${urgencyBgColors[alert.severity]} text-gray-800 dark:text-gray-200 font-medium text-sm`;
+
+    // Set detailed message
+    clone.querySelector('.alert-detailed-message').innerHTML = alert.detailedMessage;
+
+    // Render action items
+    const actionItemsContainer = clone.querySelector('.alert-action-items');
+    alert.actionItems.forEach(action => {
+        renderActionItem(action, actionItemsContainer);
+    });
+
+    container.appendChild(clone);
+}
+
+function renderActionItem(action, container) {
+    // Simple text display without template
+    const actionDiv = document.createElement('div');
+    actionDiv.className = 'p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border-l-4 border-blue-500';
+
+    const messageP = document.createElement('p');
+    messageP.className = 'text-sm text-gray-700 dark:text-gray-300 leading-relaxed';
+    messageP.innerHTML = `<i class="fas fa-info-circle text-blue-500 mr-2"></i>${action.message}`;
+
+    actionDiv.appendChild(messageP);
+    container.appendChild(actionDiv);
+}

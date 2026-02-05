@@ -12,40 +12,52 @@
     class="flex flex-col min-h-screen bg-[var(--color-bg-light)] text-[var(--color-text-light)] dark:bg-[var(--color-bg-dark)] dark:text-[var(--color-text-dark)] transition-all duration-300 font-sans">
 
     <!-- Header -->
-    <header class="flex items-center justify-between px-3 md:px-6 py-4 bg-pink dark:bg-gray-800 shadow-md">
+    <header
+        class="flex items-center justify-between px-6 lg:px-20 py-4 bg-pink dark:bg-gray-800 shadow-md transition-all duration-300">
         <!-- Logo -->
         <div class="flex items-center">
             <img src="../images/BGlessLogoDark.png" alt="ComplaNet Logo" class="h-16 block dark:hidden">
             <img src="../images/BGlessLogo.png" alt="ComplaNet Logo Dark" class="h-16 hidden dark:block">
         </div>
 
-        <!-- Desktop Navigation -->
-        <nav class="hidden md:flex space-x-6 items-center">
-            <a href="AdminDashboard.html" class="nav-content">Dashboard</a>
-            <a href="AllComplaints.html"
-                class="font-semibold text-eco-dark hover:text-eco-dark dark:text-blue-400 dark:hover:text-blue-300">All
+        <!-- Desktop Navigation (Middle) -->
+        <nav class="hidden lg:flex gap-6 items-center">
+            <a href="AdminDashboard.html" id="navDashboard" class="nav-content whitespace-nowrap">Dashboard</a>
+            <a href="AllComplaints.html" id="navAllComplaints"
+                class="font-semibold text-eco hover:text-eco-dark dark:text-blue-400 dark:hover:text-blue-300 whitespace-nowrap">All
                 Complaints</a>
-            <a href="Analytics.html" class="nav-content">Analytics</a>
+            <a href="Analytics.html" id="navAnalytics" class="nav-content whitespace-nowrap">Analytics</a>
+        </nav>
+
+        <!-- Right Side Actions -->
+        <div class="flex items-center gap-4">
+            <!-- Theme Toggle (Always Visible) -->
+            <button id="navbarThemeToggle"
+                class="flex w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 dark:from-indigo-500 dark:to-purple-600 flex items-center justify-center text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-400 dark:focus:ring-indigo-500 ">
+                <i class="fas fa-sun text-lg hidden dark:block"></i>
+                <i class="fas fa-moon text-lg block dark:hidden"></i>
+            </button>
 
             <!-- Profile Menu -->
-            <div class="relative">
-                <button id="profileButton" class="flex items-center space-x-2 focus:outline-none">
-                    <i class="fas fa-user-shield text-gray-500 text-2xl"></i>
+            <div class="relative hidden lg:block">
+                <button id="profileButton" class="flex items-center focus:outline-none profile-highlight">
+                    <i class="fas fa-user-shield text-gray-500 text-2xl hover:text-eco transition"></i>
                 </button>
                 <div id="profileMenu"
-                    class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 hidden z-50">
+                    class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 hidden z-50 transition-all duration-200">
                     <a href="AdminProfile.html"
                         class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">Profile</a>
                     <button id="headerLogoutBtn" class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-500">Log
                         Out</button>
                 </div>
             </div>
-        </nav>
 
-        <!-- Mobile Hamburger -->
-        <button id="mobileMenuButton" class="md:hidden text-gray-800 dark:text-gray-200 focus:outline-none">
-            &#9776;
-        </button>
+            <!-- Mobile Hamburger -->
+            <button id="mobileMenuButton"
+                class="lg:hidden text-gray-800 dark:text-gray-200 focus:outline-none transition-transform hover:scale-110">
+                <i class="fas fa-bars text-3xl"></i>
+            </button>
+        </div>
     </header>
 
     <!-- Mobile Side Menu -->
@@ -53,19 +65,32 @@
         class="fixed top-0 left-0 w-64 h-full bg-white dark:bg-gray-800 shadow-lg transform -translate-x-full transition-transform duration-300 z-50 flex flex-col justify-between">
         <div>
             <div class="flex items-center px-6 py-4 border-b dark:border-gray-700">
-                <img src="../images/BGlessLogoDark.png" alt="Logo" class="h-10">
+                <a href="AdminDashboard.html" id="mobileLogoLink">
+                    <img src="../images/BGlessLogoDark.png" alt="Logo" class="h-16">
+                </a>
             </div>
-            <nav class="mt-6 flex flex-col space-y-2 px-6">
-                <a href="AdminDashboard.html" class="nav-content">Dashboard</a>
-                <a href="AllComplaints.html"
-                    class="font-semibold text-eco-dark hover:text-eco-dark dark:text-blue-400 dark:hover:text-blue-300">All
-                    Complaints</a>
-                <a href="Analytics.html" class="nav-content">Analytics</a>
-                <a href="AdminProfile.html" class="nav-content">Admin Profile</a>
+            <nav class="mt-6 flex flex-col space-y-6 px-6">
+                <a href="AdminDashboard.html" id="mobileNavDashboard"
+                    class="nav-content flex items-center text-gray-700 dark:text-gray-300">
+                    <i class="fas fa-th-large w-6 mr-3 text-lg"></i> Dashboard
+                </a>
+                <a href="AllComplaints.html" id="mobileNavAllComplaints"
+                    class="flex items-center font-semibold text-eco-dark hover:text-eco-dark dark:text-blue-400 dark:hover:text-blue-300">
+                    <i class="fas fa-clipboard-list w-6 mr-3 text-lg"></i> All Complaints
+                </a>
+                <a href="Analytics.html" id="mobileNavAnalytics"
+                    class="nav-content flex items-center text-gray-700 dark:text-gray-300">
+                    <i class="fas fa-chart-line w-6 mr-3 text-lg"></i> Analytics
+                </a>
+                <a href="AdminProfile.html" class="nav-content flex items-center text-gray-700 dark:text-gray-300">
+                    <i class="fas fa-user-shield w-6 mr-3 text-lg"></i> Admin Profile
+                </a>
             </nav>
         </div>
-        <div class="px-6 py-4 border-t dark:border-gray-700 flex flex-col space-y-2">
-            <a href="Login.html" class="block py-2 hover:text-red-500 transition">Log Out</a>
+        <div class="px-6 py-4 border-t dark:border-gray-700 flex flex-col space-y-4">
+            <a href="Login.html" class="flex items-center py-2 text-red-500 hover:text-red-700 transition font-medium">
+                <i class="fas fa-sign-out-alt w-6 mr-3 text-lg"></i> Log Out
+            </a>
         </div>
     </aside>
 
@@ -88,24 +113,28 @@
         <div class="flex flex-col lg:flex-row justify-between items-stretch gap-4 mb-6">
             <!-- Search -->
             <div class="relative w-full lg:w-1/2">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                    <i class="fas fa-search text-gray-400"></i>
-                </span>
-                <input type="text" id="searchInput"
-                    class="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-eco dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                    placeholder="Search for complaints (title, description, id)...">
+                <div
+                    class="flex items-center w-full border rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600 focus-within:ring-2 focus-within:ring-eco overflow-hidden">
+                    <span class="pl-3 pr-2 text-gray-400">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text" id="searchInput"
+                        class="w-full py-2 bg-transparent border-none focus:ring-0 focus:outline-none text-gray-700 dark:text-white placeholder-gray-500"
+                        placeholder="Search for complaints (title, description, id)...">
+                </div>
             </div>
 
             <!-- Actions -->
             <div class="flex flex-col xl:flex-row gap-3">
                 <!-- Date Filter -->
-                <div class="flex gap-2">
+
+                <div class="flex gap-2 w-full sm:w-auto">
                     <input type="date" id="filterDateFrom"
-                        class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-eco dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:[color-scheme:dark]"
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-eco dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:[color-scheme:dark]"
                         placeholder="From Date" title="From Date">
                     <span class="self-center text-gray-500">-</span>
                     <input type="date" id="filterDateTo"
-                        class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-eco dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:[color-scheme:dark]"
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-eco dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:[color-scheme:dark]"
                         placeholder="To Date" title="To Date">
                 </div>
                 <!-- Category Filter (Master Admin Only) -->
@@ -140,6 +169,7 @@
                         class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-200 uppercase text-sm leading-normal">
                         <tr>
 
+                            <th class="py-3 px-6 text-left">Complaint ID</th>
                             <th class="py-3 px-6 text-left">Complaint Title</th>
                             <th class="py-3 px-6 text-left">Category</th>
                             <th class="py-3 px-6 text-left">Details</th>
@@ -223,6 +253,9 @@
                 class="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
 
                 <td class="py-4 px-6 text-left">
+                    <span class="font-bold text-gray-800 dark:text-gray-200 col-id"></span>
+                </td>
+                <td class="py-4 px-6 text-left">
                     <span class="font-semibold text-gray-800 dark:text-gray-200 col-title"></span>
                 </td>
                 <td class="py-4 px-6 text-left">
@@ -233,7 +266,6 @@
                 <td class="py-4 px-6 text-left">
                     <div>
                         <p class="text-sm font-semibold text-gray-800 dark:text-gray-200 complainant-name"></p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 complainant-id"></p>
                     </div>
                 </td>
                 <td class="py-4 px-6 text-center">
@@ -379,7 +411,7 @@
                                     / Feedback (Required)</label>
                                 <textarea id="modalStatusReason" rows="3"
                                     class="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm"
-                                    placeholder="Enter reason for status change..."></textarea>
+                                    placeholder="e.g., Issue has been forwarded to the relevant department for immediate action, or The concerned authority has been notified and is working on a resolution"></textarea>
                             </div>
                         </div>
                     </div>
@@ -430,7 +462,7 @@
                                     Deletion (Required)</label>
                                 <textarea id="modalDeleteReason" rows="3"
                                     class="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm"
-                                    placeholder="Enter reason for deletion..."></textarea>
+                                    placeholder="e.g., Duplicate complaint already filed under ID #1234, or Spam/irrelevant content not related to university issues"></textarea>
                             </div>
                         </div>
                     </div>

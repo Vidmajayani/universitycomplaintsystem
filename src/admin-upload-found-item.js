@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const profileBtn = document.getElementById('profileButton');
     if (profileBtn && admin.profile_pic) {
         profileBtn.innerHTML = `
-            <img src="${admin.profile_pic}" alt="Profile" class="h-10 w-10 rounded-full object-cover border-2 border-white dark:border-gray-600 shadow-sm pointer-events-none">
+            <img src="${admin.profile_pic}" alt="Profile" class="h-10 w-10 rounded-full object-cover pointer-events-none">
         `;
     }
 
@@ -52,6 +52,22 @@ document.addEventListener('DOMContentLoaded', async () => {
                 previewImg.src = e.target.result;
                 imagePreview.classList.remove('hidden');
                 uploadPlaceholder.classList.add('hidden');
+
+                // Add red delete button if not exists
+                let deleteBtn = imagePreview.querySelector('.delete-preview-btn');
+                if (!deleteBtn) {
+                    deleteBtn = document.createElement('button');
+                    deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
+                    deleteBtn.classList.add('delete-preview-btn', "absolute", "-top-2", "-right-2", "bg-red-500", "text-white", "rounded-full", "w-6", "h-6", "flex", "items-center", "justify-center", "text-xs", "hover:bg-red-600", "shadow-md", "z-10");
+                    deleteBtn.onclick = (event) => {
+                        event.preventDefault();
+                        foundItemImageInput.value = "";
+                        imagePreview.classList.add('hidden');
+                        uploadPlaceholder.classList.remove('hidden');
+                    };
+                    imagePreview.classList.add('relative');
+                    imagePreview.appendChild(deleteBtn);
+                }
             };
             reader.readAsDataURL(file);
         } else {

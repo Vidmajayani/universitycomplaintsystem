@@ -73,7 +73,17 @@ async function loadItemDetails(id) {
             .select('*')
             .eq('id', authUser.id)
             .single();
-        adminData = ad;
+        if (ad) {
+            adminData = ad;
+
+            // Update Profile Picture in Header if exists
+            const profileBtn = document.getElementById('profileButton');
+            if (profileBtn && ad.profile_pic) {
+                profileBtn.innerHTML = `
+                    <img src="${ad.profile_pic}" alt="Profile" class="h-10 w-10 rounded-full object-cover">
+                `;
+            }
+        }
     }
 
     // 4. Fetch Attachments

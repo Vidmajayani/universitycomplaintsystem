@@ -69,7 +69,7 @@ async function checkAdminSession() {
     const profileBtn = document.getElementById('profileButton');
     if (profileBtn && adminData.profile_pic) {
         profileBtn.innerHTML = `
-            <img src="${adminData.profile_pic}" alt="Profile" class="h-10 w-10 rounded-full object-cover border-2 border-white dark:border-gray-600 shadow-sm">
+            <img src="${adminData.profile_pic}" alt="Profile" class="h-10 w-10 rounded-full object-cover">
         `;
     }
 
@@ -89,6 +89,34 @@ async function checkAdminSession() {
     const statusParam = urlParams.get('status');
     if (statusParam && filterStatus) {
         filterStatus.value = statusParam;
+    }
+
+    // --- ROLE-BASED ACCESS CONTROL (NAVIGATION) ---
+    const navDashboard = document.getElementById('navDashboard');
+    const navAllComplaints = document.getElementById('navAllComplaints');
+    const navAnalytics = document.getElementById('navAnalytics');
+    const mobileNavDashboard = document.getElementById('mobileNavDashboard');
+    const mobileNavAllComplaints = document.getElementById('mobileNavAllComplaints');
+    const mobileNavAnalytics = document.getElementById('mobileNavAnalytics');
+
+    if (adminRole === 'LostAndFound Admin') {
+        // Update Dashboard Links
+        if (navDashboard) navDashboard.href = 'AdminLostFoundDashboard.html';
+        if (mobileNavDashboard) mobileNavDashboard.href = 'AdminLostFoundDashboard.html';
+
+        // Update All Complaints to Manage Items
+        if (navAllComplaints) {
+            navAllComplaints.textContent = 'Manage Items';
+            navAllComplaints.href = 'AdminLostFound.html';
+        }
+        if (mobileNavAllComplaints) {
+            mobileNavAllComplaints.textContent = 'Manage Items';
+            mobileNavAllComplaints.href = 'AdminLostFound.html';
+        }
+
+        // Hide Analytics
+        if (navAnalytics) navAnalytics.style.display = 'none';
+        if (mobileNavAnalytics) mobileNavAnalytics.style.display = 'none';
     }
 
     loadComplaints();
@@ -258,6 +286,7 @@ function renderTable() {
         const row = clone.querySelector('tr');
 
         // Populate Data
+        clone.querySelector('.col-id').textContent = `#${complaint.complaintid}`;
         clone.querySelector('.col-title').textContent = complaint.complainttitle || 'Untitled';
 
         // Category Badge Logic
@@ -285,7 +314,6 @@ function renderTable() {
 
         const userName = complaint.complainantName || 'Unknown User';
         clone.querySelector('.complainant-name').textContent = userName;
-        clone.querySelector('.complainant-id').textContent = complaint.complainantid || '';
 
         // Status Badge
         const statusSpan = clone.querySelector('.col-status');

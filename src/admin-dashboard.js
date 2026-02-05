@@ -79,32 +79,39 @@ async function checkAdminSession() {
     const profileBtn = document.getElementById('profileButton');
     if (profileBtn && adminData.profile_pic) {
         profileBtn.innerHTML = `
-            <img src="${adminData.profile_pic}" alt="Profile" class="h-10 w-10 rounded-full object-cover border-2 border-white dark:border-gray-600 shadow-sm">
+            <img src="${adminData.profile_pic}" alt="Profile" class="h-10 w-10 rounded-full object-cover">
         `;
     }
 
     // --- ROLE-BASED ACCESS CONTROL (NAVIGATION) ---
+    const navDashboard = document.getElementById('navDashboard');
     const navAllComplaints = document.getElementById('navAllComplaints');
+    const navAnalytics = document.getElementById('navAnalytics');
+    const mobileNavDashboard = document.getElementById('mobileNavDashboard');
     const mobileNavAllComplaints = document.getElementById('mobileNavAllComplaints');
-
-    // Default: Show all
-    if (navAllComplaints) navAllComplaints.style.display = 'block';
-    if (mobileNavAllComplaints) mobileNavAllComplaints.style.display = 'block';
+    const mobileNavAnalytics = document.getElementById('mobileNavAnalytics');
 
     if (adminRole === 'LostAndFound Admin') {
-        // LostAndFound Admin: Can only see Lost & Found. CANNOT see All Complaints.
-        // NOTE: This condition might be unreachable if redirections work perfectly, 
-        // strictly handling here just in case.
-        if (navAllComplaints) navAllComplaints.style.display = 'none';
-        if (mobileNavAllComplaints) mobileNavAllComplaints.style.display = 'none';
+        // Update Dashboard Links
+        if (navDashboard) navDashboard.href = 'AdminLostFoundDashboard.html';
+        if (mobileNavDashboard) mobileNavDashboard.href = 'AdminLostFoundDashboard.html';
+
+        // Update All Complaints to Manage Items
+        if (navAllComplaints) {
+            navAllComplaints.textContent = 'Manage Items';
+            navAllComplaints.href = 'AdminLostFound.html';
+        }
+        if (mobileNavAllComplaints) {
+            mobileNavAllComplaints.textContent = 'Manage Items';
+            mobileNavAllComplaints.href = 'AdminLostFound.html';
+        }
+
+        // Hide Analytics
+        if (navAnalytics) navAnalytics.style.display = 'none';
+        if (mobileNavAnalytics) mobileNavAnalytics.style.display = 'none';
 
     } else if (adminRole === 'Master Admin') {
-        // Master Admin: Can see EVERYTHING.
-        // (Default state is fine)
-
-    } else {
-        // Other Admins (Academic, Technical, etc.):
-        // Can see All Complaints.
+        // Master Admin can see everything
     }
 
     // Load complaints for this admin

@@ -12,32 +12,51 @@
     class="flex flex-col min-h-screen bg-[var(--color-bg-light)] text-[var(--color-text-light)] dark:bg-[var(--color-bg-dark)] dark:text-[var(--color-text-dark)] transition-all duration-300 font-sans">
 
     <!-- Header -->
-    <header class="flex items-center justify-between px-3 md:px-6 py-4 bg-pink dark:bg-gray-800 shadow-md">
+    <header
+        class="flex items-center justify-between px-6 lg:px-20 py-4 bg-pink dark:bg-gray-800 shadow-md transition-all duration-300">
+        <!-- Logo -->
         <div class="flex items-center">
             <img src="../images/BGlessLogoDark.png" alt="ComplaNet Logo" class="h-16 block dark:hidden">
             <img src="../images/BGlessLogo.png" alt="ComplaNet Logo Dark" class="h-16 hidden dark:block">
         </div>
 
-        <nav class="hidden md:flex space-x-6 items-center">
-            <a href="AdminLostFoundDashboard.html" class="nav-content">Dashboard</a>
-            <a href="AdminLostFound.html" class="font-semibold text-eco-dark hover:text-eco-dark">Manage Items</a>
+        <!-- Desktop Navigation (Middle) -->
+        <nav class="hidden lg:flex gap-6 items-center">
+            <a href="AdminLostFoundDashboard.html" class="nav-content whitespace-nowrap">Dashboard</a>
+            <a href="AdminLostFound.html"
+                class="font-semibold text-eco-dark hover:text-eco-dark whitespace-nowrap">Manage Items</a>
+        </nav>
 
-            <div class="relative">
-                <button id="profileButton" class="flex items-center space-x-2 focus:outline-none">
-                    <i class="fas fa-user-shield text-gray-500 text-2xl"></i>
+        <!-- Right Side Actions -->
+        <div class="flex items-center gap-4">
+            <!-- Profile Menu (Desktop Only) -->
+            <div class="relative hidden lg:block">
+                <button id="profileButton" class="flex items-center focus:outline-none profile-highlight">
+                    <i class="fas fa-user-shield text-gray-500 text-2xl hover:text-eco transition"></i>
                 </button>
                 <div id="profileMenu"
                     class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 hidden z-50">
                     <a href="AdminProfile.html"
                         class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">Profile</a>
-                    <button id="headerLogoutBtn" class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-500">Log
+                    <button id="headerLogoutBtn"
+                        class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-500 text-sm">Log
                         Out</button>
                 </div>
             </div>
-        </nav>
-        <button id="mobileMenuButton" class="md:hidden text-gray-800 dark:text-gray-200 focus:outline-none">
-            &#9776;
-        </button>
+
+            <!-- Theme Toggle (Always Visible) -->
+            <button id="navbarThemeToggle"
+                class="flex w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 dark:from-indigo-500 dark:to-purple-600 flex items-center justify-center text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-400 dark:focus:ring-indigo-500 ">
+                <i class="fas fa-sun text-lg hidden dark:block"></i>
+                <i class="fas fa-moon text-lg block dark:hidden"></i>
+            </button>
+
+            <!-- Mobile Hamburger -->
+            <button id="mobileMenuButton"
+                class="lg:hidden text-gray-800 dark:text-gray-200 focus:outline-none transition-transform hover:scale-110">
+                <i class="fas fa-bars text-3xl"></i>
+            </button>
+        </div>
     </header>
 
     <!-- Mobile Side Menu -->
@@ -45,17 +64,31 @@
         class="fixed top-0 left-0 w-64 h-full bg-white dark:bg-gray-800 shadow-lg transform -translate-x-full transition-transform duration-300 z-50 flex flex-col justify-between">
         <div>
             <div class="flex items-center px-6 py-4 border-b dark:border-gray-700">
-                <img src="../images/BGlessLogoDark.png" alt="Logo" class="h-10">
+                <a href="AdminDashboard.html" id="mobileLogoLink">
+                    <img src="../images/BGlessLogoDark.png" alt="Logo" class="h-16">
+                </a>
             </div>
-            <nav class="mt-6 flex flex-col space-y-2 px-6">
-                <a href="AdminLostFoundDashboard.html" class="nav-content">Dashboard</a>
-                <a href="AdminLostFound.html" class="font-semibold text-eco-dark hover:text-eco-dark">Manage Items</a>
-                <a href="AdminProfile.html" class="nav-content">Profile</a>
+            <nav class="mt-6 flex flex-col space-y-6 px-6">
+                <a href="AdminLostFoundDashboard.html"
+                    class="nav-content flex items-center text-gray-700 dark:text-gray-300">
+                    <i class="fas fa-th-large w-6 mr-3 text-lg"></i> Dashboard
+                </a>
+                <a href="AdminLostFound.html" class="flex items-center font-semibold text-eco-dark hover:text-eco-dark">
+                    <i class="fas fa-box-open w-6 mr-3 text-lg"></i> Manage Items
+                </a>
+                <a href="AdminProfile.html" class="nav-content flex items-center text-gray-700 dark:text-gray-300">
+                    <i class="fas fa-user-shield w-6 mr-3 text-lg"></i> Profile
+                </a>
             </nav>
         </div>
-        <div class="px-6 py-4 border-t dark:border-gray-700 flex flex-col space-y-2">
-            <a href="AdminDashboard.html" class="block py-2 hover:text-blue-500 transition">Main Admin</a>
-            <a href="Login.html" class="block py-2 hover:text-red-500 transition">Log Out</a>
+        <div class="px-6 py-4 border-t dark:border-gray-700 flex flex-col space-y-4">
+            <a href="AdminDashboard.html"
+                class="flex items-center py-2 text-blue-500 hover:text-blue-700 transition font-medium">
+                <i class="fas fa-user-lock w-6 mr-3 text-lg"></i> Main Admin
+            </a>
+            <a href="Login.html" class="flex items-center py-2 text-red-500 hover:text-red-700 transition font-medium">
+                <i class="fas fa-sign-out-alt w-6 mr-3 text-lg"></i> Log Out
+            </a>
         </div>
     </aside>
 

@@ -32,6 +32,22 @@ if (!publicPages.includes(currentPage)) {
         return;
       }
 
+      // Session exists - fetch user data for profile picture
+      const { data: userData } = await supabase
+        .from('users')
+        .select('profile_image_url')
+        .eq('id', session.user.id)
+        .single();
+
+      if (userData && userData.profile_image_url) {
+        const profileBtn = document.getElementById('profileButton');
+        if (profileBtn) {
+          profileBtn.innerHTML = `
+            <img src="${userData.profile_image_url}" alt="Profile" class="h-10 w-10 rounded-full object-cover">
+          `;
+        }
+      }
+
       // Session exists - show the page
       document.documentElement.style.visibility = 'visible';
     } catch (err) {
@@ -336,7 +352,9 @@ if (!publicPages.includes(currentPage)) {
 // ======================
 // DARK MODE, MOBILE MENU & PROFILE DROPDOWN
 // ======================
-const darkModeToggles = [document.getElementById('darkModeToggle'), document.getElementById('mobileDarkModeToggle')];
+const darkModeToggles = [
+  document.getElementById('navbarThemeToggle')
+];
 
 function toggleDarkMode() {
   document.documentElement.classList.toggle('dark');

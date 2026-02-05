@@ -41,10 +41,55 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+  // ================ IMAGE PREVIEW ================
+  const fileUpload = document.getElementById("fileUpload");
+  const imagePreview = document.getElementById("imagePreview");
+
+  fileUpload.addEventListener("change", () => {
+    imagePreview.innerHTML = "";
+    if (fileUpload.files) {
+      Array.from(fileUpload.files).forEach((file, index) => {
+        if (file.type.startsWith("image/")) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const container = document.createElement("div");
+            container.classList.add("relative", "w-24", "h-24");
+
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            img.classList.add("w-full", "h-full", "object-cover", "rounded-lg", "border", "border-gray-200", "shadow-sm");
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
+            deleteBtn.classList.add("absolute", "-top-2", "-right-2", "bg-red-500", "text-white", "rounded-full", "w-6", "h-6", "flex", "items-center", "justify-center", "text-xs", "hover:bg-red-600", "shadow-md");
+            deleteBtn.onclick = (event) => {
+              event.preventDefault();
+              // Since it's 'multiple', for now we'll just clear the input if any are deleted
+              // or we can just remove the specific container. 
+              // To keep it simple and consistent with how file inputs work without complex management:
+              fileUpload.value = "";
+              imagePreview.innerHTML = "";
+            };
+
+            container.appendChild(img);
+            container.appendChild(deleteBtn);
+            imagePreview.appendChild(container);
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+  });
+
   setupWordCounter(description, descCounter, 500);
   setupWordCounter(location, locationCounter, 100);
   setupWordCounter(fileDetail, fileDetailCounter, 100);
   setupWordCounter(previousAttempts, attemptCounter, 100);
+
+  // Initial trigger to update counters if fields have default text (though they shouldn't usually)
+  [description, location, fileDetail, previousAttempts].forEach(el => {
+    if (el) el.dispatchEvent(new Event('input'));
+  });
 
   // ==============================
   // Supabase session

@@ -6,54 +6,65 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ComplaNet — Dashboard</title>
 
-  <script type="module" crossorigin src="../assets/userDashboard-LTKdYYhh.js"></script>
-  <link rel="modulepreload" crossorigin href="../assets/darkMode-DtyUGJ-S.js">
-  <link rel="modulepreload" crossorigin href="../assets/notifications-BnwyqOxQ.js">
-  <link rel="stylesheet" crossorigin href="../assets/darkMode-D61GVxt9.css">
+  <script type="module" crossorigin src="../assets/userDashboard-ChiVqsUd.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/darkMode-BDuaWYBi.js">
+  <link rel="modulepreload" crossorigin href="../assets/notifications-CVsSyNs-.js">
+  <link rel="stylesheet" crossorigin href="../assets/darkMode-BIc14tgU.css">
 </head>
 
 <body
   class="flex flex-col min-h-screen bg-[var(--color-bg-light)] text-[var(--color-text-light)] dark:bg-[var(--color-bg-dark)] dark:text-[var(--color-text-dark)] transition-all duration-300 font-sans">
 
   <!-- Header -->
-  <header class="flex items-center justify-between px-6 py-4 bg-pink dark:bg-gray-800 shadow-md">
+  <header
+    class="flex items-center justify-between px-6 lg:px-20 py-4 bg-pink dark:bg-gray-800 shadow-md transition-all duration-300">
     <!-- Logo -->
     <div class="flex items-center">
-      <!-- Light mode logo -->
-      <img src="../images/BGlessLogoDark.png" alt="ComplaNet Logo" class="h-16 block dark:hidden">
-      <!-- Dark mode logo -->
-      <img src="../images/BGlessLogo.png" alt="ComplaNet Logo Dark" class="h-16 hidden dark:block">
+      <a href="UserDashboard.html" class="flex items-center">
+        <!-- Light mode logo -->
+        <img src="../images/BGlessLogoDark.png" alt="ComplaNet Logo" class="h-16 block dark:hidden">
+        <!-- Dark mode logo -->
+        <img src="../images/BGlessLogo.png" alt="ComplaNet Logo Dark" class="h-16 hidden dark:block">
+      </a>
     </div>
 
-    <!-- Right Side Actions (Links + Bell + Profile + Hamburger) -->
-    <div class="flex items-center space-x-4 md:space-x-6">
+    <!-- Desktop Links (Middle) -->
+    <nav class="hidden lg:flex gap-6 items-center">
+      <a href="UserDashboard.html"
+        class="font-semibold text-eco hover:text-eco-dark dark:text-blue-400 dark:hover:text-blue-300 whitespace-nowrap">Dashboard</a>
+      <a href="Newcomplaint.html" class="nav-content whitespace-nowrap">New Complaint</a>
+      <a href="LostAndFound.html" class="nav-content whitespace-nowrap">Report Lost</a>
+      <a href="Mycomplaint.html" class="nav-content whitespace-nowrap">My History</a>
+    </nav>
 
-      <!-- Desktop Links -->
-      <nav class="hidden md:flex space-x-6 items-center">
-        <a href="UserDashboard.html"
-          class="font-semibold text-eco hover:text-eco-dark dark:text-blue-400 dark:hover:text-blue-300">Dashboard</a>
-        <a href="Newcomplaint.html" class="nav-content">New Complaint</a>
-        <a href="LostAndFound.html" class="nav-content">Report Lost</a>
-        <a href="Mycomplaint.html" class="nav-content">My History</a>
-      </nav>
+    <!-- Right Side Actions (Bell + Profile + Hamburger) -->
+    <div class="flex items-center gap-4">
 
       <!-- Notification Bell (Always Visible) -->
       <div class="relative">
-        <button id="notificationBtn" class="flex items-center space-x-2 focus:outline-none relative">
-          <i class="fas fa-bell text-gray-500 text-2xl hover:text-eco transition"></i>
+        <button id="notificationBtn" class="flex items-center focus:outline-none relative">
+          <i class="fas fa-bell text-gray-500 text-3xl hover:text-eco transition"></i>
           <span id="notificationBadge"
             class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full hidden">0</span>
         </button>
       </div>
 
+
+      <!-- Theme Toggle (Always Visible) -->
+      <button id="navbarThemeToggle"
+        class="flex w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 dark:from-indigo-500 dark:to-purple-600 items-center justify-center text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-400 dark:focus:ring-indigo-500">
+        <i class="fas fa-sun text-lg hidden dark:block"></i>
+        <i class="fas fa-moon text-lg block dark:hidden"></i>
+      </button>
+
       <!-- Profile Menu (Desktop Only) -->
-      <div class="relative hidden md:block">
-        <button id="profileButton" class="flex items-center space-x-2 focus:outline-none">
-          <i class="fas fa-user text-gray-500 text-2xl"></i>
+      <div class="relative hidden lg:block">
+        <button id="profileButton" class="flex items-center focus:outline-none profile-highlight">
+          <i class="fas fa-user text-gray-500 text-2xl hover:text-eco transition"></i>
         </button>
         <!-- Dropdown Menu -->
         <div id="profileMenu"
-          class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 z-50">
+          class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 z-50 transition-all duration-200">
           <a href="Profile.html"
             class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">View
             Profile</a>
@@ -63,8 +74,9 @@
       </div>
 
       <!-- Mobile Hamburger -->
-      <button id="mobileMenuButton" class="md:hidden text-gray-800 dark:text-gray-200 focus:outline-none">
-        &#9776;
+      <button id="mobileMenuButton"
+        class="lg:hidden text-gray-800 dark:text-gray-200 focus:outline-none transition-transform hover:scale-110">
+        <i class="fas fa-bars text-3xl"></i>
       </button>
     </div>
   </header>
@@ -74,20 +86,37 @@
     class="fixed top-0 left-0 w-64 h-full bg-white dark:bg-gray-800 shadow-lg transform -translate-x-full transition-transform duration-300 z-50 flex flex-col justify-between">
     <div>
       <div class="flex items-center px-6 py-4 border-b dark:border-gray-700">
-        <img src="../images/BGlessLogoDark.png" alt="Logo" class="h-10">
+        <a href="UserDashboard.html">
+          <img src="../images/BGlessLogoDark.png" alt="Logo" class="h-16">
+        </a>
       </div>
-      <nav class="mt-6 flex flex-col space-y-2 px-6">
+      <nav class="mt-6 flex flex-col space-y-6 px-6">
         <a href="UserDashboard.html"
-          class="font-semibold text-eco hover:text-eco-dark dark:text-blue-400 dark:hover:text-blue-300">Dashboard</a>
-        <a href="Notifications.html" class="nav-content">Notifications</a>
-        <a href="Newcomplaint.html" class="nav-content">New Complaint</a>
-        <a href="LostAndFound.html" class="nav-content">Report Lost</a>
-        <a href="Mycomplaint.html" class="nav-content">My History</a>
-        <a href="Profile.html" class="nav-content">View Profile</a>
+          class="flex items-center font-semibold text-eco hover:text-eco-dark dark:text-blue-400 dark:hover:text-blue-300">
+          <i class="fas fa-th-large w-6 mr-3 text-lg"></i> Dashboard
+        </a>
+        <a href="Notifications.html" class="nav-content flex items-center text-gray-700 dark:text-gray-300">
+          <i class="fas fa-bell w-6 mr-3 text-lg"></i> Notifications
+        </a>
+        <a href="Newcomplaint.html" class="nav-content flex items-center text-gray-700 dark:text-gray-300">
+          <i class="fas fa-plus-circle w-6 mr-3 text-lg"></i> New Complaint
+        </a>
+        <a href="LostAndFound.html" class="nav-content flex items-center text-gray-700 dark:text-gray-300">
+          <i class="fas fa-search w-6 mr-3 text-lg"></i> Report Lost
+        </a>
+        <a href="Mycomplaint.html" class="nav-content flex items-center text-gray-700 dark:text-gray-300">
+          <i class="fas fa-history w-6 mr-3 text-lg"></i> My History
+        </a>
+        <a href="Profile.html" class="nav-content flex items-center text-gray-700 dark:text-gray-300">
+          <i class="fas fa-user-circle w-6 mr-3 text-lg"></i> View Profile
+        </a>
       </nav>
     </div>
-    <div class="px-6 py-4 border-t dark:border-gray-700 flex flex-col space-y-2">
-      <a href="javascript:void(0)" id="mobileLogoutBtn" class="block py-2 hover:text-red-500 transition">Log Out</a>
+    <div class="px-6 py-4 border-t dark:border-gray-700 flex flex-col space-y-4">
+      <a href="javascript:void(0)" id="mobileLogoutBtn"
+        class="flex items-center py-2 text-red-500 hover:text-red-700 transition font-medium">
+        <i class="fas fa-sign-out-alt w-6 mr-3 text-lg"></i> Log Out
+      </a>
     </div>
   </aside>
 
@@ -101,14 +130,25 @@
       This is your complaints dashboard where you can submit new complaints and track their progress.
     </p>
 
-    <button class="px-6 py-3 rounded-xl font-semibold
-    bg-gray-700 text-white
-    hover:bg-blue-400 hover:-translate-y-0.5
-    shadow-[0_4px_12px_rgba(0,0,0,0.3)]
-    transition-all duration-300 mb-8 flex items-center gap-2" onclick="window.location.href='Newcomplaint.html'">
-      <i class="fas fa-file-alt"></i>
-      FILE A COMPLAINT
-    </button>
+    <div class="flex flex-wrap gap-4 mb-8">
+      <button class="px-6 py-3 rounded-xl font-semibold
+      bg-gray-700 text-white
+      hover:bg-blue-400 hover:-translate-y-0.5
+      shadow-[0_4px_12px_rgba(0,0,0,0.3)]
+      transition-all duration-300 flex items-center gap-2" onclick="window.location.href='Newcomplaint.html'">
+        <i class="fas fa-file-alt"></i>
+        FILE A COMPLAINT
+      </button>
+
+      <button class="px-6 py-3 rounded-xl font-semibold
+      bg-gray-700 text-white
+      hover:bg-blue-400 hover:-translate-y-0.5
+      shadow-[0_4px_12px_rgba(0,0,0,0.3)]
+      transition-all duration-300 flex items-center gap-2" onclick="window.location.href='LostAndFound.html'">
+        <i class="fas fa-search"></i>
+        REPORT LOST ITEM
+      </button>
+    </div>
 
     <!-- Complaint Stats -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">

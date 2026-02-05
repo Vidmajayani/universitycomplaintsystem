@@ -10,10 +10,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Role Check (Optional: could restrict strict access if needed, but we allow all admins to see)
     // We already do a check in logic, but standard behavior:
-    const { data: admin } = await supabase.from('admin').select('id, adminrole').eq('id', session.user.id).single();
+    const { data: admin } = await supabase.from('admin').select('id, adminrole, profile_pic').eq('id', session.user.id).single();
     if (!admin) {
         window.location.href = 'Login.html';
         return;
+    }
+
+    // Update Profile Picture in Header
+    const profileBtn = document.getElementById('profileButton');
+    if (profileBtn && admin.profile_pic) {
+        profileBtn.innerHTML = `
+            <img src="${admin.profile_pic}" alt="Profile" class="h-10 w-10 rounded-full object-cover">
+        `;
     }
 
     const tableBody = document.getElementById('itemsTableBody');
@@ -306,7 +314,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
 
-    // Check URL params for tab or filter
+    // Load Items
+    await loadItems();
+    await loadFoundItems();
+
+    // Check URL params for tab or filter (Moved after load to ensure data is ready)
     const urlParams = new URLSearchParams(window.location.search);
     const paramTab = urlParams.get('tab');
     if (paramTab && ['all', 'lost', 'found'].includes(paramTab)) {
@@ -315,16 +327,23 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const paramStatus = urlParams.get('status');
     if (paramStatus) {
-        // Ensure the value exists in the dropdown to avoid invalid selection
-        const optionExists = Array.from(statusFilter.options).some(opt => opt.value === paramStatus);
-        if (optionExists) {
-            statusFilter.value = paramStatus;
+        // Find the matching chip
+        const chip = document.querySelector(`.filter-status-chip[data-status="${paramStatus}"]`);
+        if (chip) {
+            // Determine tab based on data-for
+            const tabFor = chip.dataset.for;
+            if (tabFor && tabFor !== currentTab) {
+                switchTab(tabFor);
+            }
+
+            // Programmatically click the chip to activate filtering logic
+            chip.click();
+
+            // Critical: Since chip.click() listener only toggles state, we must trigger render here
+            updateFilterBadge();
+            renderItems();
         }
     }
-
-    // Load Items
-    await loadItems();
-    await loadFoundItems();
 
     async function loadItems() {
         // ... (existing loadItems code remains same) ...
@@ -980,7 +999,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const profileMenu = document.getElementById('profileMenu');
 
         if (profileBtn && profileMenu) {
-            // Remove old listener if any (standard practice for clean re-init)
             const newProfileBtn = profileBtn.cloneNode(true);
             profileBtn.parentNode.replaceChild(newProfileBtn, profileBtn);
 

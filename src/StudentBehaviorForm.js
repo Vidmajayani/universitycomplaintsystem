@@ -256,6 +256,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       }
 
+      // ================ INSERT ADMIN NOTIFICATION ================
+      try {
+        await supabase.from('admin_notifications').insert([{
+          admin_id: disciplinaryAdminId,
+          complaint_id: complaintID,
+          type: 'New Complaint',
+          message: `New Student Behavior complaint submitted: "${complaintTitle}"`,
+          is_read: false
+        }]);
+      } catch (notifError) {
+        console.error('Failed to create admin notification:', notifError);
+      }
+
       // Reset form and counters
       form.reset();
       descCounter.textContent = "0 / 500 words";

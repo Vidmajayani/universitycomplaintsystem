@@ -319,6 +319,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       }
 
+      // ================ INSERT ADMIN NOTIFICATION ================
+      // Notify the assigned admin about the new complaint
+      try {
+        await supabase.from('admin_notifications').insert([{
+          admin_id: academicAdminId,
+          complaint_id: complaintID,
+          type: 'New Complaint',
+          message: `New Academic complaint submitted: "${complaintTitle}"`,
+          is_read: false
+        }]);
+      } catch (notifError) {
+        console.error('Failed to create admin notification:', notifError);
+        // Don't block the submission if notification fails
+      }
+
       form.reset();
 
       alert("Your Academic complaint has been submitted successfully!");

@@ -6,10 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ComplaNet — Dashboard</title>
 
-  <script type="module" crossorigin src="../assets/userDashboard-ThU0zcbo.js"></script>
-  <link rel="modulepreload" crossorigin href="../assets/darkMode-Cr3uO1QP.js">
-  <link rel="modulepreload" crossorigin href="../assets/notifications-Dy1b5LMz.js">
-  <link rel="stylesheet" crossorigin href="../assets/darkMode-BJUKZjsR.css">
+  <script type="module" crossorigin src="../assets/userDashboard-lRFjR8vz.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/darkMode-creXmiRS.js">
+  <link rel="modulepreload" crossorigin href="../assets/notifications-DyM-fOBd.js">
+  <link rel="stylesheet" crossorigin href="../assets/darkMode-xVUYYjr3.css">
 </head>
 
 <body
@@ -222,15 +222,18 @@
       <!-- TEMPLATE (JS will clone this) -->
       <template id="complaintCardTemplate">
         <div
-          class="complaint-card mb-2 bg-white dark:bg-gray-800 rounded-xl shadow p-5 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition cursor-pointer">
+          class="complaint-card mb-2 bg-white dark:bg-gray-800 rounded-xl shadow p-5 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition cursor-pointer flex justify-between items-center group">
 
-          <h3 class="title text-lg font-semibold"></h3>
-          <p class="description mt-1 text-gray-600 dark:text-gray-300 text-sm line-clamp-2"></p>
+          <div class="flex-1">
+            <h3 class="title text-lg font-semibold text-gray-900 dark:text-white"></h3>
+            <p class="description mt-1 text-gray-600 dark:text-gray-300 text-sm line-clamp-2"></p>
 
-          <div class="footer mt-4 flex justify-between items-center mobile:flex-col mobile:items-start mobile:gap-1">
-            <span class="status px-3 py-1 text-xs font-semibold rounded-full"></span>
-            <span class="date text-xs text-gray-500"></span>
+            <div class="footer mt-4 flex justify-between items-center mobile:flex-col mobile:items-start mobile:gap-1">
+              <span class="status px-3 py-1 text-xs font-semibold rounded-full"></span>
+              <span class="date text-xs text-gray-500"></span>
+            </div>
           </div>
+          <i class="fas fa-chevron-right text-gray-300 group-hover:text-blue-500 transition ml-4"></i>
         </div>
       </template>
 

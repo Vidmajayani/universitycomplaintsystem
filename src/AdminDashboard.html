@@ -30,9 +30,18 @@
             <a href="Analytics.html" id="navAnalytics" class="nav-content whitespace-nowrap">Analytics</a>
         </nav>
 
+
         <!-- Right Side Actions -->
         <div class="flex items-center gap-4">
-            <!-- Theme Toggle (Always Visible) -->
+            <!-- Notification Bell -->
+            <a href="AdminNotifications.html" id="adminNotificationBell"
+                class="relative p-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white transition">
+                <i class="fas fa-bell text-2xl"></i>
+                <span id="adminNotificationCount"
+                    class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold">0</span>
+            </a>
+
+            <!-- Theme Toggle -->
             <button id="navbarThemeToggle"
                 class="flex w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 dark:from-indigo-500 dark:to-purple-600 flex items-center justify-center text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-400 dark:focus:ring-indigo-500">
                 <i class="fas fa-sun text-lg hidden dark:block"></i>
@@ -467,6 +476,7 @@
     </div>
 
     <script type="module" src="./darkMode.js"></script>
+
     <script type="module" src="./admin-dashboard.js"></script>
 
 </body>

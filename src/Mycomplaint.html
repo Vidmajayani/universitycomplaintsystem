@@ -199,25 +199,28 @@
       <!-- TEMPLATES -->
       <template id="complaintCardTemplate">
         <div
-          class="rounded-lg p-4 shadow bg-white dark:bg-gray-800 border dark:border-gray-700 hover:shadow-md transition">
-          <h2 class="title text-lg font-bold text-gray-900 dark:text-white"></h2>
-          <p class="desc text-gray-700 dark:text-gray-300 text-sm mb-2"></p>
-          <div class="flex items-center gap-2 mb-2">
-            <span class="category-badge px-2 py-1 text-xs text-white rounded"></span>
-            <span class="status-badge text-sm font-semibold flex items-center gap-1"></span>
+          class="complaint-card rounded-lg p-4 shadow bg-white dark:bg-gray-800 border dark:border-gray-700 hover:shadow-md transition cursor-pointer flex justify-between items-center group">
+          <div class="flex-1">
+            <h2 class="title text-lg font-bold text-gray-900 dark:text-white"></h2>
+            <p class="desc text-gray-700 dark:text-gray-300 text-sm mb-2"></p>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="category-badge px-2 py-1 text-xs text-white rounded"></span>
+              <span class="status-badge text-sm font-semibold flex items-center gap-1"></span>
+            </div>
+            <div
+              class="admin-feedback mt-2 bg-gray-50 dark:bg-gray-700 p-2 rounded text-xs border-l-4 border-gray-400 dark:border-gray-500 hidden">
+              <span class="font-bold">Admin:</span> <span class="feedback-text"></span>
+            </div>
+            <p class="submitted-date text-xs text-gray-400 mt-2"></p>
           </div>
-          <div
-            class="admin-feedback mt-2 bg-gray-50 dark:bg-gray-700 p-2 rounded text-xs border-l-4 border-gray-400 dark:border-gray-500 hidden">
-            <span class="font-bold">Admin:</span> <span class="feedback-text"></span>
-          </div>
-          <p class="submitted-date text-xs text-gray-400 mt-2"></p>
+          <i class="fas fa-chevron-right text-gray-300 group-hover:text-blue-500 transition ml-4"></i>
         </div>
       </template>
 
       <template id="lostItemCardTemplate">
         <div
-          class="rounded-lg p-4 shadow bg-white dark:bg-gray-800 border dark:border-gray-700 hover:shadow-md transition flex flex-col md:flex-row gap-4">
-          <div class="flex-1 w-full">
+          class="lost-card rounded-lg p-4 shadow bg-white dark:bg-gray-800 border dark:border-gray-700 hover:shadow-md transition flex justify-between items-center group cursor-pointer">
+          <div class="flex-1">
             <h2 class="item-name text-lg font-bold text-gray-900 dark:text-white mb-1"></h2>
 
             <p class="loss-info text-gray-600 dark:text-gray-400 text-sm mb-2">
@@ -241,6 +244,7 @@
               <p class="feedback-text text-blue-700 dark:text-blue-300"></p>
             </div>
           </div>
+          <i class="fas fa-chevron-right text-gray-300 group-hover:text-amber-500 transition ml-4"></i>
         </div>
       </template>
     </div>

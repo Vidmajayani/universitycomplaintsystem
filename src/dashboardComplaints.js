@@ -76,6 +76,7 @@ async function loadRecentComplaints() {
   const { data: complaints, error } = await supabase
     .from('complaint')
     .select(`
+      complaintid,
       complainttitle,
       complaintdescription,
       complaintstatus,
@@ -102,14 +103,15 @@ async function loadRecentComplaints() {
   }
 
   complaints.forEach(c => {
-    const card = template.content.cloneNode(true);
+    const clone = template.content.cloneNode(true);
+    const card = clone.querySelector('.complaint-card');
 
     // Title & Description
-    card.querySelector(".title").textContent = c.complainttitle;
-    card.querySelector(".description").textContent = c.complaintdescription;
+    clone.querySelector(".title").textContent = c.complainttitle;
+    clone.querySelector(".description").textContent = c.complaintdescription;
 
     // Status Badge
-    const status = card.querySelector(".status");
+    const status = clone.querySelector(".status");
     status.textContent = c.complaintstatus;
 
     if (c.complaintstatus === "Pending") {
@@ -151,15 +153,20 @@ async function loadRecentComplaints() {
     }
 
     // Add category badge to footer
-    card.querySelector(".footer").appendChild(categoryBadge);
+    clone.querySelector(".footer").appendChild(categoryBadge);
 
     // Date & Time
     const submittedDate = new Date(c.submitteddate);
-    card.querySelector(".date").textContent =
+    clone.querySelector(".date").textContent =
       submittedDate.toLocaleDateString() + " " + submittedDate.toLocaleTimeString();
 
+    // Click Event to View Details
+    card.addEventListener('click', () => {
+      window.location.href = `UserComplaintDetails.html?id=${c.complaintid}`;
+    });
+
     // Append card
-    container.appendChild(card);
+    container.appendChild(clone);
   });
 }
 

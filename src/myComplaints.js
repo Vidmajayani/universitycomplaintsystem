@@ -164,6 +164,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       clone.querySelector('.submitted-date').textContent = `Submitted: ${new Date(c.submitteddate).toLocaleDateString()}`;
 
+      // Click Event to View Details
+      card.addEventListener('click', () => {
+        window.location.href = `UserComplaintDetails.html?id=${c.complaintid}`;
+      });
+
       list.appendChild(clone);
     });
   }
@@ -243,6 +248,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         adminDiv.classList.remove('hidden');
         adminDiv.querySelector('.feedback-text').textContent = item.admin_feedback;
       }
+
+      // Click Event for Details
+      card.addEventListener('click', () => {
+        window.location.href = `UserLostFoundDetails.html?id=${item.item_id}`;
+      });
 
       lostList.appendChild(clone);
     });

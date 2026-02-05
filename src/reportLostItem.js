@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const description = document.getElementById("description").value.trim();
         const fileInput = document.getElementById("itemImage");
 
-        if (!itemName || !itemType || !locationLost || !dateLost) {
+        if (!itemName || !itemType || !dateLost) {
             alert("Please fill in all required fields.");
             return;
         }

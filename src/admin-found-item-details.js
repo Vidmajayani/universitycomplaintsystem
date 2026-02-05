@@ -51,6 +51,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 } else {
                     admin = adminData;
                 }
+
+                // Update Profile Picture in Header if exists
+                const profileBtn = document.getElementById('profileButton');
+                if (profileBtn && adminData.profile_pic) {
+                    profileBtn.innerHTML = `
+                        <img src="${adminData.profile_pic}" alt="Profile" class="h-10 w-10 rounded-full object-cover">
+                    `;
+                }
             } catch (err) {
                 console.error('Admin fetch failed:', err);
             }

@@ -7,7 +7,6 @@ let adminRole = null;
 let allComplaints = [];
 
 // Initialize dashboard
-// Initialize dashboard
 document.addEventListener('DOMContentLoaded', async () => {
     // 1. Immediate Session Check
     const { data: { session } } = await supabase.auth.getSession();
@@ -77,7 +76,7 @@ async function checkAdminSession() {
     const profileBtn = document.getElementById('profileButton');
     if (profileBtn && adminData.profile_pic) {
         profileBtn.innerHTML = `
-            <img src="${adminData.profile_pic}" alt="Profile" class="h-10 w-10 rounded-full object-cover border-2 border-white dark:border-gray-600 shadow-sm">
+            <img src="${adminData.profile_pic}" alt="Profile" class="h-10 w-10 rounded-full object-cover">
         `;
     }
 

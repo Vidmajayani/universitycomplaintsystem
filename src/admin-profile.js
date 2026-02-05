@@ -71,7 +71,7 @@ async function checkAdminSession() {
         const profileBtn = document.getElementById('profileButton');
         if (profileBtn) {
             profileBtn.innerHTML = `
-                <img src="${adminData.profile_pic}" alt="Profile" class="h-10 w-10 rounded-full object-cover border-2 border-white dark:border-gray-600 shadow-sm">
+                <img src="${adminData.profile_pic}" alt="Profile" class="h-10 w-10 rounded-full object-cover">
             `;
         }
     } else {
@@ -83,43 +83,39 @@ async function checkAdminSession() {
     loadStats(adminData.id, adminData.adminrole);
 
     // --- ROLE-BASED ACCESS CONTROL (NAVIGATION) ---
-    const profileNavDashboard = document.getElementById('profileNavDashboard');
-    const profileNavAllComplaints = document.getElementById('profileNavAllComplaints');
-    const profileNavAnalytics = document.getElementById('profileNavAnalytics');
+    const navDashboard = document.getElementById('navDashboard') || document.getElementById('profileNavDashboard');
+    const navAllComplaints = document.getElementById('navAllComplaints') || document.getElementById('profileNavAllComplaints');
+    const navAnalytics = document.getElementById('navAnalytics') || document.getElementById('profileNavAnalytics');
 
-    const mobileProfileNavDashboard = document.getElementById('mobileProfileNavDashboard');
-    const mobileProfileNavAllComplaints = document.getElementById('mobileProfileNavAllComplaints');
-    const mobileProfileNavAnalytics = document.getElementById('mobileProfileNavAnalytics');
-
-    const footerNavDashboard = document.getElementById('footerNavDashboard');
-    const footerNavAllComplaints = document.getElementById('footerNavAllComplaints');
-    const footerNavAnalytics = document.getElementById('footerNavAnalytics');
-    const adminFooterTitle = document.querySelector('footer h2');
-    const adminFooterDesc = document.querySelector('footer p');
+    const mobileNavDashboard = document.getElementById('mobileNavDashboard') || document.getElementById('mobileProfileNavDashboard');
+    const mobileNavAllComplaints = document.getElementById('mobileNavAllComplaints') || document.getElementById('mobileProfileNavAllComplaints');
+    const mobileNavAnalytics = document.getElementById('mobileNavAnalytics') || document.getElementById('mobileProfileNavAnalytics');
 
     if (adminData.adminrole === 'LostAndFound Admin') {
-        // Update Dashboard Link
-        if (profileNavDashboard) {
-            profileNavDashboard.href = 'AdminLostFoundDashboard.html';
+        // Update Dashboard Links
+        if (navDashboard) navDashboard.href = 'AdminLostFoundDashboard.html';
+        if (mobileNavDashboard) mobileNavDashboard.href = 'AdminLostFoundDashboard.html';
+
+        // Update All Complaints to Manage Items
+        if (navAllComplaints) {
+            navAllComplaints.textContent = 'Manage Items';
+            navAllComplaints.href = 'AdminLostFound.html';
         }
-        if (mobileProfileNavDashboard) {
-            mobileProfileNavDashboard.href = 'AdminLostFoundDashboard.html';
+        if (mobileNavAllComplaints) {
+            mobileNavAllComplaints.innerHTML = '<i class="fas fa-box-open w-6 mr-3 text-lg"></i> Manage Items';
+            mobileNavAllComplaints.href = 'AdminLostFound.html';
         }
 
-        // Update "All Complaints" to "Lost Items"
-        if (profileNavAllComplaints) {
-            profileNavAllComplaints.innerHTML = 'Manage Items';
-            profileNavAllComplaints.href = 'AdminLostFound.html';
-        }
-        if (mobileProfileNavAllComplaints) {
-            mobileProfileNavAllComplaints.textContent = 'Manage Items';
-            mobileProfileNavAllComplaints.href = 'AdminLostFound.html';
-        }
+        // Hide Analytics Links
+        if (navAnalytics) navAnalytics.style.display = 'none';
+        if (mobileNavAnalytics) mobileNavAnalytics.style.display = 'none';
 
         // Update Footer Navigation
-        if (footerNavDashboard) {
-            footerNavDashboard.href = 'AdminLostFoundDashboard.html';
-        }
+        const footerNavDashboard = document.getElementById('footerNavDashboard');
+        const footerNavAllComplaints = document.getElementById('footerNavAllComplaints');
+        const footerNavAnalytics = document.getElementById('footerNavAnalytics');
+
+        if (footerNavDashboard) footerNavDashboard.href = 'AdminLostFoundDashboard.html';
         if (footerNavAllComplaints) {
             const span = footerNavAllComplaints.querySelector('span');
             const icon = footerNavAllComplaints.querySelector('i');
@@ -127,19 +123,11 @@ async function checkAdminSession() {
             if (icon) icon.className = 'fas fa-search';
             footerNavAllComplaints.href = 'AdminLostFound.html';
         }
-
-        // Hide Analytics Links
-        if (profileNavAnalytics) {
-            profileNavAnalytics.style.display = 'none';
-        }
-        if (mobileProfileNavAnalytics) {
-            mobileProfileNavAnalytics.style.display = 'none';
-        }
-        if (footerNavAnalytics) {
-            footerNavAnalytics.style.display = 'none';
-        }
+        if (footerNavAnalytics) footerNavAnalytics.style.display = 'none';
 
         // Update Footer Title and Description
+        const adminFooterTitle = document.querySelector('footer h2');
+        const adminFooterDesc = document.querySelector('footer p');
         if (adminFooterTitle) {
             adminFooterTitle.textContent = 'ComplaNet Lost & Found';
             adminFooterTitle.className = 'text-2xl font-heading font-bold mb-3 text-[var(--color-blue-btn)] dark:text-blue-400';
@@ -148,7 +136,7 @@ async function checkAdminSession() {
             adminFooterDesc.textContent = 'Administrative portal for managing university lost and found items. Monitor, verify, and resolve reports efficiently.';
         }
 
-        // Update Stats Label for Lost & Found Admin
+        // Update Stats Label
         const statsLabel = document.querySelector('.bg-gray-50.dark\\:bg-gray-700\\/50 p');
         if (statsLabel && statsLabel.textContent === 'Complaints Handled') {
             statsLabel.textContent = 'Items Handled';

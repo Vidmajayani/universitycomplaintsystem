@@ -44,9 +44,51 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+  // ================ IMAGE PREVIEW ================
+  const fileInput = document.getElementById("file");
+  const imagePreview = document.getElementById("imagePreview");
+
+  fileInput.addEventListener("change", () => {
+    imagePreview.innerHTML = "";
+    if (fileInput.files) {
+      Array.from(fileInput.files).forEach(file => {
+        if (file.type.startsWith("image/")) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const container = document.createElement("div");
+            container.classList.add("relative", "w-24", "h-24");
+
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            img.classList.add("w-full", "h-full", "object-cover", "rounded-lg", "border", "border-gray-200", "shadow-sm");
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
+            deleteBtn.classList.add("absolute", "-top-2", "-right-2", "bg-red-500", "text-white", "rounded-full", "w-6", "h-6", "flex", "items-center", "justify-center", "text-xs", "hover:bg-red-600", "shadow-md");
+            deleteBtn.onclick = (event) => {
+              event.preventDefault();
+              fileInput.value = "";
+              imagePreview.innerHTML = "";
+            };
+
+            container.appendChild(img);
+            container.appendChild(deleteBtn);
+            imagePreview.appendChild(container);
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+  });
+
   setupWordCounter(description, descCounter, 500);
   setupWordCounter(previousAttempts, attemptCounter, 100);
   setupWordCounter(fileDesc, fileCounter, 100);
+
+  // Initial trigger
+  [description, previousAttempts, fileDesc].forEach(el => {
+    if (el) el.dispatchEvent(new Event('input'));
+  });
 
   // ==============================
   // Supabase Session

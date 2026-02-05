@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ComplaNet — Admin Notifications</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body
+    class="flex flex-col min-h-screen bg-[var(--color-bg-light)] text-[var(--color-text-light)] dark:bg-[var(--color-bg-dark)] dark:text-[var(--color-text-dark)] transition-all duration-300 font-sans">
+
+    <!-- Header -->
+    <header
+        class="flex items-center justify-between px-6 lg:px-20 py-4 bg-pink dark:bg-gray-800 shadow-md transition-all duration-300">
+        <!-- Logo -->
+        <div class="flex items-center">
+            <a href="AdminDashboard.html" class="flex items-center">
+                <img src="../images/BGlessLogoDark.png" alt="ComplaNet Logo" class="h-16 block dark:hidden">
+                <img src="../images/BGlessLogo.png" alt="ComplaNet Logo Dark" class="h-16 hidden dark:block">
+            </a>
+        </div>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden lg:flex gap-6 items-center">
+            <a href="AdminDashboard.html" class="nav-content whitespace-nowrap">Dashboard</a>
+            <a href="AllComplaints.html" class="nav-content whitespace-nowrap">All Complaints</a>
+            <a href="Analytics.html" class="nav-content whitespace-nowrap">Analytics</a>
+        </nav>
+
+
+        <!-- Right Side Actions -->
+        <div class="flex items-center gap-4">
+            <!-- Notification Bell -->
+            <a href="AdminNotifications.html" id="adminNotificationBell"
+                class="relative p-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white transition">
+                <i class="fas fa-bell text-2xl"></i>
+                <span id="adminNotificationCount"
+                    class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold">0</span>
+            </a>
+
+            <!-- Theme Toggle -->
+            <button id="navbarThemeToggle"
+                class="flex w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 dark:from-indigo-500 dark:to-purple-600 flex items-center justify-center text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-400 dark:focus:ring-indigo-500">
+                <i class="fas fa-sun text-lg hidden dark:block"></i>
+                <i class="fas fa-moon text-lg block dark:hidden"></i>
+            </button>
+
+            <!-- Profile Menu -->
+            <div class="relative hidden lg:block">
+                <button id="profileButton" class="flex items-center focus:outline-none profile-highlight">
+                    <i class="fas fa-user-shield text-gray-500 text-2xl hover:text-eco transition"></i>
+                </button>
+                <div id="profileMenu"
+                    class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 hidden z-50 transition-all duration-200">
+                    <a href="AdminProfile.html"
+                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">Profile</a>
+                    <button id="headerLogoutBtn" class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-500">Log
+                        Out</button>
+                </div>
+            </div>
+
+            <!-- Mobile Hamburger -->
+            <button id="mobileMenuButton"
+                class="lg:hidden text-gray-800 dark:text-gray-200 focus:outline-none transition-transform hover:scale-110">
+                <i class="fas fa-bars text-3xl"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Side Menu -->
+    <aside id="mobileMenu"
+        class="fixed top-0 left-0 w-64 h-full bg-white dark:bg-gray-800 shadow-lg transform -translate-x-full transition-transform duration-300 z-50 flex flex-col justify-between">
+        <div>
+            <div class="flex items-center px-6 py-4 border-b dark:border-gray-700">
+                <a href="AdminDashboard.html">
+                    <img src="../images/BGlessLogoDark.png" alt="Logo" class="h-16">
+                </a>
+            </div>
+            <nav class="mt-6 flex flex-col space-y-6 px-6">
+                <a href="AdminDashboard.html" class="nav-content flex items-center">
+                    <i class="fas fa-th-large w-6 mr-3 text-lg"></i> Dashboard
+                </a>
+                <a href="AllComplaints.html" class="nav-content flex items-center">
+                    <i class="fas fa-clipboard-list w-6 mr-3 text-lg"></i> All Complaints
+                </a>
+                <a href="Analytics.html" class="nav-content flex items-center">
+                    <i class="fas fa-chart-bar w-6 mr-3 text-lg"></i> Analytics
+                </a>
+                <a href="AdminNotifications.html"
+                    class="font-semibold text-eco hover:text-eco-dark dark:text-blue-400 dark:hover:text-blue-300 flex items-center">
+                    <i class="fas fa-bell w-6 mr-3 text-lg"></i> Notifications
+                </a>
+                <a href="AdminProfile.html" class="nav-content flex items-center">
+                    <i class="fas fa-user-circle w-6 mr-3 text-lg"></i> Profile
+                </a>
+            </nav>
+        </div>
+        <div class="px-6 py-4 border-t dark:border-gray-700">
+            <button id="mobileLogoutBtn"
+                class="flex items-center py-2 text-red-500 hover:text-red-700 transition font-medium w-full">
+                <i class="fas fa-sign-out-alt w-6 mr-3 text-lg"></i> Log Out
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 px-6 lg:px-20 py-8">
+        <div class="max-w-4xl mx-auto">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-6">
+                <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-100">
+                    <i class="fas fa-bell mr-2 text-blue-500"></i>
+                    Notifications
+                </h1>
+                <button id="markAllReadBtn"
+                    class="hidden px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                    <i class="fas fa-check-double mr-2"></i>
+                    Mark All as Read
+                </button>
+            </div>
+
+            <p class="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+                This is where you can see the new complaints submitted by users. You can click on each card to view the
+                relevant complaint details and take necessary actions.
+            </p>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="text-center py-12">
+                <i class="fas fa-spinner fa-spin text-4xl text-gray-400 mb-4"></i>
+                <p class="text-gray-500 dark:text-gray-400">Loading notifications...</p>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow">
+                <i class="fas fa-bell-slash text-6xl text-gray-300 dark:text-gray-600 mb-4"></i>
+                <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">No Notifications</h2>
+                <p class="text-gray-500 dark:text-gray-400">You're all caught up! New complaint notifications will
+                    appear here.</p>
+            </div>
+
+            <!-- Notifications List -->
+            <div id="notificationsList" class="hidden space-y-3">
+                <!-- Notifications will be rendered here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer
+        class="w-full py-10 mt-10 bg-[var(--color-eco-light)] text-[var(--color-text-light)] dark:bg-[#0F1A24] dark:text-gray-200">
+
+        <div class="max-w-4xl mx-auto px-6">
+
+            <!-- ComplaNet Admin Title -->
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-heading font-bold mb-3 text-[var(--color-blue-btn)] dark:text-blue-400">
+                    ComplaNet Admin
+                </h2>
+                <p class="text-sm leading-6 opacity-80 max-w-2xl mx-auto">
+                    Administrative portal for managing university complaints. Monitor, assign, and resolve complaints
+                    efficiently.
+                </p>
+            </div>
+
+            <!-- Quick Navigation - Centered -->
+            <div class="text-center mb-8">
+                <h3 class="text-lg font-semibold mb-4 text-[var(--color-blue-btn)] dark:text-blue-400">
+                    Quick Navigation
+                </h3>
+                <ul class="flex flex-wrap justify-center gap-6 text-sm">
+                    <li>
+                        <a href="./AdminDashboard.html"
+                            class="inline-flex items-center gap-2 text-gray-800 hover:text-blue-700 dark:text-gray-300 dark:hover:text-blue-400 transition-all duration-300 hover:-translate-y-1">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="AllComplaints.html"
+                            class="inline-flex items-center gap-2 text-gray-800 hover:text-blue-700 dark:text-gray-300 dark:hover:text-blue-400 transition-all duration-300 hover:-translate-y-1">
+                            <i class="fas fa-list-alt"></i>
+                            <span>All Complaints</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Analytics.html"
+                            class="inline-flex items-center gap-2 text-gray-800 hover:text-blue-700 dark:text-gray-300 dark:hover:text-blue-400 transition-all duration-300 hover:-translate-y-1">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Analytics</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="text-center text-sm mt-10 text-gray-700 dark:text-gray-400">
+                © 2025 ComplaNet. All rights reserved.
+            </div>
+
+        </div>
+    </footer>
+
+    <script type="module" src="./darkMode.js"></script>
+    <script type="module" src="./admin-notifications-page.js"></script>
+</body>
+
+</html>

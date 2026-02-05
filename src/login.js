@@ -62,14 +62,48 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
+const loginError = document.getElementById('loginError');
+const errorText = document.getElementById('errorText');
+
+function showError(message) {
+    if (loginError && errorText) {
+        errorText.textContent = message;
+        loginError.classList.remove('hidden');
+        // Simple shake animation if already visible
+        loginError.classList.remove('animate-shake');
+        void loginError.offsetWidth; // Trigger reflow
+        loginError.classList.add('animate-shake');
+    } else {
+        alert(message);
+    }
+}
+
+function hideError() {
+    if (loginError) {
+        loginError.classList.add('hidden');
+    }
+}
+
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+    hideError();
 
-    const email = document.getElementById('email').value;
+    const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
 
+    if (!email || !password) {
+        showError('Please enter both email and password.');
+        return;
+    }
+
+    // Check network connectivity first
+    if (!navigator.onLine) {
+        showError('Cannot connect to server. Please check your internet connection.');
+        return;
+    }
+
     if (!import.meta.env.VITE_SUPABASE_KEY) {
-        alert('Supabase key missing! Check .env and restart server.');
+        showError('Configuration error: Supabase key missing.');
         return;
     }
 
@@ -80,19 +114,52 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         });
 
         if (error) {
-            alert('Login failed: ' + error.message);
+            console.error('Supabase Auth Error:', error);
+
+            // Handle network errors that might occur during the request
+            if (error.message.includes('fetch') || error.message.includes('network')) {
+                showError('Cannot connect to server. Please check your internet connection.');
+                return;
+            }
+
+            // Map server maintenance/errors (500+)
+            if (error.status >= 500) {
+                showError('University service temporarily unavailable. Please try again in a few minutes.');
+                return;
+            }
+
+            // Map specific error messages
+            switch (error.status) {
+                case 400:
+                    if (error.message.includes('invalid_credentials') || error.message.toLowerCase().includes('invalid login credentials')) {
+                        showError('Invalid credentials, please try again!');
+                    } else if (error.message.includes('Email not confirmed')) {
+                        showError('Please confirm your email address before logging in.');
+                    } else {
+                        showError('Invalid login details. Please check your email and password.');
+                    }
+                    break;
+                case 422:
+                    showError('Please enter a valid university email address.');
+                    break;
+                case 429:
+                    showError('Too many failed attempts. Please try again later.');
+                    break;
+                default:
+                    showError(error.message || 'Login failed. Please try again.');
+            }
             return;
         }
 
         if (!data || !data.user) {
-            alert('Login failed: No user data returned.');
+            showError('Authentication failed: No user profile found.');
             return;
         }
 
         const userId = data.user.id;
 
         // 1. Check if user is an Admin
-        const { data: adminData, error: adminError } = await supabase
+        const { data: adminData } = await supabase
             .from('admin')
             .select('adminfirstname, adminlastname, adminrole')
             .eq('id', userId)
@@ -115,7 +182,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         }
 
         // 2. Check if user is a regular User(Student or Staff)
-        const { data: userData, error: userError } = await supabase
+        const { data: userData } = await supabase
             .from('users')
             .select('first_name, last_name, username')
             .eq('id', userId)
@@ -133,11 +200,11 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         }
 
         // If neither found
-        alert('Login successful, but no profile found in Admin or Users table.');
+        showError('Login successful, but no associated profile found.');
         await supabase.auth.signOut();
 
     } catch (err) {
-        console.error('Login error:', err);
-        alert('Unexpected error: ' + err.message);
+        console.error('Unexpected login error:', err);
+        showError('An unexpected error occurred. Please try again.');
     }
 });

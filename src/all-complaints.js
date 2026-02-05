@@ -14,6 +14,7 @@ const itemsPerPage = 5;
 const tableBody = document.getElementById('complaintsTableBody');
 const searchInput = document.getElementById('searchInput');
 const filterStatus = document.getElementById('filterStatus');
+const filterPriority = document.getElementById('filterPriority');
 const filterCategory = document.getElementById('filterCategory');
 const totalCountSpan = document.getElementById('totalComplaintsCount');
 const startRangeSpan = document.getElementById('startRange');
@@ -305,9 +306,55 @@ function renderTable() {
 
         categorySpan.className = `col-category inline-block px-3 py-1 rounded-full text-xs font-semibold ${getCategoryClass(category)}`;
 
-        const descCell = clone.querySelector('.col-desc');
-        descCell.textContent = complaint.complaintdescription || '-';
-        descCell.title = complaint.complaintdescription || '';
+        // Priority Column Logic
+        const priorityCell = clone.querySelector('.col-priority');
+        if (complaint.priority) {
+            // Render Badge with Remove Button
+            const getPriorityClass = (p) => {
+                if (p === 'High') return 'bg-red-100 text-red-600 border border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800';
+                if (p === 'Medium') return 'bg-yellow-100 text-yellow-600 border border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-800';
+                return 'bg-blue-100 text-blue-600 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800';
+            };
+
+            priorityCell.innerHTML = `
+                <div class="relative inline-flex items-center justify-center w-28 px-3 py-1.5 rounded text-sm font-medium border ${getPriorityClass(complaint.priority)}">
+                    ${complaint.priority}
+                    <button type="button" class="absolute top-0.5 right-1 inline-flex items-center justify-center text-current hover:opacity-75 focus:outline-none remove-priority-btn" data-id="${complaint.complaintid}">
+                        <i class="fas fa-times text-xs"></i>
+                    </button>
+                </div>
+            `;
+
+            // Attach remove listener
+            setTimeout(() => {
+                const removeBtn = priorityCell.querySelector('.remove-priority-btn');
+                if (removeBtn) {
+                    removeBtn.onclick = (e) => {
+                        e.stopPropagation(); // Prevent row click
+                        openRemovePriorityModal(complaint.complaintid);
+                    };
+                }
+            }, 0);
+
+        } else {
+            // Render Prioritize Button
+            // Render Prioritize Button
+            priorityCell.innerHTML = `
+                <button class="inline-flex items-center justify-center w-28 px-3 py-1.5 text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm transition-all btn-prioritize" data-id="${complaint.complaintid}">
+                    <i class="fas fa-sort-amount-up mr-1.5"></i> Prioritize
+                </button>
+            `;
+            // Attach prioritize listener
+            setTimeout(() => {
+                const prioritizeBtn = priorityCell.querySelector('.btn-prioritize');
+                if (prioritizeBtn) {
+                    prioritizeBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        openPriorityModal(complaint.complaintid);
+                    };
+                }
+            }, 0);
+        }
 
         const date = new Date(complaint.submitteddate).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
         clone.querySelector('.col-date').textContent = date;
@@ -363,6 +410,58 @@ function renderTable() {
                 const statusEl = card.querySelector('.card-status');
                 statusEl.textContent = complaint.complaintstatus;
                 statusEl.className = `card-status px-2 py-0.5 rounded text-[10px] font-bold uppercase ${getStatusClass(complaint.complaintstatus)}`;
+
+                // Mobile Priority Logic
+                const priorityContainer = card.querySelector('.card-priority');
+                if (priorityContainer) {
+                    if (complaint.priority) {
+                        // Re-use Badge Logic (Inline definition for safety if scope issue)
+                        const getPriorityClassMobile = (p) => {
+                            if (p === 'High') return 'bg-red-100 text-red-600 border border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800';
+                            if (p === 'Medium') return 'bg-yellow-100 text-yellow-600 border border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-800';
+                            return 'bg-blue-100 text-blue-600 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800';
+                        };
+
+                        priorityContainer.innerHTML = `
+                            <div class="relative inline-flex items-center justify-center w-28 px-3 py-1.5 rounded text-xs font-bold uppercase border ${getPriorityClassMobile(complaint.priority)}">
+                                ${complaint.priority}
+                                <button type="button" class="absolute top-0.5 right-1 inline-flex items-center justify-center text-current hover:opacity-75 focus:outline-none remove-priority-btn-mobile" data-id="${complaint.complaintid}">
+                                    <i class="fas fa-times text-xs"></i>
+                                </button>
+                            </div>
+                        `;
+
+                        // Attach remove listener
+                        setTimeout(() => {
+                            const removeBtn = priorityContainer.querySelector('.remove-priority-btn-mobile');
+                            if (removeBtn) {
+                                removeBtn.onclick = (e) => {
+                                    e.stopPropagation();
+                                    openRemovePriorityModal(complaint.complaintid);
+                                };
+                            }
+                        }, 0);
+
+                    } else {
+                        // Render Prioritize Button (Mobile Style)
+                        priorityContainer.innerHTML = `
+                            <button class="inline-flex items-center justify-center w-28 px-3 py-1.5 text-xs font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm transition-all btn-prioritize-mobile" data-id="${complaint.complaintid}">
+                                <i class="fas fa-sort-amount-up mr-1"></i> Prioritize
+                            </button>
+                        `;
+
+                        // Attach prioritize listener
+                        setTimeout(() => {
+                            const prioritizeBtn = priorityContainer.querySelector('.btn-prioritize-mobile');
+                            if (prioritizeBtn) {
+                                prioritizeBtn.onclick = (e) => {
+                                    e.stopPropagation();
+                                    openPriorityModal(complaint.complaintid);
+                                };
+                            }
+                        }, 0);
+                    }
+                }
 
                 const desc = card.querySelector('.card-desc');
                 desc.textContent = complaint.complaintdescription || 'No description provided.';
@@ -617,6 +716,7 @@ async function softDeleteComplaint(id, reason) {
 function filterComplaints() {
     const searchTerm = searchInput.value.toLowerCase();
     const statusFilter = filterStatus.value;
+    const priorityFilter = filterPriority.value; // Get priority filter value
 
     filteredComplaints = allComplaints.filter(complaint => {
         const matchesSearch =
@@ -626,6 +726,16 @@ function filterComplaints() {
             (complaint.complainantName && complaint.complainantName.toLowerCase().includes(searchTerm));
 
         const matchesStatus = statusFilter === '' || complaint.complaintstatus === statusFilter;
+
+        // Priority Filter
+        let matchesPriority = true;
+        if (priorityFilter !== '') {
+            if (priorityFilter === 'Unprioritized') {
+                matchesPriority = !complaint.priority;
+            } else {
+                matchesPriority = complaint.priority === priorityFilter;
+            }
+        }
 
         // Category Filter (only active if visible/Master Admin)
         const categoryFilter = filterCategory ? filterCategory.value : '';
@@ -654,12 +764,127 @@ function filterComplaints() {
             }
         }
 
-        return matchesSearch && matchesStatus && matchesCategory && matchesDate;
+        return matchesSearch && matchesStatus && matchesPriority && matchesCategory && matchesDate;
     });
 
     currentPage = 1; // Reset to first page
     renderTable();
     renderPagination();
+}
+
+// ------------------------
+//  PRIORITY HANDLING
+// ------------------------
+let currentComplaintIdForPriority = null;
+let currentComplaintIdForRemovePriority = null;
+
+function openPriorityModal(id) {
+    currentComplaintIdForPriority = id;
+    const modal = document.getElementById('priorityModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        document.getElementById('modalPrioritySelect').value = 'High'; // Default
+    }
+}
+
+function openRemovePriorityModal(id) {
+    currentComplaintIdForRemovePriority = id;
+    const modal = document.getElementById('removePriorityModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+    }
+}
+
+// Setup Priority Modal Listeners
+document.addEventListener('DOMContentLoaded', () => {
+    // Set Priority Modal
+    const savePriorityBtn = document.getElementById('savePriorityBtn');
+    const cancelPriorityBtn = document.getElementById('cancelPriorityBtn');
+    const modal = document.getElementById('priorityModal');
+
+    if (savePriorityBtn) {
+        savePriorityBtn.addEventListener('click', async () => {
+            const priority = document.getElementById('modalPrioritySelect').value;
+            if (currentComplaintIdForPriority && priority) {
+                await updatePriority(currentComplaintIdForPriority, priority);
+                if (modal) modal.classList.add('hidden');
+            }
+        });
+    }
+
+    if (cancelPriorityBtn) {
+        cancelPriorityBtn.addEventListener('click', () => {
+            if (modal) modal.classList.add('hidden');
+            currentComplaintIdForPriority = null;
+        });
+    }
+
+    // Remove Priority Modal
+    const confirmRemoveBtn = document.getElementById('confirmRemovePriorityBtn');
+    const cancelRemoveBtn = document.getElementById('cancelRemovePriorityBtn');
+    const removeModal = document.getElementById('removePriorityModal');
+
+    if (confirmRemoveBtn) {
+        confirmRemoveBtn.addEventListener('click', async () => {
+            if (currentComplaintIdForRemovePriority) {
+                await removePriority(currentComplaintIdForRemovePriority);
+                if (removeModal) removeModal.classList.add('hidden');
+                currentComplaintIdForRemovePriority = null;
+            }
+        });
+    }
+
+    if (cancelRemoveBtn) {
+        cancelRemoveBtn.addEventListener('click', () => {
+            if (removeModal) removeModal.classList.add('hidden');
+            currentComplaintIdForRemovePriority = null;
+        });
+    }
+});
+
+async function updatePriority(id, priority) {
+    try {
+        const { error } = await supabase
+            .from('complaint')
+            .update({ priority: priority }) // Assuming column name is 'priority'
+            .eq('complaintid', id);
+
+        if (error) throw error;
+
+        // Update local data
+        allComplaints = allComplaints.map(c =>
+            c.complaintid === id ? { ...c, priority: priority } : c
+        );
+
+        filterComplaints();
+        // alert(`Priority set to ${priority}`); // Notification optional, removing for cleaner UI
+
+    } catch (err) {
+        console.error('Error updating priority:', err);
+        alert('Failed to update priority.');
+    }
+}
+
+async function removePriority(id) {
+    try {
+        const { error } = await supabase
+            .from('complaint')
+            .update({ priority: null })
+            .eq('complaintid', id);
+
+        if (error) throw error;
+
+        // Update local data
+        allComplaints = allComplaints.map(c =>
+            c.complaintid === id ? { ...c, priority: null } : c
+        );
+
+        filterComplaints();
+
+    } catch (err) {
+        console.error('Error removing priority:', err);
+        alert('Failed to remove priority.');
+    }
 }
 
 // ------------------------
@@ -742,6 +967,7 @@ function addEllipsis() {
 function setupEventListeners() {
     searchInput.addEventListener('input', filterComplaints);
     filterStatus.addEventListener('change', filterComplaints);
+    if (filterPriority) filterPriority.addEventListener('change', filterComplaints); // Add listener for priority filter
     if (filterCategory) filterCategory.addEventListener('change', filterComplaints);
 
     // Date Inputs

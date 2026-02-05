@@ -32,21 +32,78 @@ if (!publicPages.includes(currentPage)) {
         return;
       }
 
-      // Session exists - fetch user data for profile picture
+      // Session exists - fetch user data for profile picture (try users then admin)
+      let profileUrl = null;
+
       const { data: userData } = await supabase
         .from('users')
         .select('profile_image_url')
         .eq('id', session.user.id)
-        .single();
+        .maybeSingle();
 
-      if (userData && userData.profile_image_url) {
+      profileUrl = userData?.profile_image_url;
+
+      if (!profileUrl) {
+        const { data: adminData } = await supabase
+          .from('admin')
+          .select('profile_pic')
+          .eq('id', session.user.id)
+          .maybeSingle();
+        profileUrl = adminData?.profile_pic;
+      }
+
+      if (profileUrl) {
         const profileBtn = document.getElementById('profileButton');
         if (profileBtn) {
           profileBtn.innerHTML = `
-            <img src="${userData.profile_image_url}" alt="Profile" class="h-10 w-10 rounded-full object-cover">
+            <img src="${profileUrl}" alt="Profile" class="h-10 w-10 rounded-full object-cover border-2 border-blue-500">
           `;
         }
       }
+
+      // --- ADMIN NOTIFICATION BADGE LOGIC ---
+      const badge = document.getElementById('adminNotificationCount');
+      const bell = document.getElementById('adminNotificationBell');
+
+      if (badge || bell) {
+        try {
+          // Check if this user is an admin and get their role
+          const { data: adminData } = await supabase
+            .from('admin')
+            .select('adminrole')
+            .eq('id', session.user.id)
+            .single();
+
+          if (adminData) {
+            // Master Admin should NOT see notifications at all
+            if (adminData.adminrole === 'Master Admin') {
+              if (bell) bell.classList.add('hidden');
+              if (badge) badge.classList.add('hidden');
+            } else if (badge) {
+              // Regular Admin - fetch their specific notifications
+              let query = supabase
+                .from('admin_notifications')
+                .select('id', { count: 'exact', head: true })
+                .eq('is_read', false)
+                .eq('admin_id', session.user.id);
+
+              const { count, error: countError } = await query;
+
+              if (!countError && count !== null) {
+                if (count > 0) {
+                  badge.textContent = count > 99 ? '99+' : count;
+                  badge.classList.remove('hidden');
+                } else {
+                  badge.classList.add('hidden');
+                }
+              }
+            }
+          }
+        } catch (badgeErr) {
+          console.error('Error updating notification badge:', badgeErr);
+        }
+      }
+      // --------------------------------------
 
       // Session exists - show the page
       document.documentElement.style.visibility = 'visible';
@@ -412,40 +469,43 @@ document.addEventListener('DOMContentLoaded', () => {
 // ======================
 // Handles logout confirmation for all user pages
 
-// 1. Inject Logout Modal HTML if it doesn't exist
+// 1. Inject or Init Logout Modal
 function injectLogoutModal() {
-  if (document.getElementById('logoutModal')) return;
+  let modal = document.getElementById('logoutModal');
 
-  const modalHtml = `
-    <div id="logoutModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] hidden">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-11/12 max-w-sm transform transition-all scale-100">
-        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Confirm Logout</h3>
-        <p class="text-gray-600 dark:text-gray-300 mb-6">Are you sure you want to log out?</p>
-        <div class="flex justify-end space-x-3">
-          <button id="cancelLogoutBtn"
-            class="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition font-medium">
-            Cancel
-          </button>
-          <button id="confirmLogoutBtn"
-            class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition shadow-md font-bold">
-            Log Out
-          </button>
+  if (!modal) {
+    const modalHtml = `
+      <div id="logoutModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-11/12 max-w-sm transform transition-all scale-100">
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Confirm Logout</h3>
+          <p class="text-gray-600 dark:text-gray-300 mb-6">Are you sure you want to log out?</p>
+          <div class="flex justify-end space-x-3">
+            <button id="cancelLogoutBtn"
+              class="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition font-medium">
+              Cancel
+            </button>
+            <button id="confirmLogoutBtn"
+              class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition shadow-md font-bold">
+              Log Out
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-  `;
-  document.body.insertAdjacentHTML('beforeend', modalHtml);
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    modal = document.getElementById('logoutModal');
+  }
 
-  // Setup Modal Listeners
-  const modal = document.getElementById('logoutModal');
+  // Always setup/ensure Modal Listeners exist if not already attached
   const cancelBtn = document.getElementById('cancelLogoutBtn');
   const confirmBtn = document.getElementById('confirmLogoutBtn');
 
-  if (cancelBtn) {
+  if (cancelBtn && !cancelBtn.dataset.listenerAttached) {
     cancelBtn.addEventListener('click', () => modal.classList.add('hidden'));
+    cancelBtn.dataset.listenerAttached = 'true';
   }
 
-  if (confirmBtn) {
+  if (confirmBtn && !confirmBtn.dataset.listenerAttached) {
     confirmBtn.addEventListener('click', async () => {
       try {
         const { error } = await supabase.auth.signOut();
@@ -458,12 +518,16 @@ function injectLogoutModal() {
         modal.classList.add('hidden');
       }
     });
+    confirmBtn.dataset.listenerAttached = 'true';
   }
 
   // Close on outside click
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) modal.classList.add('hidden');
-  });
+  if (modal && !modal.dataset.listenerAttached) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.classList.add('hidden');
+    });
+    modal.dataset.listenerAttached = 'true';
+  }
 }
 
 // 2. Function to show the modal

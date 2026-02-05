@@ -40,6 +40,13 @@
 
     <!-- Right Side Actions -->
     <div class="flex items-center gap-4">
+      <!-- Theme Toggle (Always Visible) -->
+      <button id="navbarThemeToggle"
+        class="flex w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 dark:from-indigo-500 dark:to-purple-600 flex items-center justify-center text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-400 dark:focus:ring-indigo-500 ">
+        <i class="fas fa-sun text-lg hidden dark:block"></i>
+        <i class="fas fa-moon text-lg block dark:hidden"></i>
+      </button>
+
       <!-- Profile Menu -->
       <div class="relative hidden lg:block">
         <button id="profileButton" class="flex items-center focus:outline-none profile-highlight">
@@ -55,13 +62,6 @@
           <a href="Login.html" class="block px-4 py-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700">Log Out</a>
         </div>
       </div>
-
-      <!-- Theme Toggle (Always Visible) -->
-      <button id="navbarThemeToggle"
-        class="flex w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 dark:from-indigo-500 dark:to-purple-600 flex items-center justify-center text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-400 dark:focus:ring-indigo-500 ">
-        <i class="fas fa-sun text-lg hidden dark:block"></i>
-        <i class="fas fa-moon text-lg block dark:hidden"></i>
-      </button>
 
       <!-- Mobile Hamburger -->
       <button id="mobileMenuButton"

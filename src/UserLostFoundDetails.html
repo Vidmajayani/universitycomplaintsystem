@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lost & Found Details — ComplaNet</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body
+    class="flex flex-col min-h-screen bg-[var(--color-bg-light)] text-[var(--color-text-light)] dark:bg-[var(--color-bg-dark)] dark:text-[var(--color-text-dark)] transition-all duration-300 font-sans">
+
+    <!-- Header -->
+    <header
+        class="flex items-center justify-between px-6 lg:px-20 py-4 bg-pink dark:bg-gray-800 shadow-md transition-all duration-300">
+        <!-- Logo -->
+        <div class="flex items-center">
+            <a href="UserDashboard.html" class="flex items-center">
+                <!-- Light mode logo -->
+                <img src="../images/BGlessLogoDark.png" alt="ComplaNet Logo" class="h-16 block dark:hidden">
+                <!-- Dark mode logo -->
+                <img src="../images/BGlessLogo.png" alt="ComplaNet Logo Dark" class="h-16 hidden dark:block">
+            </a>
+        </div>
+
+        <!-- Desktop Links (Middle) -->
+        <nav class="hidden lg:flex gap-6 items-center">
+            <a href="UserDashboard.html" class="nav-content whitespace-nowrap">Dashboard</a>
+            <a href="Newcomplaint.html" class="nav-content whitespace-nowrap">New Complaint</a>
+            <a href="LostAndFound.html" class="nav-content whitespace-nowrap">Report Lost</a>
+            <a href="Mycomplaint.html"
+                class="font-semibold text-eco hover:text-eco-dark dark:text-blue-400 dark:hover:text-blue-300 whitespace-nowrap">My
+                History</a>
+        </nav>
+
+        <!-- Right Side Actions (Bell + Profile + Hamburger) -->
+        <div class="flex items-center gap-4">
+
+            <!-- Notification Bell (Always Visible) -->
+            <div class="relative">
+                <button id="notificationBtn" class="flex items-center focus:outline-none relative">
+                    <i class="fas fa-bell text-gray-500 text-3xl hover:text-eco transition"></i>
+                    <span id="notificationBadge"
+                        class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full hidden">0</span>
+                </button>
+            </div>
+
+
+            <!-- Theme Toggle (Always Visible) -->
+            <button id="navbarThemeToggle"
+                class="flex w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 dark:from-indigo-500 dark:to-purple-600 items-center justify-center text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-400 dark:focus:ring-indigo-500">
+                <i class="fas fa-sun text-lg hidden dark:block"></i>
+                <i class="fas fa-moon text-lg block dark:hidden"></i>
+            </button>
+
+            <!-- Profile Menu (Desktop Only) -->
+            <div class="relative hidden lg:block">
+                <button id="profileButton" class="flex items-center focus:outline-none profile-highlight">
+                    <i class="fas fa-user text-gray-500 text-2xl hover:text-eco transition"></i>
+                </button>
+                <!-- Dropdown Menu -->
+                <div id="profileMenu"
+                    class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 z-50 transition-all duration-200">
+                    <a href="Profile.html"
+                        class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">View
+                        Profile</a>
+                    <a href="javascript:void(0)" id="headerLogoutBtn"
+                        class="block px-4 py-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700">Log Out</a>
+                </div>
+            </div>
+
+            <!-- Mobile Hamburger -->
+            <button id="mobileMenuButton"
+                class="lg:hidden text-gray-800 dark:text-gray-200 focus:outline-none transition-transform hover:scale-110">
+                <i class="fas fa-bars text-3xl"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Side Menu -->
+    <aside id="mobileMenu"
+        class="fixed top-0 left-0 w-64 h-full bg-white dark:bg-gray-800 shadow-lg transform -translate-x-full transition-transform duration-300 z-50 flex flex-col justify-between">
+        <div>
+            <div class="flex items-center px-6 py-4 border-b dark:border-gray-700">
+                <a href="UserDashboard.html">
+                    <img src="../images/BGlessLogoDark.png" alt="Logo" class="h-16">
+                </a>
+            </div>
+            <nav class="mt-6 flex flex-col space-y-6 px-6">
+                <a href="UserDashboard.html" class="nav-content flex items-center text-gray-700 dark:text-gray-300">
+                    <i class="fas fa-th-large w-6 mr-3 text-lg"></i> Dashboard
+                </a>
+                <a href="Newcomplaint.html" class="nav-content flex items-center text-gray-700 dark:text-gray-300">
+                    <i class="fas fa-plus-circle w-6 mr-3 text-lg"></i> New Complaint
+                </a>
+                <a href="LostAndFound.html" class="nav-content flex items-center text-gray-700 dark:text-gray-300">
+                    <i class="fas fa-search w-6 mr-3 text-lg"></i> Report Lost
+                </a>
+                <a href="Mycomplaint.html"
+                    class="flex items-center font-semibold text-eco hover:text-eco-dark dark:text-blue-400 dark:hover:text-blue-300">
+                    <i class="fas fa-history w-6 mr-3 text-lg"></i> My History
+                </a>
+                <a href="Profile.html" class="nav-content flex items-center text-gray-700 dark:text-gray-300">
+                    <i class="fas fa-user-circle w-6 mr-3 text-lg"></i> View Profile
+                </a>
+            </nav>
+        </div>
+        <div class="px-6 py-4 border-t dark:border-gray-700 flex flex-col space-y-4">
+            <a href="javascript:void(0)" id="mobileLogoutBtn"
+                class="flex items-center py-2 text-red-500 hover:text-red-700 transition font-medium">
+                <i class="fas fa-sign-out-alt w-6 mr-3 text-lg"></i> Log Out
+            </a>
+        </div>
+    </aside>
+
+    <!-- Overlay -->
+    <div id="overlay" class="fixed inset-0 bg-black/50 hidden z-40 transition-opacity duration-300"></div>
+
+    <!-- Logout Confirmation Modal -->
+    <div id="logoutModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60] hidden">
+        <div
+            class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-11/12 max-w-sm transform transition-all scale-100">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Confirm Logout</h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-6">Are you sure you want to log out?</p>
+            <div class="flex justify-end space-x-3">
+                <button id="cancelLogoutBtn"
+                    class="px-4 py-2 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition font-medium">
+                    Cancel
+                </button>
+                <button id="confirmLogoutBtn"
+                    class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition shadow-md font-bold">
+                    Log Out
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-1 px-6 py-10 max-w-5xl mx-auto w-full">
+        <!-- Back Button -->
+        <div class="mb-6">
+            <a href="Mycomplaint.html?tab=lostfound"
+                class="inline-flex items-center text-blue-500 hover:text-blue-600 transition font-medium">
+                <i class="fas fa-arrow-left mr-2"></i> Back to History
+            </a>
+        </div>
+
+        <div id="detailsCard"
+            class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden transform transition-all duration-300">
+            <!-- Loading State -->
+            <div id="loadingState" class="p-20 text-center">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+                <p class="text-gray-500">Fetching report details...</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="errorState" class="hidden p-20 text-center">
+                <i class="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
+                <h2 class="text-2xl font-bold mb-2">Report Not Found</h2>
+                <p class="text-gray-500 mb-6">We couldn't retrieve the details for this item.</p>
+                <a href="Mycomplaint.html?tab=lostfound"
+                    class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">Go Back</a>
+            </div>
+
+            <!-- Content State -->
+            <div id="contentState" class="hidden">
+                <!-- Header Section -->
+                <div class="p-8 border-b dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <span id="itemTypeBadge"
+                                class="px-3 py-1 text-xs font-bold rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 mb-2 inline-block">Item
+                                Type</span>
+                            <h1 id="itemName"
+                                class="text-3xl font-extrabold text-gray-900 dark:text-white leading-tight"></h1>
+                            <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">
+                                <i class="fas fa-clock mr-1"></i> Reported on <span id="reportedDate"></span>
+                            </p>
+                        </div>
+                        <div class="flex items-center">
+                            <div id="statusBadge"
+                                class="flex items-center gap-2 px-4 py-2 rounded-2xl font-bold text-lg shadow-sm">
+                                <span id="statusIcon"></span>
+                                <span id="statusText"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Body Section -->
+                <div class="p-8 space-y-10">
+                    <!-- Basic Info Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <section>
+                            <h3
+                                class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center border-b dark:border-gray-700 pb-2">
+                                <i class="fas fa-info-circle mr-2 text-blue-500"></i> Event Details
+                            </h3>
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    <div class="w-24 text-sm font-semibold text-gray-500">Location:</div>
+                                    <div id="locationLost" class="flex-1 text-gray-800 dark:text-gray-200"></div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="w-24 text-sm font-semibold text-gray-500">Date:</div>
+                                    <div id="dateLost" class="flex-1 text-gray-800 dark:text-gray-200"></div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="w-24 text-sm font-semibold text-gray-500">Time:</div>
+                                    <div id="timeLost" class="flex-1 text-gray-800 dark:text-gray-200"></div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section>
+                            <h3
+                                class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center border-b dark:border-gray-700 pb-2">
+                                <i class="fas fa-tags mr-2 text-blue-500"></i> Specifications
+                            </h3>
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    <div class="w-24 text-sm font-semibold text-gray-500">Brand:</div>
+                                    <div id="brand" class="flex-1 text-gray-800 dark:text-gray-200"></div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="w-24 text-sm font-semibold text-gray-500">Model:</div>
+                                    <div id="model" class="flex-1 text-gray-800 dark:text-gray-200"></div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="w-24 text-sm font-semibold text-gray-500">Colors:</div>
+                                    <div id="itemColors" class="flex-1 text-gray-800 dark:text-gray-200"></div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="w-24 text-sm font-semibold text-gray-500">Serial #:</div>
+                                    <div id="serialNumber" class="flex-1 text-gray-800 dark:text-gray-200"></div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <!-- Distinguishing Features -->
+                    <section id="featuresSection" class="hidden">
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center">
+                            <i class="fas fa-star mr-2 text-amber-500"></i> Distinguishing Features
+                        </h3>
+                        <p id="distinguishingFeatures"
+                            class="text-gray-700 dark:text-gray-300 bg-amber-50 dark:bg-amber-900/10 p-4 rounded-xl border border-amber-100 dark:border-amber-900/30">
+                        </p>
+                    </section>
+
+                    <!-- Description -->
+                    <section id="descriptionSection" class="hidden">
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3 flex items-center">
+                            <i class="fas fa-align-left mr-2 text-blue-500"></i> General Description
+                        </h3>
+                        <p id="itemDescription" class="text-gray-700 dark:text-gray-300 leading-relaxed"></p>
+                    </section>
+
+                    <!-- Admin Feedback -->
+                    <section id="adminFeedbackSection" class="hidden">
+                        <div class="bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-6 border-l-4 border-blue-500">
+                            <h3 class="text-blue-900 dark:text-blue-200 font-bold mb-2 flex items-center">
+                                <i class="fas fa-comment-dots mr-2"></i> Admin Message
+                            </h3>
+                            <p id="adminFeedback" class="text-blue-800 dark:text-blue-300 whitespace-pre-wrap"></p>
+                        </div>
+                    </section>
+
+                    <!-- Attachments / Images -->
+                    <section id="attachmentsSection" class="hidden">
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                            <i class="fas fa-camera mr-2 text-blue-500"></i> Photos Reference
+                        </h3>
+                        <div id="attachmentsContainer" class="flex flex-wrap gap-4">
+                            <!-- Image cards will be injected here -->
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Footer -->
+                <div class="p-8 bg-gray-50 dark:bg-gray-800/50 border-t dark:border-gray-700 flex justify-end">
+                    <p class="text-xs text-gray-400">Item ID: <span id="itemId"></span></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer
+        class="w-full py-10 mt-10 bg-[var(--color-eco-light)] text-[var(--color-text-light)] dark:bg-[#0F1A24] dark:text-gray-200">
+        <div class="text-center text-sm text-gray-700 dark:text-gray-400">
+            © 2025 ComplaNet. All rights reserved.
+        </div>
+    </footer>
+
+    <script type="module" src="./darkMode.js"></script>
+    <script type="module" src="./user-lost-found-details.js"></script>
+</body>
+
+</html>
